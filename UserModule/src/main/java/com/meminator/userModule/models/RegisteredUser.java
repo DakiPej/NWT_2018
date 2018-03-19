@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User {
+public class RegisteredUser {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

@@ -21,7 +21,7 @@ public class UserToken {
 	
 	@OneToOne
 	@NotNull
-	private User userID;
+	private RegisteredUser userID;
 	
 	@NotNull
 	@Size(min = 32, max = 32)
@@ -39,11 +39,11 @@ public class UserToken {
 		this.id = id;
 	}
 	
-	public User getUserID() {
+	public RegisteredUser getUserID() {
 		return userID;
 	}
 
-	public void setUserID(User userID) {
+	public void setUserID(RegisteredUser userID) {
 		this.userID = userID;
 	}
 
