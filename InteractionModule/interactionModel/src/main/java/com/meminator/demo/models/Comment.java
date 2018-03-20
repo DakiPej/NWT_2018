@@ -1,8 +1,11 @@
-package com.meminator.models;
+package com.meminator.demo.models;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.annotation.Generated;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,8 +26,10 @@ public class Comment {
 	@ManyToOne
 	RegisteredUser userCommenterId; 
 	
+	@Basic(optional=false)
+	@Column(insertable=true)
 	@Temporal(TemporalType.TIMESTAMP)
-	Date commentDate; 
+	private Date commentDate; 
 	
 	String comment; 
 	

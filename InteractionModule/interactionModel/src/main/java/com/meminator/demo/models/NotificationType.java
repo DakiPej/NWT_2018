@@ -1,4 +1,4 @@
-package com.meminator.models;
+package com.meminator.demo.models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,6 +1,7 @@
-package com.meminator.models;
+package com.meminator.demo.models;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
