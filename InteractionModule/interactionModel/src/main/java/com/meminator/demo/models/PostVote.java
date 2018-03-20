@@ -20,6 +20,17 @@ public class PostVote {
 	
 	Boolean upVote; 
 	
+	public PostVote()	{
+		
+	}
+	public PostVote(RegisteredUser regUser, Post post)	{
+		this.regUserId = regUser; 
+		this.postId = post; 
+	}
+	public PostVote(long id)	{
+		this.id = id; 
+	}
+	
 	public Post getPostId() {
 		return postId;
 	}

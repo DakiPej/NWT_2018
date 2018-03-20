@@ -19,6 +19,17 @@ public class CommentVote {
 	RegisteredUser userCommentVoterId; 
 	
 	Boolean upVote;
+	
+	public CommentVote()	{
+		
+	}
+	public CommentVote(Comment comment, RegisteredUser regUser)	{
+		this.commentId = comment; 
+		this.userCommentVoterId = regUser; 
+	}
+	public CommentVote(long id)	{
+		this.id = id; 
+	}
 
 	public Comment getCommentId() {
 		return commentId;
