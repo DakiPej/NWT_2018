@@ -24,12 +24,12 @@ public class UserToken {
 	private RegisteredUser userID;
 	
 	@NotNull
-	@Size(min = 32, max = 32)
+	@Size(min = 31, max = 33)
 	private String token;
 	
 	@NotNull
-	@Temporal(TemporalType.TIME)
-	private Date expirationTime;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date expirationDateTime;
 
 	public Long getId() {
 		return id;
@@ -55,11 +55,14 @@ public class UserToken {
 		this.token = token;
 	}
 
-	public Date getExpirationTime() {
-		return expirationTime;
+	public Date getExpirationDateTime() {
+		return expirationDateTime;
 	}
 
-	public void setExpirationTime(Date expirationTime) {
-		this.expirationTime = expirationTime;
+	public void setExpirationDateTime(Date expirationDateTime) {
+		this.expirationDateTime = expirationDateTime;
+	}
+	public UserToken() {
+		
 	}
 }

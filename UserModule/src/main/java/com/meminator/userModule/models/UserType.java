@@ -1,5 +1,6 @@
 package com.meminator.userModule.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class UserType {
 	
 	@NotNull
 	@Size(max = 15)
+	@Column(unique=true)
 	private String typeName;
 
 	public Long getId() {
@@ -31,5 +33,8 @@ public class UserType {
 
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+	public UserType() {
+		
 	}
 }

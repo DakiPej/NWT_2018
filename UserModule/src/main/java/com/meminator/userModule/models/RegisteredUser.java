@@ -120,4 +120,7 @@ public class RegisteredUser {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	public RegisteredUser() {
+		
+	}
 }
