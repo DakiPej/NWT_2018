@@ -9,9 +9,16 @@ public class NotificationType {
 
 	@Id
 	@GeneratedValue
-	Long id; 
+	long id; 
 	
 	String typeName; 
+	
+	public NotificationType()	{
+		
+	}
+	public NotificationType(long id)	{
+		this.id = id; 
+	}
 	
 	public Long getId() {
 		return id;

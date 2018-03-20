@@ -15,7 +15,7 @@ public class Notification {
 	
 	@Id
 	@GeneratedValue
-	Long id; 
+	long id; 
 	
 	@ManyToOne
 	RegisteredUser userId; 
@@ -29,6 +29,17 @@ public class Notification {
 	String contet;
 	
 	Boolean checked; 
+	
+	public Notification()	{
+		
+	}
+	public Notification(RegisteredUser regUser, NotificationType notificationType)	{
+		userId = regUser; 
+		notificationTypeId = notificationType; 
+	}
+	public Notification(long id)	{
+		this.id = id; 
+	}
 	
 	public Long getId() {
 		return id;

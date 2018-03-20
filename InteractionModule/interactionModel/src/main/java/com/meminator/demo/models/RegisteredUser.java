@@ -11,13 +11,19 @@ import javax.persistence.TemporalType;
 @Entity
 public class RegisteredUser {
 	@Id
-	Long id; 
+	long id; 
 	
 	String username; 
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	Date lastTimeChecked; 
 	
+	public RegisteredUser()	{
+		
+	}
+	public RegisteredUser(long id)	{
+		this.id = id; 
+	}
 	public Long getId() {
 		return id;
 	}

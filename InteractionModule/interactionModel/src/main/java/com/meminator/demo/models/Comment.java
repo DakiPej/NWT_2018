@@ -18,7 +18,7 @@ public class Comment {
 	
 	@Id
 	@GeneratedValue
-	Long id; 
+	long id; 
 	
 	@ManyToOne
 	Post postId; 
@@ -26,7 +26,7 @@ public class Comment {
 	@ManyToOne
 	RegisteredUser userCommenterId; 
 	
-	@Basic(optional=false)
+	@Basic(optional=true)
 	@Column(insertable=true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date commentDate; 
@@ -35,6 +35,18 @@ public class Comment {
 	
 	int upVoteCount; 
 	int downVoteCount;
+	
+	public Comment()	{
+	
+	}
+	public Comment (long id)	{
+		this.id = id; 
+	}
+	public Comment (Post p, RegisteredUser rU)	{
+		this.postId = p; 
+		this.userCommenterId = rU; 
+	}
+	
 	public Long getId() {
 		return id;
 	}

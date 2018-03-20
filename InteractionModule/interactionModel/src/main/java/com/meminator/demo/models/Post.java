@@ -8,13 +8,23 @@ import javax.persistence.ManyToOne;
 public class Post {
 	
 	@Id
-	Long id; 
+	long id; 
 	
 	@ManyToOne
 	RegisteredUser regUserId; 
 	
 	int upVoteCount; 
 	int downVoteCount; 
+	
+	public Post()	{
+		
+	}
+	public Post (RegisteredUser regUser)	{
+		this.regUserId = regUser; 
+	}
+	public Post(long id)	{
+		this.id = id; 
+	}
 	
 	public Long getId() {
 		return id;
