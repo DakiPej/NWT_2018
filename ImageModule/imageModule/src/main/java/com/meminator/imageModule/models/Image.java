@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name="Image")
+@Table(name="image")
 public class Image {
 	
 	@Id
@@ -29,8 +29,7 @@ public class Image {
     @JoinColumn(name="typeID")
     private ImageType tip;
 
-	public Image(Long id, byte[] data, ImageType tip) {
-		this.id = id;
+	public Image(byte[] data, ImageType tip) {
 		this.data = data;
 		this.tip = tip;
 	}

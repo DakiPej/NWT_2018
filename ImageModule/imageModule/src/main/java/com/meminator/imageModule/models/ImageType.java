@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="ImageType")
+@Table(name="image_type")
 public class ImageType {
 	
 	@Id
@@ -17,7 +17,7 @@ public class ImageType {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="typeName")
+	@Column(name="type_name")
 	@Size(max = 20)
 	private String typeName;
 

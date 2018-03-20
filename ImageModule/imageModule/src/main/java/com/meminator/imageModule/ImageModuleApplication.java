@@ -17,26 +17,24 @@ import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
 import com.meminator.imageModule.repositories.ImageRepository;
 import com.meminator.imageModule.repositories.ImageTypeRepository;
-import com.meminator.imageModule.repositories.PostRepository;
-import com.meminator.imageModule.repositories.UserRepository;
+import com.meminator.imageModule.repositories.RegisteredUserRepository;
 
+//implements CommandLineRunner
 @SpringBootApplication
-public class ImageModuleApplication implements CommandLineRunner{
+public class ImageModuleApplication {
 
 	@Autowired
 	ImageRepository imageRepository;
 	@Autowired
 	ImageTypeRepository imageTypeRepository;
 	@Autowired
-	PostRepository postRepository;
-	@Autowired
-	UserRepository userRepository;
+	RegisteredUserRepository userRepository;
 	
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ImageModuleApplication.class, args);
 	}
-	
+	/*
 	// Kod koji omogućava unos par slogova u bazu podataka + spašavanje slika
 	@Override
 	public void run(String... arg0) throws Exception {
@@ -57,5 +55,5 @@ public class ImageModuleApplication implements CommandLineRunner{
 		for(Image imageModel : imageRepository.findAll()){
 			Files.write(Paths.get("retrieve_dir/" + imageModel.getId() + "_" + imageModel.getTip().getTypeName()), imageModel.getData());
 		}
-	}
+	}*/
 }

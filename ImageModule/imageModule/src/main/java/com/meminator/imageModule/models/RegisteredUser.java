@@ -12,16 +12,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="User")
-public class User {
+@Table(name="registered_user")
+public class RegisteredUser {
 
 	@Id
 	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	@OneToOne(targetEntity=Image.class)
-    @JoinColumn(name="profilePictureID")
+    @JoinColumn(name="profile_pictureid")
     private Image profile;
 	
 	@NotNull
@@ -29,7 +28,7 @@ public class User {
 	@Size(max = 15)
 	private String username;
 
-	public User() {
+	public RegisteredUser() {
 	}
 
 	public Long getId() {
@@ -48,7 +47,7 @@ public class User {
 		this.profile = profile;
 	}
 
-	public User(Long id, Image profile, String username) {
+	public RegisteredUser(Long id, Image profile, String username) {
 		this.id = id;
 		this.profile = profile;
 		this.username = username;
