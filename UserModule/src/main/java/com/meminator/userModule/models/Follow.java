@@ -44,4 +44,8 @@ public class Follow {
 	public void setFollowingUserID(RegisteredUser followingUserID) {
 		this.followingUserID = followingUserID;
 	}
+
+	public Follow() {
+	}
+	
 }

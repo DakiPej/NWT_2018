@@ -32,4 +32,7 @@ public class UserType {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
+	public UserType() {
+		
+	}
 }

@@ -62,4 +62,7 @@ public class UserToken {
 	public void setExpirationTime(Date expirationTime) {
 		this.expirationTime = expirationTime;
 	}
+	public UserToken() {
+		
+	}
 }
