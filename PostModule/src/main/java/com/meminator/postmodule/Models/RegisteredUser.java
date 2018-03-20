@@ -1,10 +1,13 @@
 package com.meminator.postmodule.Models;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "registeredUser")
+@Transactional
 public class RegisteredUser {
 
     @Id
@@ -13,26 +16,6 @@ public class RegisteredUser {
     @Column(unique = true)
     private String username;
 
-    @OneToMany(
-            mappedBy = "post",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Post> posts = new ArrayList<>();
-
-    public void addPost(Post post){
-        posts.add(post);
-        post.setUser(this);
-    }
-
-    public void removePost(Post post){
-        posts.remove(post);
-        post.setUser(null);
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
 
     public RegisteredUser() {
     }
