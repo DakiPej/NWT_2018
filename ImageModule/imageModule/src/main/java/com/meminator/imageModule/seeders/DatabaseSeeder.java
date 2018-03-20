@@ -60,6 +60,17 @@ public class DatabaseSeeder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}    		
+        	ImageType imageType2 = new ImageType((long) 1,"Meme");
+        	try {
+        	ClassPathResource backImgFile2 = new ClassPathResource("images/cobra.jpg");
+    		byte[] arrayPic2 = new byte[(int) backImgFile2.contentLength()];
+    		backImgFile2.getInputStream().read(arrayPic2);
+    		Image meme2 = new Image(arrayPic2,imageType2);	
+    		imageRepository.save(meme2);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}    		
             logger.info("ImageType table seeded");
         }else {
             logger.trace("ImageType Seeding Not Required");
