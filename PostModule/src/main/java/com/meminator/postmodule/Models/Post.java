@@ -2,11 +2,10 @@ package com.meminator.postmodule.Models;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Post {
@@ -14,21 +13,31 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private Long userID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userID")
+    private RegisteredUser user;
     private Long imageID;
-    @DateTimeFormat
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Date date;
+    @Column(name="timeStamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timeStamp;
     private String info;
     private Integer upVote;
     private Integer downVote;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "post_tag",
+            joinColumns = @JoinColumn(name = "postID"),
+            inverseJoinColumns = @JoinColumn(name = "tagID")
+    )
+    private List<Tag> tags = new ArrayList<>();
 
     public Post() {
     }
 
-    public Post(Long userID, Long imageID, String info, Integer upVote, Integer downVote) {
-        this.userID = userID;
+    public Post(RegisteredUser user, Long imageID, String info, Integer upVote, Integer downVote) {
+        this.user = user;
         this.imageID = imageID;
         this.info = info;
         this.upVote = upVote;
@@ -43,12 +52,16 @@ public class Post {
         this.id = id;
     }
 
-    public Long getUserID() {
-        return userID;
+    public RegisteredUser getUser() {
+        return user;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public void setUser(RegisteredUser user) {
+        this.user = user;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 
     public Long getImageID() {
@@ -59,12 +72,12 @@ public class Post {
         this.imageID = imageID;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getInfo() {
@@ -89,5 +102,22 @@ public class Post {
 
     public void setDownVote(Integer downVote) {
         this.downVote = downVote;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.getPosts().add(this);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+        tag.getPosts().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post)) return false;
+        return id != null && id.equals(((Post) o).id);
     }
 }
