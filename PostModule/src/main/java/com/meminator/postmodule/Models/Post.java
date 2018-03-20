@@ -1,13 +1,17 @@
 package com.meminator.postmodule.Models;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "post")
+@Transactional
 public class Post {
 
     @Id
@@ -16,28 +20,26 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID")
     private RegisteredUser user;
+    private String imageURL;
     private Long imageID;
     @Column(name="timeStamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeStamp;
     private String info;
-    private Integer upVote;
-    private Integer downVote;
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "post_tag",
-            joinColumns = @JoinColumn(name = "postID"),
-            inverseJoinColumns = @JoinColumn(name = "tagID")
-    )
-    private List<Tag> tags = new ArrayList<>();
+    private Integer upVote = 0;
+    private Integer downVote = 0;
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    @ManyToMany
+    private List<Tag> tags = new ArrayList<Tag>();
 
     public Post() {
     }
 
-    public Post(RegisteredUser user, Long imageID, String info, Integer upVote, Integer downVote) {
-        this.user = user;
+    public Post(Long imageID, String info, Integer upVote, Integer downVote) {
         this.imageID = imageID;
         this.info = info;
         this.upVote = upVote;
@@ -106,12 +108,18 @@ public class Post {
 
     public void addTag(Tag tag) {
         tags.add(tag);
-        tag.getPosts().add(this);
     }
 
     public void removeTag(Tag tag) {
         tags.remove(tag);
-        tag.getPosts().remove(this);
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     @Override
