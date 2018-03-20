@@ -1,6 +1,7 @@
 package com.meminator.imageModule.seeders;
 
 import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
+import com.meminator.imageModule.models.RegisteredUser;
 import com.meminator.imageModule.repositories.ImageRepository;
 import com.meminator.imageModule.repositories.ImageTypeRepository;
 import com.meminator.imageModule.repositories.RegisteredUserRepository;
@@ -25,8 +27,11 @@ public class DatabaseSeeder {
 	 private ImageRepository imageRepository;
 	 private ImageTypeRepository imageTypeRepository;
 	 private JdbcTemplate jdbcTemplate;
+	 
+	 @Autowired
 	public DatabaseSeeder(RegisteredUserRepository userRepository, ImageRepository imageRepository,
 			ImageTypeRepository imageTypeRepository, JdbcTemplate jdbcTemplate) {
+		 System.out.println("NEkaj");
 		this.userRepository = userRepository;
 		this.imageRepository = imageRepository;
 		this.imageTypeRepository = imageTypeRepository;
@@ -35,6 +40,7 @@ public class DatabaseSeeder {
 	
 	@EventListener
     public void seed(ContextRefreshedEvent event) {
+		System.out.println("Nesto");
         seedImageTypeTable();
         seedImageTable();
         seedRegisteredUserTable();
@@ -42,6 +48,40 @@ public class DatabaseSeeder {
 
 	
 	private void seedRegisteredUserTable() {
+		
+		String sql= "SELECT * FROM registered_user";
+		 List<RegisteredUser> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
+	        if(rs == null || rs.size() <= 0) {
+	        	RegisteredUser user = new RegisteredUser();
+	        	user.setId((long)1);
+	        	user.setUsername("dakipej");
+	        	userRepository.save(user);
+	        	user = new RegisteredUser();
+	        	user.setId((long)2);
+	        	user.setUsername("sbecirovic");
+	        	userRepository.save(user);
+	        	user = new RegisteredUser();
+	        	user.setId((long)3);
+	        	user.setUsername("tdzirlo");
+	        	userRepository.save(user);
+	        	user = new RegisteredUser();
+	        	user.setId((long)4);
+	        	user.setUsername("pipi");
+	        	userRepository.save(user);
+	        	user = new RegisteredUser();
+	        	user.setId((long)5);
+	        	user.setUsername("seka");
+	        	userRepository.save(user);
+	        	user = new RegisteredUser();
+	        	user.setId((long)6);
+	        	user.setUsername("aco");
+	        	userRepository.save(user);
+	        	logger.info("Image table seeded");	
+	        	
+	        }
+	        else {
+	            logger.trace("User Seeding Not Required");
+	        }   
 		
 	}
 	private void seedImageTable() {
@@ -71,9 +111,9 @@ public class DatabaseSeeder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}    		
-            logger.info("ImageType table seeded");
+            logger.info("Image table seeded");
         }else {
-            logger.trace("ImageType Seeding Not Required");
+            logger.trace("Image Seeding Not Required");
         }   	
    	 
 	}

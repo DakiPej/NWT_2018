@@ -23,13 +23,6 @@ import com.meminator.imageModule.repositories.RegisteredUserRepository;
 @SpringBootApplication
 public class ImageModuleApplication {
 
-	@Autowired
-	ImageRepository imageRepository;
-	@Autowired
-	ImageTypeRepository imageTypeRepository;
-	@Autowired
-	RegisteredUserRepository userRepository;
-	
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ImageModuleApplication.class, args);
