@@ -25,6 +25,7 @@ import com.meminator.demo.repositories.RegisteredUserRepository;
 @Component
 public class DatabaseSeeder {
 	
+	//Samo jedan mali testni komentar bruda moi 
 	Logger logger = Logger.getLogger(DatabaseSeeder.class);
 	
 	CommentRepository commentRepo; 
