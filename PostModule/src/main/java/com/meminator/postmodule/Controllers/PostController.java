@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -53,16 +54,16 @@ public class PostController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, consumes = "application/json")
-    public ResponseEntity getPostsByTag(@RequestBody List<Tag> tags){
+    @RequestMapping(value = "/tags", method = RequestMethod.PUT, consumes = "application/json")
+    public ResponseEntity getPostsByTag(@RequestBody Tag[] tags){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByTags(tags));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByTags(Arrays.asList(tags)));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{username}")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{username}")
     public ResponseEntity getPostsByUser(@PathVariable String username){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByUser(username));

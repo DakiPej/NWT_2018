@@ -38,7 +38,7 @@ public class TagController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getTags(){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(getTags());
+            return ResponseEntity.status(HttpStatus.OK).body(tagService.getTags());
         }catch (Exception e){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
@@ -57,8 +57,8 @@ public class TagController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = "name")
-    public ResponseEntity getTagByName(@RequestParam String name){
+    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    public ResponseEntity getTagByName(@PathVariable String name){
 
         try{
             return ResponseEntity.status(HttpStatus.OK).body(tagService.getTagByName(name));

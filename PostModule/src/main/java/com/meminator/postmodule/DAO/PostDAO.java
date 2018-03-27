@@ -26,7 +26,7 @@ public class PostDAO extends BaseDAO<Post, IPostRepositroy> {
     }
 
     public List<Post> getPostsByTags(List<Tag> tags){
-        return this.repo.getPostsByTags(tags);
+        return this.repo.findAllByTagsIn(tags);
     }
 
     public List<Post> getPostsByUser(RegisteredUser user){
