@@ -8,10 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
@@ -26,6 +29,16 @@ public class ImageModuleApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ImageModuleApplication.class, args);
+	}
+	
+	@Bean
+	public WebMvcConfigurer corsConfigurer(){
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedMethods("GET", "POST","PUT", "DELETE");;
+			}
+		};
 	}
 	/*
 	// Kod koji omogućava unos par slogova u bazu podataka + spašavanje slika
