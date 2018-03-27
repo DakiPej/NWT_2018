@@ -100,6 +100,15 @@ public class DatabaseSeeder {
 	void seedNotificationTypeTable()	{
 		if(((List<NotificationType>) this.notificationTypeRepo.findAll()).isEmpty())	{
 			NotificationType notificationType = new NotificationType(); 
+			notificationType.setTypeName("Followed");
+			this.notificationTypeRepo.save(notificationType); 
+			notificationType.setTypeName("Commented");
+			this.notificationTypeRepo.save(notificationType); 
+			notificationType.setTypeName("Post liked");
+			this.notificationTypeRepo.save(notificationType); 
+			notificationType.setTypeName("Comment liked");
+			this.notificationTypeRepo.save(notificationType);
+			notificationType.setTypeName("Post repost");
 			this.notificationTypeRepo.save(notificationType); 
 		}
 	}
