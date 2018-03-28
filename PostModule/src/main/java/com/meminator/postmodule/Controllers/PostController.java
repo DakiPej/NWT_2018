@@ -23,8 +23,8 @@ public class PostController {
         this.postService = postService;
     }
 
-    @RequestMapping(value = "/{user}", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity createPost(@RequestBody Post post, @PathVariable String username){
+    @RequestMapping(value = "/{username}", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity createPost( @PathVariable String username, @RequestBody Post post){
 
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post, username));

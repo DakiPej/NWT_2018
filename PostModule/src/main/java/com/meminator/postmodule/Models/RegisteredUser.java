@@ -2,6 +2,7 @@ package com.meminator.postmodule.Models;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class RegisteredUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(unique = true)
+    @Size(min=3, max = 15)
     private String username;
 
 

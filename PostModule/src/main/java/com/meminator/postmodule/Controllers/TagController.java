@@ -57,8 +57,8 @@ public class TagController {
 
     }
 
-    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public ResponseEntity getTagByName(@PathVariable String name){
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity getTagByName(@RequestParam String name){
 
         try{
             return ResponseEntity.status(HttpStatus.OK).body(tagService.getTagByName(name));

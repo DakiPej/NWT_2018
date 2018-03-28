@@ -6,6 +6,8 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +22,16 @@ public class Post {
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userID")
+    @NotNull
     private RegisteredUser user;
+    @NotNull
     private String imageURL;
+    @NotNull
     private Long imageID;
     @Column(name="timeStamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeStamp;
+    @Size(max = 255)
     private String info;
     private Integer upVote = 0;
     private Integer downVote = 0;
