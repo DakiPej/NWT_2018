@@ -13,6 +13,9 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 public class RegisteredUser {
 	
@@ -31,19 +34,21 @@ public class RegisteredUser {
 	private String lastName;
 	
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date birthdate;
 	
-	@Size(max = 15)
+	@Size(min = 3, max = 15)
 	@Column(unique=true)
 	@NotNull
 	private String username;
 	
 	@NotNull
 	@Size(max = 30)
+	@Email(message = "Email is not valid.")
 	private String email;
 	
 	@NotNull
-	@Size(max = 20)
+	@Size(min = 8, max = 20)
 	private String password;
 	
 	@Size(max = 255)
