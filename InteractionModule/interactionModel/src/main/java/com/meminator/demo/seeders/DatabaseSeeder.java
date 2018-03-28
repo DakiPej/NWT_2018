@@ -102,12 +102,20 @@ public class DatabaseSeeder {
 			NotificationType notificationType = new NotificationType(); 
 			notificationType.setTypeName("Followed");
 			this.notificationTypeRepo.save(notificationType); 
+			
+			notificationType = new NotificationType();
 			notificationType.setTypeName("Commented");
 			this.notificationTypeRepo.save(notificationType); 
-			notificationType.setTypeName("Post liked");
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Post vote");
 			this.notificationTypeRepo.save(notificationType); 
-			notificationType.setTypeName("Comment liked");
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Comment vote");
 			this.notificationTypeRepo.save(notificationType);
+			
+			notificationType = new NotificationType();
 			notificationType.setTypeName("Post repost");
 			this.notificationTypeRepo.save(notificationType); 
 		}

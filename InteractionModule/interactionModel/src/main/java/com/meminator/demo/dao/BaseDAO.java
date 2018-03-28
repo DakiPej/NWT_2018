@@ -15,4 +15,12 @@ public abstract class BaseDAO <M, R extends PagingAndSortingRepository<M, Long>>
 	protected M create (M model)	{
 		return repo.save(model); 
 	}
+	
+	protected void delete (long id)	{
+		repo.deleteById(id);
+	}
+	
+	protected M one(long id)	{
+		return (M) repo.findById(id);
+	}
 }
