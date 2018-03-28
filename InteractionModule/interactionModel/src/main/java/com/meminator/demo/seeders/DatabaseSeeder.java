@@ -25,6 +25,7 @@ import com.meminator.demo.repositories.RegisteredUserRepository;
 @Component
 public class DatabaseSeeder {
 	
+	//Samo jedan mali testni komentar bruda moi 
 	Logger logger = Logger.getLogger(DatabaseSeeder.class);
 	
 	CommentRepository commentRepo; 
@@ -99,6 +100,23 @@ public class DatabaseSeeder {
 	void seedNotificationTypeTable()	{
 		if(((List<NotificationType>) this.notificationTypeRepo.findAll()).isEmpty())	{
 			NotificationType notificationType = new NotificationType(); 
+			notificationType.setTypeName("Followed");
+			this.notificationTypeRepo.save(notificationType); 
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Commented");
+			this.notificationTypeRepo.save(notificationType); 
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Post vote");
+			this.notificationTypeRepo.save(notificationType); 
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Comment vote");
+			this.notificationTypeRepo.save(notificationType);
+			
+			notificationType = new NotificationType();
+			notificationType.setTypeName("Post repost");
 			this.notificationTypeRepo.save(notificationType); 
 		}
 	}

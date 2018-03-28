@@ -20,6 +20,10 @@ public class NotificationType {
 		this.id = id; 
 	}
 	
+	public NotificationType(NotificationType notificationType)	{
+		this.id = notificationType.getId(); 
+		this.typeName = notificationType.getTypeName();
+	}
 	public Long getId() {
 		return id;
 	}

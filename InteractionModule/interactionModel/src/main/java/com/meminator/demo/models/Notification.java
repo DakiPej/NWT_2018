@@ -26,6 +26,8 @@ public class Notification {
 	@Temporal(TemporalType.TIMESTAMP)
 	Date creationMoment;
 	
+	String notifierUsername; 
+	
 	String contet;
 	
 	Boolean checked; 
@@ -87,5 +89,11 @@ public class Notification {
 
 	public void setChecked(Boolean checked) {
 		this.checked = checked;
+	}
+	public String getNotifierUsername() {
+		return notifierUsername;
+	}
+	public void setNotifierUsername(String notifierUsername) {
+		this.notifierUsername = notifierUsername;
 	}
 }
