@@ -5,6 +5,8 @@ package com.meminator.imageModule.controllers;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.servlet.ServletInputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
