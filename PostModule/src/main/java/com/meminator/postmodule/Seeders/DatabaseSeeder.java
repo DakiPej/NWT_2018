@@ -81,10 +81,10 @@ public class DatabaseSeeder {
         String sql = "SELECT * FROM post p";
         List<Post> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if(rs == null || rs.size() <= 0) {
-            List<RegisteredUser> users = registeredUserRepository.findAll();
+            List<RegisteredUser> users = (List<RegisteredUser>) registeredUserRepository.findAll();
             List<Post> posts = new ArrayList<>();
             Integer id = 1;
-            List<Tag> tags = tagRepositroy.findAll();
+            List<Tag> tags = (List<Tag>) tagRepositroy.findAll();
             for(RegisteredUser i : users){
                 Post p = new Post();
                 p.setImageID(Integer.toUnsignedLong((id%2)+1));

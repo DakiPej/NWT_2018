@@ -1,6 +1,9 @@
 package com.meminator.postmodule.Models;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +15,7 @@ public class Tag {
     @Id
     @GeneratedValue
     private Long id;
+    @Size(max = 15)
     private String name;
 
     public Tag() {
