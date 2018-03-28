@@ -34,9 +34,9 @@ public class ImageTypeController {
 	    }
 
 	    @RequestMapping(method = RequestMethod.GET, value = "/{typename}")
-	    public ResponseEntity getImageType(@PathVariable String typeName){
+	    public ResponseEntity getImageType(@PathVariable String typename){
 	        try{
-	            return ResponseEntity.status(HttpStatus.OK).body(imageTypeService.getImageType(typeName));
+	            return ResponseEntity.status(HttpStatus.OK).body(imageTypeService.getImageType(typename));
 	        }catch (IllegalArgumentException e){
 	            return ResponseEntity.status(404).body(e.getLocalizedMessage());
 	        }catch (Exception e){
@@ -44,9 +44,9 @@ public class ImageTypeController {
 	        }
 	    }
 	    @RequestMapping(method = RequestMethod.DELETE, value = "/{typename}")
-	    public ResponseEntity deleteImageType(@PathVariable String typeName){
+	    public ResponseEntity deleteImageType(@PathVariable String typename){
 	        try{
-	            return ResponseEntity.status(HttpStatus.OK).body(imageTypeService.deleteImageType(typeName));
+	            return ResponseEntity.status(HttpStatus.OK).body(imageTypeService.deleteImageType(typename));
 	        }catch (Exception e){
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 	        }

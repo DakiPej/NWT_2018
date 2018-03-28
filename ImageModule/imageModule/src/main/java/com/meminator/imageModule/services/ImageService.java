@@ -34,7 +34,6 @@ public class ImageService {
     
     public String createProfilePicture(MultipartFile file,String username) throws IOException {
     	
-    	Image img = new Image();
     	ImageType imageType = imageTypeDAO.getImageType("Profile picture").get();   	
     	byte[] arrayPic = file.getBytes();
 		Image profile = new Image(arrayPic,imageType);	
@@ -51,6 +50,16 @@ public class ImageService {
         }
     	
     }
+    
+   public String createMeme(MultipartFile file) throws IOException {
+    	
+    	ImageType imageType = imageTypeDAO.getImageType("Meme").get();   	
+    	byte[] arrayPic = file.getBytes();
+		Image profile = new Image(arrayPic,imageType);	
+		Image novi = imageDAO.createImage(profile);
+        return novi.getId().toString();         
+    }
+    
     
     public Image getImage(Long id){
     	
@@ -84,6 +93,21 @@ public class ImageService {
         }else{
             throw new IllegalArgumentException("Image  does not exist!");
         }
+        
+    }
+    
+    @Transactional
+    public boolean deleteImageByUsername(String username){
+    	Optional<RegisteredUser> user = registeredUserDAO.getUser(username);
+        if(user.isPresent()){
+        RegisteredUser reg = user.get();        
+        Image img = reg.getProfile();
+        reg.setProfile(null);
+        registeredUserDAO.saveUser(reg);
+        return imageDAO.deleteImage(img.getId());
+        }else{
+            throw new IllegalArgumentException("Imagefor user with given username does not exist!");
+        }       
         
     }
 

@@ -3,6 +3,7 @@ package com.meminator.imageModule.controllers;
 
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
@@ -33,16 +35,36 @@ public class ImageController {
         this.imageService = imageService;
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/profile/upload",consumes="multipart/form-data")
-    public ResponseEntity createProfilePicture(@RequestParam("image") MultipartFile file,@RequestParam("username") String username){
+    @RequestMapping(method = RequestMethod.POST, value="/upload/{username}")
+    public ResponseEntity createProfilePicture(MultipartHttpServletRequest request,@PathVariable String username){
         
-    	try{        	    		
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.createProfilePicture(file,username));
-        }catch (Exception e){
+    	try{   
+    		Iterator<String> itr = request.getFileNames();
+    		 while (itr.hasNext()) {
+                 String uploadedFile = itr.next();
+                 MultipartFile file = request.getFile(uploadedFile);
+                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createProfilePicture(file,username));
+    		 }
+    	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
+    		 }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-    
+    @RequestMapping(method = RequestMethod.POST, value="/upload")
+    public ResponseEntity createMeme(MultipartHttpServletRequest request){
+        
+    	try{   
+    		Iterator<String> itr = request.getFileNames();
+    		 while (itr.hasNext()) {
+                 String uploadedFile = itr.next();
+                 MultipartFile file = request.getFile(uploadedFile);
+                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createMeme(file));
+    		 }
+    	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
+    		 }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+        }
+    }
     
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", 
             produces = MediaType.IMAGE_JPEG_VALUE)
@@ -100,6 +122,15 @@ public class ImageController {
     public ResponseEntity deleteImagee(@PathVariable Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImage(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+        }
+    }
+    
+    @RequestMapping(method = RequestMethod.DELETE, value = "/profile/{username}")
+    public ResponseEntity deleteImagee(@PathVariable String username){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImageByUsername(username));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
