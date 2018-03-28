@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.transaction.Transactional;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -24,7 +25,7 @@ public class RegisteredUser {
     private Image profile;
 	
 	@NotNull
-	@Column(name="username", unique=true)
+	@Column(unique=true)
 	@Size(max = 15)
 	private String username;
 
