@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class CommentVote {
@@ -18,6 +19,7 @@ public class CommentVote {
 	@ManyToOne
 	RegisteredUser userCommentVoterId; 
 	
+	@NotNull
 	Boolean upVote;
 	
 	public CommentVote()	{

@@ -3,6 +3,9 @@ package com.meminator.demo.models;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Post {
@@ -13,7 +16,13 @@ public class Post {
 	@ManyToOne
 	RegisteredUser regUserId; 
 	
+	@NotNull
+	@Digits(integer=10, fraction=0)
+	@Min(0)
 	int upVoteCount; 
+	@NotNull
+	@Digits(integer=10, fraction=0)
+	@Min(0)
 	int downVoteCount; 
 	
 	public Post()	{

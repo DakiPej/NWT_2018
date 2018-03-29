@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.meminator.demo.services.PostService;
 
 @RestController 
-@RequestMapping("/posts/")
+@RequestMapping("/posts")
 public class PostController {
 	PostService postServcie; 
 	
@@ -18,14 +18,15 @@ public class PostController {
 		this.postServcie = postService;
 	}
 	
-	@RequestMapping(value="/create", method = RequestMethod.POST)
+	@RequestMapping(value="/create")
 	public String createPost(@RequestBody final PostInfo postInfo)	{
 		
-		return this.postServcie.createPost(postInfo.id, postInfo.userPosterId);
+		System.out.println("PostInfo.id = " + postInfo.id + "postInfo.userPosterId = " + postInfo.userPosterId);
+		return this.postServcie.createPost((long) postInfo.id, (long) postInfo.userPosterId);
 	}
 	
 	private static class PostInfo	{
-		long id; 
-		long userPosterId; 
+		public long id; 
+		public long userPosterId; 
 	}
 }

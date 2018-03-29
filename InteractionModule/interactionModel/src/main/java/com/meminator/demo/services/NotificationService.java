@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.meminator.demo.dao.NotificationDAO;
@@ -93,8 +94,8 @@ public class NotificationService {
 	}
 	
 	public List<Notification> getAllNotificationsByUsername(String username, int pageNumber)	{
-		Pageable pageRequest = new PageRequest(pageNumber, 10); 
-		
+		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment"); 
+		System.out.println("dosao ovdje...");
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
 				pageRequest);

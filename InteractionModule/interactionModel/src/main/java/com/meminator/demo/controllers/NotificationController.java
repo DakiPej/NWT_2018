@@ -24,12 +24,13 @@ public class NotificationController {
 		this.notificationService = notificationService; 
 	}
 	
-	@RequestMapping("/create")
+	@RequestMapping(value="", method=RequestMethod.POST)
 	public String createNotification(@RequestBody final NotificationInfo info)	{
 		
 		return this.notificationService.createNotification(info.notifierUsername, info.username, info.notificationType);
 	}
-	@RequestMapping(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
+	@RequestMapping(value="/username={username}/pageNumber={pageNumber}", method=RequestMethod.GET)
+	//(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
 	public List<Notification> getAllNotifications(@PathVariable("username") String username, @PathVariable("pageNumber") int pageNumber)	{
 		List<Notification> notifications = new ArrayList<Notification>();
 		

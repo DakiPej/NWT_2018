@@ -31,8 +31,11 @@ public class RegisteredUserDAO extends BaseDAO<RegisteredUser, RegisteredUserRep
 		
 		try {
 			regUser = this.one(id);
+			System.out.println("Nasao sam ga...");
+			System.out.println(regUser.getUsername());
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e.getMessage());
+			System.out.println("NIJE GA NASAO");
 		}
 		return regUser;
 	}
