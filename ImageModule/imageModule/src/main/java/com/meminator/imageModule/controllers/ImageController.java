@@ -52,15 +52,15 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-    @RequestMapping(method = RequestMethod.POST, value="/upload")
-    public ResponseEntity createMeme(MultipartHttpServletRequest request){
+    @RequestMapping(method = RequestMethod.POST, value="/upload/{id}")
+    public ResponseEntity createMeme(MultipartHttpServletRequest request,@PathVariable Long id){
         
     	try{   
     		Iterator<String> itr = request.getFileNames();
     		 while (itr.hasNext()) {
                  String uploadedFile = itr.next();
                  MultipartFile file = request.getFile(uploadedFile);
-                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createMeme(file));
+                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createMeme(file,id));
     		 }
     	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
     		 }catch (Exception e){
@@ -120,8 +120,35 @@ public class ImageController {
         
     }
     
+    @RequestMapping(method = RequestMethod.GET, value = "/meme/{id}", 
+            produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getImageByPostId(@PathVariable Long id) throws IOException {
+    	
+    	 try{
+    		 Image image = imageService.getImageByPostId(id);
+    		 byte[] bytes = image.getData();
+
+    	        return ResponseEntity
+    	        		.status(HttpStatus.OK)
+    	                .contentType(MediaType.IMAGE_JPEG)
+    	                .body(bytes);
+
+	        }catch (IllegalArgumentException e){
+	        	byte[] bytes = null;
+	            return  ResponseEntity.status(404).contentType(MediaType.IMAGE_JPEG)
+    	                .body(bytes);
+	        }catch (Exception e){
+	        	System.out.println(e.getMessage().toString());
+	        	byte[] bytes = null;
+	            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.IMAGE_JPEG)
+    	                .body(bytes);
+	        }
+    	
+        
+    }
+    
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public ResponseEntity deleteImagee(@PathVariable Long id){
+    public ResponseEntity deleteImage(@PathVariable Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImage(id));
         }catch (Exception e){
@@ -130,9 +157,17 @@ public class ImageController {
     }
     
     @RequestMapping(method = RequestMethod.DELETE, value = "/profile/{username}")
-    public ResponseEntity deleteImagee(@PathVariable String username){
+    public ResponseEntity deleteImageByUsername(@PathVariable String username){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImageByUsername(username));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+        }
+    }
+    @RequestMapping(method = RequestMethod.DELETE, value = "/meme/{id}")
+    public ResponseEntity deleteImageByPostId(@PathVariable Long id){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImageByPostId(id));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
