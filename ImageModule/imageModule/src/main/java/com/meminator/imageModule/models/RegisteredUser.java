@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class RegisteredUser {
 
 	@Id
-	@Column(name="id")
+	@Column(unique=true)
 	private Long id;
 	
 	@OneToOne(targetEntity=Image.class)

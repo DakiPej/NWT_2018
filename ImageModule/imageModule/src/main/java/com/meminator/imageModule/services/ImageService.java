@@ -11,9 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.meminator.imageModule.dao.ImageDAO;
 import com.meminator.imageModule.dao.ImageTypeDAO;
+import com.meminator.imageModule.dao.PostDAO;
 import com.meminator.imageModule.dao.RegisteredUserDAO;
 import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
+import com.meminator.imageModule.models.Post;
 import com.meminator.imageModule.models.RegisteredUser;
 
 @Service
@@ -21,7 +23,7 @@ public class ImageService {
     private ImageDAO imageDAO;
     private RegisteredUserDAO registeredUserDAO;
     private ImageTypeDAO imageTypeDAO;
-    
+    private PostDAO postDAO;
     @Autowired
     public void setImageDAO(ImageDAO imageDAO){
         this.imageDAO = imageDAO;
@@ -51,13 +53,22 @@ public class ImageService {
     	
     }
     
-   public String createMeme(MultipartFile file) throws IOException {
+   public String createMeme(MultipartFile file, Long postid) throws IOException {
     	
     	ImageType imageType = imageTypeDAO.getImageType("Meme").get();   	
     	byte[] arrayPic = file.getBytes();
 		Image profile = new Image(arrayPic,imageType);	
 		Image novi = imageDAO.createImage(profile);
-        return novi.getId().toString();         
+		Optional<Post> post = postDAO.getPost(postid);
+		if(post.isPresent()){
+	        Post pos = post.get();
+	        pos.setMeme(novi);
+	        postDAO.savePost(pos);
+	        return "Image uploaded";
+	        
+	        }else{
+	            throw new IllegalArgumentException("Post with given id does not exist!");
+	        }         
     }
     
     
@@ -81,6 +92,17 @@ public class ImageService {
         return img;
         }else{
             throw new IllegalArgumentException("Image with given username does not exist!");
+        }
+    }
+    
+    public Image getImageByPostId(Long id){
+    	Optional<Post> post = postDAO.getPost(id);
+        if(post.isPresent()){
+        Post reg = post.get();
+        Image img = reg.getMeme();
+        return img;
+        }else{
+            throw new IllegalArgumentException("Image with given post id does not exist!");
         }
     }
     
@@ -111,8 +133,28 @@ public class ImageService {
         
     }
 
+    @Transactional
+    public boolean deleteImageByPostId(Long id){
+    	Optional<Post> post = postDAO.getPost(id);
+        if(post.isPresent()){
+        Post reg = post.get();        
+        Image img = reg.getMeme();
+        reg.setMeme(null);
+        postDAO.savePost(reg);
+        return imageDAO.deleteImage(img.getId());
+        }else{
+            throw new IllegalArgumentException("Image for post with given id does not exist!");
+        }       
+        
+    }
+    @Autowired
 	public void setImageTypeDAO(ImageTypeDAO imageTypeDAO) {
 		this.imageTypeDAO = imageTypeDAO;
+	}
+
+    @Autowired
+	public void setPostDAO(PostDAO postDAO) {
+		this.postDAO = postDAO;
 	}
     
     
