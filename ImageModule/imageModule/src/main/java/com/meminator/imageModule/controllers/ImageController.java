@@ -37,7 +37,7 @@ public class ImageController {
         this.imageService = imageService;
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/upload/{username}")
+    @RequestMapping(method = RequestMethod.POST, value="/upload/profile/{username}")
     public ResponseEntity createProfilePicture(MultipartHttpServletRequest request,@PathVariable String username){
         
     	try{   
@@ -49,10 +49,11 @@ public class ImageController {
     		 }
     	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
     		 }catch (Exception e){
+ 	        	System.out.println(e.getMessage().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-    @RequestMapping(method = RequestMethod.POST, value="/upload/{id}")
+    @RequestMapping(method = RequestMethod.POST, value="/upload/meme/{id}")
     public ResponseEntity createMeme(MultipartHttpServletRequest request,@PathVariable Long id){
         
     	try{   
