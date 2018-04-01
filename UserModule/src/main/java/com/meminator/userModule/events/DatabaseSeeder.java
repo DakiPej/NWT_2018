@@ -3,7 +3,7 @@ package com.meminator.userModule.events;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -182,6 +182,16 @@ public class DatabaseSeeder {
 			f = followRepository.save(f);
 			
 			f = new Follow();
+			f.setUser(registeredUserRepository.getByUsername("dakipej"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("sbecirovic"));
+			f = followRepository.save(f);
+			
+			f = new Follow();
+			f.setUser(registeredUserRepository.getByUsername("sbecirovic"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
+			f = followRepository.save(f);			
+			
+			f = new Follow();
 			f.setUser(registeredUserRepository.getByUsername("sbecirovic"));
 			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
 			f = followRepository.save(f);
@@ -194,23 +204,8 @@ public class DatabaseSeeder {
 			f = new Follow();
 			f.setUser(registeredUserRepository.getByUsername("tdzirlo"));
 			f.setFollowedUser(registeredUserRepository.getByUsername("pipi"));
-			f = followRepository.save(f);
-			
-			f = new Follow();
-			f.setUser(registeredUserRepository.getByUsername("sbecirovic"));
-			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
-			f = followRepository.save(f);
-			
-			f = new Follow();
-			f.setUser(registeredUserRepository.getByUsername("dakipej"));
-			f.setFollowedUser(registeredUserRepository.getByUsername("sbecirovic"));
-			f = followRepository.save(f);
-			
-			f = new Follow();
-			f.setUser(registeredUserRepository.getByUsername("dakipej"));
-			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
-			f = followRepository.save(f);
-			
+			f = followRepository.save(f);			
+
 			f = new Follow();
 			f.setUser(registeredUserRepository.getByUsername("aco"));
 			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));

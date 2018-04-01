@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,7 @@ public class UserTypeController {
 	@Autowired
 	UserTypeService userTypeService;
 	
-	@RequestMapping(value="/hello")
+	@GetMapping(value="/hello")
 	@ResponseBody
 	public ResponseEntity hello() throws ServletException{
 		try {

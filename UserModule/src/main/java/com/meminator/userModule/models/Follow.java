@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Follow {
 	@Id
@@ -15,10 +17,12 @@ public class Follow {
 	
 	@NotNull
 	@ManyToOne
+	@JsonIgnore
 	private RegisteredUser user;
 
 	@NotNull
 	@ManyToOne
+	@JsonIgnore
 	private RegisteredUser followedUser;
 
 	public Long getId() {
@@ -29,6 +33,7 @@ public class Follow {
 		this.id = id;
 	}
 
+	@JsonIgnore
 	public RegisteredUser getUser() {
 		return user;
 	}
@@ -37,6 +42,7 @@ public class Follow {
 		this.user = user;
 	}
 
+	@JsonIgnore
 	public RegisteredUser getFollowedUser() {
 		return followedUser;
 	}
