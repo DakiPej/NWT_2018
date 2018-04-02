@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.meminator.imageModule.models.Image;
 import com.meminator.imageModule.models.ImageType;
+import com.meminator.imageModule.models.Post;
 import com.meminator.imageModule.models.RegisteredUser;
 import com.meminator.imageModule.repositories.ImageRepository;
 import com.meminator.imageModule.repositories.ImageTypeRepository;
+import com.meminator.imageModule.repositories.PostRepository;
 import com.meminator.imageModule.repositories.RegisteredUserRepository;
 
 import java.io.IOException;
@@ -26,24 +28,29 @@ public class DatabaseSeeder {
 	 private RegisteredUserRepository userRepository;
 	 private ImageRepository imageRepository;
 	 private ImageTypeRepository imageTypeRepository;
+	 private PostRepository postRepository;
 	 private JdbcTemplate jdbcTemplate;
 	 
 	 @Autowired
-	public DatabaseSeeder(RegisteredUserRepository userRepository, ImageRepository imageRepository,
-			ImageTypeRepository imageTypeRepository, JdbcTemplate jdbcTemplate) {
-		 System.out.println("NEkaj");
+	 public DatabaseSeeder(RegisteredUserRepository userRepository, ImageRepository imageRepository,
+			ImageTypeRepository imageTypeRepository, PostRepository postRepository, JdbcTemplate jdbcTemplate) {
 		this.userRepository = userRepository;
 		this.imageRepository = imageRepository;
 		this.imageTypeRepository = imageTypeRepository;
+		this.postRepository = postRepository;
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
+
+	 
+
+
 	@EventListener
     public void seed(ContextRefreshedEvent event) {
 		System.out.println("Nesto");
         seedImageTypeTable();
         seedImageTable();
         seedRegisteredUserTable();
+        seedPostTable();
     }
 
 	
@@ -134,4 +141,38 @@ public class DatabaseSeeder {
          }   	
     	
     }
+    
+    
+    private void seedPostTable(){
+    	
+        String sql = "SELECT * FROM post";
+        List<ImageType> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
+        if(rs == null || rs.size() <= 0) {
+        	try {
+			Post it = new Post();
+	    	RegisteredUser user = new RegisteredUser();
+	    	user.setId((long)3);
+	    	user.setUsername("tdzirlo");
+            ImageType imageType = new ImageType((long) 1,"Meme");
+        	ClassPathResource backImgFile = new ClassPathResource("images/clapback.png");
+    		byte[] arrayPic = new byte[(int) backImgFile.contentLength()];
+    		backImgFile.getInputStream().read(arrayPic);
+    		Image meme = new Image(arrayPic,imageType);	
+    		meme.setId((long)1);
+    		it.setMeme(meme);
+        	it.setUser(user);
+        	it.setId((long)1); 
+        	postRepository.save(it);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}   
+        	
+        	
+            logger.info("Post table seeded");
+        }else {
+            logger.trace("Post Seeding Not Required");
+        }   	
+   	
+   }
 }

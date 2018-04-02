@@ -15,11 +15,11 @@ public class Follow {
 	
 	@NotNull
 	@ManyToOne
-	private RegisteredUser userID;
+	private RegisteredUser user;
 
 	@NotNull
 	@ManyToOne
-	private RegisteredUser followingUserID;
+	private RegisteredUser followedUser;
 
 	public Long getId() {
 		return id;
@@ -29,20 +29,20 @@ public class Follow {
 		this.id = id;
 	}
 
-	public RegisteredUser getUserID() {
-		return userID;
+	public RegisteredUser getUser() {
+		return user;
 	}
 
-	public void setUserID(RegisteredUser userID) {
-		this.userID = userID;
+	public void setUser(RegisteredUser user) {
+		this.user = user;
 	}
 
-	public RegisteredUser getFollowingUserID() {
-		return followingUserID;
+	public RegisteredUser getFollowedUser() {
+		return followedUser;
 	}
 
-	public void setFollowingUserID(RegisteredUser followingUserID) {
-		this.followingUserID = followingUserID;
+	public void setFollowedUser(RegisteredUser followedUser) {
+		this.followedUser = followedUser;
 	}
 
 	public Follow() {
