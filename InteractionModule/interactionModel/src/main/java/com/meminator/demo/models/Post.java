@@ -14,7 +14,7 @@ public class Post {
 	long id; 
 	
 	@ManyToOne
-	RegisteredUser regUserId; 
+	RegisteredUser poster; 
 	
 	@NotNull
 	@Digits(integer=10, fraction=0)
@@ -28,8 +28,8 @@ public class Post {
 	public Post()	{
 		
 	}
-	public Post (RegisteredUser regUser)	{
-		this.regUserId = regUser; 
+	public Post (RegisteredUser poster)	{
+		this.poster = poster; 
 	}
 	public Post(long id)	{
 		this.id = id; 
@@ -41,11 +41,11 @@ public class Post {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public RegisteredUser getRegUserId() {
-		return regUserId;
+	public RegisteredUser getPoster() {
+		return poster;
 	}
-	public void setRegUserId(RegisteredUser regUserId) {
-		this.regUserId = regUserId;
+	public void setPoster(RegisteredUser regUserId) {
+		this.poster = regUserId;
 	}
 	public int getUpVoteCount() {
 		return upVoteCount;

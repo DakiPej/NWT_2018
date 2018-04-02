@@ -20,12 +20,12 @@ public class PostVoteController {
 	
 	@RequestMapping("/create")
 	public String createPostVote(@RequestBody final PostVoteInfo postVoteInfo)	{
-		return this.postVoteService.createPostVote(postVoteInfo.postId, postVoteInfo.voterId, postVoteInfo.upVote);
+		return this.postVoteService.createPostVote(postVoteInfo.post, postVoteInfo.voter, postVoteInfo.upVote);
 	}
 	
 	private static class PostVoteInfo	{
-		public long postId; 
-		public long voterId; 
+		public long post; 
+		public String voter; 
 		public boolean upVote; 
 	}
 }

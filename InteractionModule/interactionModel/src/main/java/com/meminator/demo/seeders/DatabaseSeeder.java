@@ -122,8 +122,8 @@ public class DatabaseSeeder {
 	
 	void seedNotificationTable()	{
 		if(((List<Notification>) this.notificationRepo.findAll()).isEmpty())	{
-			Notification notification = new Notification(new RegisteredUser(1), new NotificationType(1));
-			this.notificationRepo.save(notification); 
+			//Notification notification = new Notification(new RegisteredUser(1), new NotificationType(1));
+			//this.notificationRepo.save(notification); 
 		}
 	}
 	void seedPostTable()	{
@@ -135,22 +135,21 @@ public class DatabaseSeeder {
 	}
 	void seedCommentTable()	{
 		if(((List<Comment>) this.commentRepo.findAll()).isEmpty())	{
-			Comment comm = new Comment(new Post(1), new RegisteredUser(1));
-			this.commentRepo.save(comm); 
-			System.out.println("Novi komentar je dodan. ");
+			//Comment comm = new Comment(new Post(1), new RegisteredUser(1));
+			//this.commentRepo.save(comm); 
 		}
 	}
 	void seedPostVoteTable()	{
 		if(((List<PostVote>) this.postVoteRepo.findAll()).isEmpty())	{
-			PostVote postVote = new PostVote(new RegisteredUser(1), new Post(1));
-			this.postVoteRepo.save(postVote); 
+			//PostVote postVote = new PostVote(new RegisteredUser(1), new Post(1));
+			//this.postVoteRepo.save(postVote); 
 		}
 	}
 	
 	void seedCommentVoteTable()	{
 		if(((List<CommentVote>) this.commentVoteRepo.findAll()).isEmpty())	{
-			CommentVote commentVote = new CommentVote(new Comment(1), new RegisteredUser(1));
-			this.commentVoteRepo.save(commentVote); 
+			//CommentVote commentVote = new CommentVote(new Comment(1), new RegisteredUser(1));
+			//this.commentVoteRepo.save(commentVote); 
 		}
 	}
 }

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.meminator.demo.dao.NotificationDAO;
 import com.meminator.demo.dao.NotificationTypeDAO;
+import com.meminator.demo.dao.PostDAO;
 import com.meminator.demo.dao.RegisteredUserDAO;
+import com.meminator.demo.interfaces.iNotify;
 import com.meminator.demo.models.Notification;
 import com.meminator.demo.models.NotificationType;
 import com.meminator.demo.models.RegisteredUser;
@@ -23,6 +25,7 @@ public class NotificationService {
 	NotificationDAO notificationDao; 
 	NotificationTypeDAO notificationTypeDao; 
 	RegisteredUserDAO registeredUseDao; 
+	PostDAO postDao; 
 	
 	
 	@Autowired
@@ -36,6 +39,10 @@ public class NotificationService {
 	@Autowired
 	public void setRegisteredUserDao(RegisteredUserDAO registeredUserDao)	{
 		this.registeredUseDao = registeredUserDao; 
+	}
+	@Autowired
+	public void setPostDao(PostDAO postDao)	{
+		this.postDao = postDao; 
 	}
 	
 	private boolean validatateNotification(String notifierUsername, String username, String notificationType)	{
@@ -64,7 +71,23 @@ public class NotificationService {
 		
 	}
 	
-	public String createNotification(String notifierUsername, String username, String notificationType)	{
+	public boolean createNotification(iNotify notify)	{
+		
+		Notification notification = new Notification(); 
+		
+		notification.setNotifierUsername(notify.getNotifier());
+		notification.setContet(notify.getPayload());
+		notification.setCreationMoment(new Date());
+		notification.setNotificationTypeId(
+			this.notificationTypeDao
+			.getNotificationTypeByTypeName(notify.getType()
+					)
+			);
+		notification.setUserId(notify.getNotified());
+		notification.setChecked(false);
+		return this.notificationDao.createNotification(notification);
+	}
+	/*public String createNotification(String notifierUsername, String username, String notificationType)	{
 		Notification notification = new Notification(); 
 		
 		if(validatateNotification(notifierUsername, username, notificationType))	{
@@ -91,8 +114,7 @@ public class NotificationService {
 		}
 			return "Notification was not created"; 
 		
-	}
-	
+	}*/
 	public List<Notification> getAllNotificationsByUsername(String username, int pageNumber)	{
 		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment"); 
 		System.out.println("dosao ovdje...");

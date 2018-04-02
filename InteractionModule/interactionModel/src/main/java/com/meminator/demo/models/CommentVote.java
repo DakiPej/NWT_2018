@@ -6,47 +6,62 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import com.meminator.demo.interfaces.iNotify;
+
 @Entity
-public class CommentVote {
+public class CommentVote implements iNotify{
 
 	@Id
 	@GeneratedValue
 	long id; 
 	
 	@ManyToOne
-	Comment commentId; 
+	Comment comment; 
 	
 	@ManyToOne
-	RegisteredUser userCommentVoterId; 
+	RegisteredUser voter; 
 	
 	@NotNull
 	Boolean upVote;
 	
+	public String getType()	{
+		return "Post vote";
+	}
+	
+	public String getPayload()	{
+		return Long.toString(this.id);
+	}
+	public String getNotifier()	{
+		return this.voter.getUsername(); 
+	}
+	public RegisteredUser getNotified()	{
+		return this.comment.getNotified();
+	}
 	public CommentVote()	{
 		
 	}
-	public CommentVote(Comment comment, RegisteredUser regUser)	{
-		this.commentId = comment; 
-		this.userCommentVoterId = regUser; 
+	public CommentVote(Comment comment, RegisteredUser voter)	{
+		this.comment = comment; 
+		this.voter = voter; 
 	}
 	public CommentVote(long id)	{
 		this.id = id; 
 	}
 
-	public Comment getCommentId() {
-		return commentId;
+	public Comment getComment() {
+		return comment;
 	}
 
-	public void setCommentId(Comment commentId) {
-		this.commentId = commentId;
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
-	public RegisteredUser getUserCommentVoterId() {
-		return userCommentVoterId;
+	public RegisteredUser getVoter() {
+		return voter;
 	}
 
-	public void setUserCommentVoterId(RegisteredUser userCommentVoterId) {
-		this.userCommentVoterId = userCommentVoterId;
+	public void setVoter(RegisteredUser voter) {
+		this.voter = voter;
 	}
 
 	public Boolean getUpVote() {

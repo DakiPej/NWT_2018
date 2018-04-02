@@ -6,47 +6,61 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import com.meminator.demo.interfaces.iNotify;
+
 @Entity
-public class PostVote {
+public class PostVote implements iNotify{
 
 	@Id
 	@GeneratedValue
 	long id; 
 	
 	@ManyToOne
-	Post postId; 
+	Post post; 
 	
 	@ManyToOne 
-	RegisteredUser regUserId; 
+	RegisteredUser voter; 
 	
 	@NotNull
 	Boolean upVote; 
 	
+	public String getType()	{
+		return "Post vote"; 
+	}
+	public String getPayload()	{
+		return Long.toString(this.id);
+	}
+	public String getNotifier()	{
+		return this.voter.getUsername(); 
+	}
+	public RegisteredUser getNotified()	{
+		return this.post.getPoster();
+	}
 	public PostVote()	{
 		
 	}
 	public PostVote(RegisteredUser regUser, Post post)	{
-		this.regUserId = regUser; 
-		this.postId = post; 
+		this.voter = regUser; 
+		this.post = post; 
 	}
 	public PostVote(long id)	{
 		this.id = id; 
 	}
 	
-	public Post getPostId() {
-		return postId;
+	public Post getPost() {
+		return post;
 	}
 
-	public void setPostId(Post postId) {
-		this.postId = postId;
+	public void setPost(Post postId) {
+		this.post = postId;
 	}
 
-	public RegisteredUser getRegUserId() {
-		return regUserId;
+	public RegisteredUser getVoter() {
+		return voter;
 	}
 
-	public void setRegUserId(RegisteredUser regUserId) {
-		this.regUserId = regUserId;
+	public void setVoter(RegisteredUser voter) {
+		this.voter = voter;
 	}
 
 	public Boolean getUpVote() {

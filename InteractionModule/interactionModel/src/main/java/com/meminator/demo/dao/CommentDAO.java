@@ -1,0 +1,35 @@
+package com.meminator.demo.dao;
+
+import org.springframework.stereotype.Repository;
+
+import com.meminator.demo.models.Comment;
+import com.meminator.demo.repositories.CommentRepository;
+
+@Repository
+public class CommentDAO extends BaseDAO<Comment, CommentRepository>{
+	
+	public boolean createComment(Comment comment)	{
+		try {
+			this.repo.save(comment); 
+		} catch (Exception e) {
+			return false; 
+		}
+		return true; 
+	}
+	public Comment findCommentById(long id)	{
+		Comment comment = new Comment(); 
+		try {
+			comment = this.one(id);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return comment; 
+	}
+	public void deleteComment(Comment comment)	{
+		try {
+			this.repo.delete(comment);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+}
