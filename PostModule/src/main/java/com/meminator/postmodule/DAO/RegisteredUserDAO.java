@@ -4,6 +4,7 @@ import com.meminator.postmodule.Models.RegisteredUser;
 import com.meminator.postmodule.Repositories.IRegisteredUserRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,5 +21,9 @@ public class RegisteredUserDAO extends BaseDAO<RegisteredUser, IRegisteredUserRe
     public boolean deleteUser(String username){
         this.repo.deleteByUsername(username);
         return !this.repo.getRegisteredUserByUsername(username).isPresent();
+    }
+
+    public List<RegisteredUser> findAllByUsernames(List<String> usernames){
+        return this.repo.findAllByUsernameIn(usernames);
     }
 }
