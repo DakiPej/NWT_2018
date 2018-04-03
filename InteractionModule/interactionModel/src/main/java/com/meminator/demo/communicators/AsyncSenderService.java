@@ -16,7 +16,7 @@ public class AsyncSenderService {
 	
 	public void sendPostVote(long id, int upVoteCount, int downVoteCount)	{
 		rabbitTemplate.convertAndSend(
-				"vote-que-exchange", 
+				"vote-queue-exchange", 
 				"post.vote", 
 				new PostVoteVM(id, upVoteCount, downVoteCount)
 				);
