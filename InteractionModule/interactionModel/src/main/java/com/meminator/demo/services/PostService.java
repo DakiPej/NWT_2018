@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.meminator.demo.communicators.AsyncSenderService;
 import com.meminator.demo.dao.PostDAO;
 import com.meminator.demo.dao.RegisteredUserDAO;
 import com.meminator.demo.models.Post;
@@ -13,6 +14,7 @@ import com.meminator.demo.models.Post;
 public class PostService {
 	PostDAO postDao; 
 	RegisteredUserDAO registeredUserDao; 
+	AsyncSenderService asyncSenderService;
 	
 	@Autowired
 	public void setPostDao	(PostDAO postDao)	{
@@ -21,6 +23,10 @@ public class PostService {
 	@Autowired
 	public void setRegisteredUserDao	(RegisteredUserDAO registeredUserDao)	{
 		this.registeredUserDao = registeredUserDao; 
+	}
+	@Autowired
+	public void setasyncSenderService	(AsyncSenderService asyncSenderService)	{
+		this.asyncSenderService = asyncSenderService; 
 	}
 	
 	public String createPost(long id, long posterId)	{
@@ -52,7 +58,11 @@ public class PostService {
 				post.setUpVoteCount(post.getUpVoteCount() - 1);
 				post.setDownVoteCount(post.getDownVoteCount() + 1);
 			}
-		this.postDao.createPost(post);
+		if(this.postDao.createPost(post))	
+			this.asyncSenderService.sendPostVote(
+							post.getId(), 
+							post.getUpVoteCount(), 
+							post.getDownVoteCount());
 	}
 	public Post getPostById(long id)	{
 		return this.postDao.findPostById(id);
