@@ -53,22 +53,14 @@ public class ImageService {
     	
     }
     
-   public String createMeme(MultipartFile file, Long postid) throws IOException {
+   public Long createMeme(MultipartFile file) throws IOException {
     	
     	ImageType imageType = imageTypeDAO.getImageType("Meme").get();   	
     	byte[] arrayPic = file.getBytes();
 		Image profile = new Image(arrayPic,imageType);	
 		Image novi = imageDAO.createImage(profile);
-		Optional<Post> post = postDAO.getPost(postid);
-		if(post.isPresent()){
-	        Post pos = post.get();
-	        pos.setMeme(novi);
-	        postDAO.savePost(pos);
-	        return "Image uploaded";
+	    return novi.getId();
 	        
-	        }else{
-	            throw new IllegalArgumentException("Post with given id does not exist!");
-	        }         
     }
     
     

@@ -53,19 +53,19 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-    @RequestMapping(method = RequestMethod.POST, value="/upload/meme/{id}")
-    public ResponseEntity createMeme(MultipartHttpServletRequest request,@PathVariable Long id){
+    @RequestMapping(method = RequestMethod.POST, value="/upload/meme")
+    public ResponseEntity<Long> createMeme(MultipartHttpServletRequest request){
         
     	try{   
     		Iterator<String> itr = request.getFileNames();
     		 while (itr.hasNext()) {
                  String uploadedFile = itr.next();
                  MultipartFile file = request.getFile(uploadedFile);
-                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createMeme(file,id));
+                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createMeme(file));
     		 }
-    	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
+    	        return (ResponseEntity<Long>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
     		 }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+            return (ResponseEntity<Long>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
     }
     
