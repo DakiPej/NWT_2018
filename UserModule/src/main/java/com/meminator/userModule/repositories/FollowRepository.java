@@ -29,9 +29,9 @@ public interface FollowRepository extends CrudRepository<Follow, Long>{
 			+ "AND fu.username = :friendUsername")
 	Follow getFriendship(@Param ("username") String username, @Param("friendUsername") String friendUsername);
 
-	@Query("SELECT friend "
+	@Query("SELECT friend.username "
 			+ "FROM Follow f, RegisteredUser user, RegisteredUser friend "
 			+ "WHERE f.user.id = :userID "
 			+ "AND f.followedUser.id = friend.id")
-	List<RegisteredUser> getFriends(@Param ("userID") Long userID);
+	List<String> getFriends(@Param ("userID") Long userID);
 }

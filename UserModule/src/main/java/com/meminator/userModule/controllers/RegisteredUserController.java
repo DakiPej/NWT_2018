@@ -4,7 +4,9 @@ import java.util.Date;
 
 import javax.validation.Valid;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,10 +105,15 @@ public class RegisteredUserController {
 	
 	@RequestMapping(value="/updateBirthdate", method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> updateBirthdate(@RequestBody final Date birthdate){
+	public ResponseEntity<Boolean> updateBirthdate(@RequestBody @DateTimeFormat(pattern = "yyyy-MM-dd") final Date birthdate){
 		System.out.println(birthdate);
 		return null;
 	}
 	
-	
+	@Autowired
+	RabbitTemplate rabbitTemplate;
+	@RequestMapping("/rabbit")
+	public void rabbit(){
+		rabbitTemplate.convertAndSend("users-queue-exchange","user.create","nova poruka");
+	}
 }

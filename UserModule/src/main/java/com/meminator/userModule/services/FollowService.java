@@ -71,7 +71,7 @@ public class FollowService {
 		}
 	}
 
-	public List<RegisteredUser> myFriends(String username) {
+	public List<String> myFriends(String username) {
 		try {
 			RegisteredUser ru = registeredUserRepository.getByUsername(username);
 			if(ru == null)
