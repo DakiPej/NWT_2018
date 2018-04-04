@@ -27,19 +27,20 @@ public class AsyncMessageListenerService {
     }
 
     @RabbitListener(queues = AsyncConfig.QUEUE_NAME_VOTE)
-    public void receiveVote(final VoteVerification voteVerification){
-        if(!voteVerification.isPassed()){
-            Optional<Post> post = postDAO.getPost(voteVerification.getPostID());
-            if(post.isPresent()) {
-                Post tmp = post.get();
-                if (voteVerification.isUp()) {
-                    tmp.setUpVote(tmp.getUpVote() - 1);
-                } else {
-                    tmp.setDownVote(tmp.getDownVote() - 1);
-                }
-                postDAO.savePost(tmp);
-            }
+    public void receiveVote(final PostVoteVM postVoteVM){
+        Optional<Post> opt = postDAO.getPost(postVoteVM.postId);
+        if(opt.isPresent()){
+            Post post = opt.get();
+            post.setDownVote(postVoteVM.downVoteCount);
+            post.setUpVote(postVoteVM.upVoteCount);
+            postDAO.savePost(post);
         }
+    }
+
+    private static class PostVoteVM	{
+        public long postId;
+        public int upVoteCount;
+        public int downVoteCount;
     }
 
 }

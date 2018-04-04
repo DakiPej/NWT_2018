@@ -26,7 +26,7 @@ public class AsyncConfig implements RabbitListenerConfigurer {
     public static final String ROUTING_KEY_USERS = "*user.create";
     public static final String QUEUE_NAME_USERS = "usersQueue";
     public static final String EXCHANGE_VOTE_NAME = "vote-queue-exchange";
-    public static final String ROUTING_KEY_VOTE = "*.vote";
+    public static final String ROUTING_KEY_VOTE = "**.vote";
     public static final String QUEUE_NAME_VOTE = "voteQueue";
 
 
