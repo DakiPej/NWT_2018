@@ -7,4 +7,6 @@ import com.meminator.demo.models.RegisteredUser;
 public interface RegisteredUserRepository extends PagingAndSortingRepository<RegisteredUser, Long>{
 	
 	RegisteredUser findByUsername(String username);
+	boolean deleteByUsername(String username); 
+	boolean existsByUsername(String username); 
 }

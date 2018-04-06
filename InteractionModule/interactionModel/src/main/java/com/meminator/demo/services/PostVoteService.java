@@ -26,7 +26,7 @@ public class PostVoteService {
 	PostService postService; 
 	
 	@Autowired
-	public void setPostVoteD(PostVoteDAO postVoteDao)	{
+	public void setPostVoteDao(PostVoteDAO postVoteDao)	{
 		this.postVoteDao = postVoteDao; 
 	}
 	@Autowired
@@ -34,7 +34,7 @@ public class PostVoteService {
 		this.notificationDao = notificationDao; 
 	}
 	@Autowired
-	public void setPostDAO(PostDAO postDao)	{
+	public void setPostDao(PostDAO postDao)	{
 		this.postDao = postDao; 
 	}
 	@Autowired 
@@ -66,7 +66,8 @@ public class PostVoteService {
 			postVote = new PostVote(); 
 			postVote.setPost(post);
 			postVote.setVoter(voter);
-			postVote.setUpVote(upVote);
+			postVote.setUpVote(upVote); 
+			doubleVote = false; 
 		
 		}	else if(postVote.getUpVote() != upVote)	{
 			postVote.setUpVote(upVote);

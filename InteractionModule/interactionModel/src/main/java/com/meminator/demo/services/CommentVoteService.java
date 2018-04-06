@@ -54,11 +54,14 @@ public class CommentVoteService {
 		boolean doesntExist = true, doubleVote = true; 
 		
 		if(commentVote == null)	{
+			
 			commentVote = new CommentVote(); 
 			commentVote.setComment(comment);
 			commentVote.setVoter(voter);
 			commentVote.setUpVote(upVote);
-		}	else if(commentVote.getUpVote())	{
+			doubleVote = false; 
+			
+		}	else if(commentVote.getUpVote() != upVote)	{
 			commentVote.setUpVote(upVote);
 			doesntExist = false; 
 			doubleVote = false; 

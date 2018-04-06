@@ -7,6 +7,7 @@ import com.meminator.demo.repositories.PostRepository;
 
 @Repository
 public class PostDAO extends BaseDAO<Post, PostRepository>{
+	
 	public boolean createPost(Post post)	{
 		try {
 			this.repo.save(post);
@@ -16,6 +17,14 @@ public class PostDAO extends BaseDAO<Post, PostRepository>{
 		return true; 
 	}
 	
+	public boolean deletePost(long postId)	{
+		try {
+			this.repo.deleteById(postId);
+		} catch (Exception e) {
+			return false; 
+		}
+		return true; 
+	}
 	public Post findPostById(long id)	{
 		Post post = new Post(); 
 		try {

@@ -3,6 +3,7 @@ package com.meminator.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.meminator.demo.services.PostVoteService;
@@ -18,7 +19,7 @@ public class PostVoteController {
 		this.postVoteService = postVoteService; 
 	}
 	
-	@RequestMapping("/create")
+	@RequestMapping(value="", method=RequestMethod.POST)
 	public String createPostVote(@RequestBody final PostVoteInfo postVoteInfo)	{
 		return this.postVoteService.createPostVote(postVoteInfo.post, postVoteInfo.voter, postVoteInfo.upVote);
 	}

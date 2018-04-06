@@ -1,8 +1,14 @@
 package com.meminator.demo.dao;
 
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.meminator.demo.models.Comment;
+import com.meminator.demo.models.Post;
 import com.meminator.demo.repositories.CommentRepository;
 
 @Repository
@@ -31,5 +37,12 @@ public class CommentDAO extends BaseDAO<Comment, CommentRepository>{
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+	public List<Comment> getAllCommentsByPostId(Post postId, Pageable pageRequest)	{
+		
+		List<Comment> comments = new ArrayList<Comment>(); 
+		comments = this.repo.findByPostId(postId, pageRequest);
+		
+		return comments; 
 	}
 }

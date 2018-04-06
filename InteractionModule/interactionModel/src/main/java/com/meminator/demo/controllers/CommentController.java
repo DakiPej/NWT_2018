@@ -1,5 +1,8 @@
 package com.meminator.demo.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.meminator.demo.models.Comment;
 import com.meminator.demo.services.CommentService;
+import com.meminator.demo.viewModels.CommentViewModel;
 
 @RestController
 @RequestMapping(value="/comments")
@@ -29,7 +34,17 @@ public class CommentController {
 				, commentInfo.commentText
 				);
 	}
-	
+	@RequestMapping(value="/postId={postId}/sortBy={sortBy}/pageNumber={pageNumber}", method=RequestMethod.GET)
+	public List<CommentViewModel> getAllComments(
+			@PathVariable("postId") long postId,
+			@PathVariable("sortBy") String sortBy,
+			@PathVariable("pageNumber") int pageNumber)	{
+		
+		List<CommentViewModel> comments = new ArrayList<CommentViewModel>(); 
+		comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
+		
+		return comments; 
+	}
 	@RequestMapping(value="/username={username}/commentId={commentId}", method=RequestMethod.DELETE)
 	public String deleteComment(@PathVariable("username") String usnername, @PathVariable("commentId") String commentId)	{
 		

@@ -117,7 +117,7 @@ public class NotificationService {
 	}*/
 	public List<Notification> getAllNotificationsByUsername(String username, int pageNumber)	{
 		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment"); 
-		System.out.println("dosao ovdje...");
+
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
 				pageRequest);

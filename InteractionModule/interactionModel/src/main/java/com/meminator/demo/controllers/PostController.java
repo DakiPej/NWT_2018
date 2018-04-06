@@ -18,7 +18,7 @@ public class PostController {
 		this.postServcie = postService;
 	}
 	
-	@RequestMapping(value="/create")
+	/*@RequestMapping(value="/create")
 	public String createPost(@RequestBody final PostInfo postInfo)	{
 		
 		System.out.println("PostInfo.id = " + postInfo.id + "postInfo.userPosterId = " + postInfo.userPosterId);
@@ -29,4 +29,5 @@ public class PostController {
 		public long id; 
 		public long userPosterId; 
 	}
+	*/
 }
