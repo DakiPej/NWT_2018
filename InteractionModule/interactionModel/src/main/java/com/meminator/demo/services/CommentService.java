@@ -100,22 +100,12 @@ public class CommentService {
 		return "Comment was not deleted"; 
 	}
 	
-	public List<CommentViewModel> getAllComments(long postId, String sortBy, int pageNumber)	{
+	public List<Comment> getAllComments(long postId, String sortBy, int pageNumber)	{
 		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, sortBy);
 		
-		List<CommentViewModel>commentsVM = new ArrayList<CommentViewModel>();
-		List<Comment> comments = this.commentDao.getAllCommentsByPostId(
+		return this.commentDao.getAllCommentsByPostId(
 				this.postDao.findPostById(postId),
 				pageRequest);
-		for(int i = 0; i < comments.size(); i ++)	{
-			commentsVM.add(new CommentViewModel(comments.get(i).getId(),
-					comments.get(i).getUserCommenterId().getUsername(),
-					comments.get(i).getComment(),
-					comments.get(i).getUpVoteCount(),
-					comments.get(i).getDownVoteCount()
-					));
-		}
-		return commentsVM; 
 	}
 	
 	public void updateVoteCount(long commentId, boolean upVote, boolean doesntExist)	{

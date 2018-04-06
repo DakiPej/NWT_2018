@@ -1,6 +1,7 @@
 package com.meminator.demo.services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.meminator.demo.interfaces.iNotify;
 import com.meminator.demo.models.Notification;
 import com.meminator.demo.models.NotificationType;
 import com.meminator.demo.models.RegisteredUser;
+import com.meminator.demo.viewModels.NotificationViewModel;
 
 @Service("NotificationService")
 public class NotificationService {
@@ -120,6 +122,6 @@ public class NotificationService {
 
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
-				pageRequest);
+				pageRequest); 
 	}
 }

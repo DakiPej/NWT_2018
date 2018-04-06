@@ -40,10 +40,20 @@ public class CommentController {
 			@PathVariable("sortBy") String sortBy,
 			@PathVariable("pageNumber") int pageNumber)	{
 		
-		List<CommentViewModel> comments = new ArrayList<CommentViewModel>(); 
+		List<Comment> comments = new ArrayList<Comment>(); 
+		List<CommentViewModel>commentsVM = new ArrayList<CommentViewModel>();
+		
 		comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
 		
-		return comments; 
+		for(int i = 0; i < comments.size(); i ++)	{
+			commentsVM.add(new CommentViewModel(comments.get(i).getId(),
+					comments.get(i).getUserCommenterId().getUsername(),
+					comments.get(i).getComment(),
+					comments.get(i).getUpVoteCount(),
+					comments.get(i).getDownVoteCount()
+					));
+		}
+		return commentsVM; 
 	}
 	@RequestMapping(value="/username={username}/commentId={commentId}", method=RequestMethod.DELETE)
 	public String deleteComment(@PathVariable("username") String usnername, @PathVariable("commentId") String commentId)	{
