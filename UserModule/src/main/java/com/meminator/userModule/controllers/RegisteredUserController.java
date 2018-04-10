@@ -1,10 +1,13 @@
 package com.meminator.userModule.controllers;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.Valid;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.meminator.userModule.rabbitMQ.FollowMessage;
 import com.meminator.userModule.services.RegisteredUserService;
 
 import forms.RegisteredUser.CreateUserForm;
 import forms.RegisteredUser.ResetPasswordForm;
+import forms.RegisteredUser.UpdateBirthdateForm;
 import forms.RegisteredUser.UpdateInfoForm;
 import io.swagger.annotations.Api;
 
@@ -103,10 +108,33 @@ public class RegisteredUserController {
 	
 	@RequestMapping(value="/updateBirthdate", method=RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Boolean> updateBirthdate(@RequestBody final Date birthdate){
-		System.out.println(birthdate);
+	public ResponseEntity<Boolean> updateBirthdate(@RequestBody final UpdateBirthdateForm updateBirthdateForm){
+		System.out.println(updateBirthdateForm.getDate());
 		return null;
 	}
 	
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Boolean> deleteUser(@RequestBody String username){
+		try {
+			if(registeredUserService.deleteUser(username))
+				return ResponseEntity.ok(true);
+			else 
+				return ResponseEntity.badRequest().body(false);
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(false);
+		}
+	}
 	
+	@Autowired
+	RabbitTemplate rabbitTemplate;
+	@RequestMapping("/rabbit")
+	public void rabbit(){
+		System.err.println("Rabbit");
+		FollowMessage followMessage = new FollowMessage("daki", "pej");
+		rabbitTemplate.convertAndSend("user-queue-exchange", "user.follow", followMessage);
+		rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", "nova poruka");
+	}
 }
