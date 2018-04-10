@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ import forms.RegisteredUser.UpdateInfoForm;
 
 @Service
 public class RegisteredUserService {
+	@Autowired
+	RabbitTemplate rabbitTemplate;
+	
 	@Autowired
 	RegisteredUserRepository registeredUserRepository;
 	
@@ -32,7 +36,7 @@ public class RegisteredUserService {
 		}
 		
 	}
-
+	
 	public RegisteredUser getUserByUsername(String username) throws ServletException{
 		try {
 			if(username == null || username.isEmpty()) 
@@ -68,8 +72,13 @@ public class RegisteredUserService {
 			ru.setUsername(createUserForm.getUsername());
 			ru.setUserTypeID(userTypeRepository.getType("Regular user"));
 			ru = registeredUserRepository.save(ru);
+			
+			String username = createUserForm.getUsername();
+			
+			rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", username);
+			
 			return true;
-		
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return false;
@@ -112,7 +121,21 @@ public class RegisteredUserService {
 			return false;
 		}
 	}
-	
-	
+
+	public boolean deleteUser(String username) {
+		try {
+			RegisteredUser ru = registeredUserRepository.getByUsername(username);
+			if(ru == null) 
+				throw new ServletException("User does not exist.");
+			
+			registeredUserRepository.delete(ru);
+			rabbitTemplate.convertAndSend("user-queue-exchange", "user.delete", username);
+			
+			return true;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
 
 }

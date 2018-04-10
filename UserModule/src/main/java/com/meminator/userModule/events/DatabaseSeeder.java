@@ -3,7 +3,7 @@ package com.meminator.userModule.events;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
