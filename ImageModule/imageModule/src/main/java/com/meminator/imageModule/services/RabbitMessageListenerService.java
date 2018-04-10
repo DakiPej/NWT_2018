@@ -27,9 +27,21 @@ public class RabbitMessageListenerService {
     public void receiveUser(final String username){
         registeredUserDAO.saveUser(new RegisteredUser(username));
     }
+    
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_USERS_DELETE)
+    public void deleteUser(final String username){
+        registeredUserDAO.deleteUser(username);
+    }
+    
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_POST_DELETE)
+    public void deletePost(final Long id){
+        postDAO.deletePost(id);
+    }
+
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_POST)
     public void receivePost(final PostVM postVM){
+    	System.out.println(postVM.getPoster());
     	Optional<RegisteredUser> reg = registeredUserDAO.getUser(postVM.getPoster());
     	Optional<Image> img = imageDAO.getImage(postVM.getImageID());
         if(reg.isPresent() && img.isPresent()) {
