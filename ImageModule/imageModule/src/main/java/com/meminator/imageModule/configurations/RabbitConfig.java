@@ -24,10 +24,13 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     public static final String EXCHANGE_USERS_NAME = "user-queue-exchange";
     public static final String ROUTING_KEY_USERS = "user.create";
     public static final String QUEUE_NAME_USERS = "usersQueue";
+    public static final String ROUTING_KEY_USERS_DELETE = "user.delete";
+    public static final String QUEUE_NAME_USERS_DELETE = "usersQueueDelete";
     public static final String EXCHANGE_POST_NAME = "posts-queue-exchange";
     public static final String ROUTING_KEY_POST = "post.create";
     public static final String QUEUE_NAME_POST = "postQueue";
-
+    public static final String ROUTING_KEY_POST_DELETE = "post.delete";
+    public static final String QUEUE_NAME_POST_DELETE = "postQueueDelete";
 
     @Bean
     public TopicExchange usersExchange() {
@@ -35,7 +38,7 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public TopicExchange voteExchange(){
+    public TopicExchange postExchange(){
         return new TopicExchange(EXCHANGE_POST_NAME);
     }
 
@@ -45,8 +48,18 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Queue voteQueue(){
+    public Queue postQueue(){
         return new Queue(QUEUE_NAME_POST);
+    }
+    
+    @Bean
+    public Queue usersDeleteQueue(){
+        return  new Queue(QUEUE_NAME_USERS_DELETE);
+    }
+
+    @Bean
+    public Queue postDeleteQueue(){
+        return new Queue(QUEUE_NAME_POST_DELETE);
     }
 
     @Bean
@@ -55,8 +68,18 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Binding declareBindingVote(){
-        return BindingBuilder.bind(voteQueue()).to(voteExchange()).with(ROUTING_KEY_POST);
+    public Binding declareBindingPost(){
+        return BindingBuilder.bind(postQueue()).to(postExchange()).with(ROUTING_KEY_POST);
+    }
+    
+    @Bean
+    public Binding declareBindingUsersDelete(){
+        return BindingBuilder.bind(usersDeleteQueue()).to(usersExchange()).with(ROUTING_KEY_USERS_DELETE);
+    }
+
+    @Bean
+    public Binding declareBindingPostDelete(){
+        return BindingBuilder.bind(postDeleteQueue()).to(postExchange()).with(ROUTING_KEY_POST_DELETE);
     }
 
     @Bean
