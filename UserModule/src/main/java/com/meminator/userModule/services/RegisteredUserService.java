@@ -72,7 +72,10 @@ public class RegisteredUserService {
 			ru.setUsername(createUserForm.getUsername());
 			ru.setUserTypeID(userTypeRepository.getType("Regular user"));
 			ru = registeredUserRepository.save(ru);
-			rabbitTemplate.convertAndSend("users-queue-exchange","user.create",createUserForm.getUsername()+";create");
+			
+			String username = createUserForm.getUsername();
+			
+			rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", username);
 			
 			return true;
 			
@@ -113,6 +116,22 @@ public class RegisteredUserService {
 			}
 			else 
 				return false;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+
+	public boolean deleteUser(String username) {
+		try {
+			RegisteredUser ru = registeredUserRepository.getByUsername(username);
+			if(ru == null) 
+				throw new ServletException("User does not exist.");
+			
+			registeredUserRepository.delete(ru);
+			rabbitTemplate.convertAndSend("user-queue-exchange", "user.delete", username);
+			
+			return true;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return false;

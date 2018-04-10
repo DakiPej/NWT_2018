@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.meminator.userModule.models.Follow;
 import com.meminator.userModule.models.RegisteredUser;
+import com.meminator.userModule.rabbitMQ.FollowMessage;
 import com.meminator.userModule.repositories.FollowRepository;
 import com.meminator.userModule.repositories.RegisteredUserRepository;
 
@@ -16,6 +18,9 @@ import forms.FollowForms.FriendForm;
 
 @Service
 public class FollowService {
+	@Autowired
+	RabbitTemplate rabbitTemplate;
+	
 	@Autowired
 	FollowRepository followRepository;
 	
@@ -40,6 +45,10 @@ public class FollowService {
 			follow.setUser(user);
 			follow.setFollowedUser(friend);
 			follow = followRepository.save(follow);
+			
+			FollowMessage followMessage = new FollowMessage(user.getUsername(), friend.getUsername());
+			
+			rabbitTemplate.convertAndSend("user-queue-exchange","user.follow", followMessage);
 			
 			return true;
 		} catch (Exception e) {
