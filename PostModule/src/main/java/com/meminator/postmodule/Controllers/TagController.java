@@ -57,7 +57,7 @@ public class TagController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, params = "name")
     public ResponseEntity getTagByName(@RequestParam String name){
 
         try{
