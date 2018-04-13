@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
@@ -42,16 +44,19 @@ public class CommentService {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService; 
 	}
-	public String createComment(long postId, String commenterUsername, String commentText)	{
+	public String createComment(long postId, String commenterUsername, String commentText)	
+		throws ServletException		{
+		
+		if(!this.registeredUserDao.userExists(commenterUsername))
+			throw new IllegalArgumentException("The user with the specified username does not exist.");
+		if(!this.postDao.existsById(postId))
+			throw new IllegalArgumentException("The post with the specified post id does not exist.");
+		if(commentText.isEmpty())
+			throw new IllegalArgumentException("The comment does not have any text");
 		
 		RegisteredUser commenter = this.registeredUserDao.getRegisteredUserByUsername(commenterUsername);
 		Post post = this.postDao.findPostById(postId); 
 		Comment comment = new Comment(); 
-		
-		if(commenter == null)
-			return "The user does not exist"; 
-		if(post == null)
-			return "The post does not exist"; 
 		
 		comment.setPostId(post);
 		comment.setUserCommenterId(commenter);
@@ -63,41 +68,47 @@ public class CommentService {
 		if(this.commentDao.createComment(comment))	{
 			if(this.notificationService.createNotification(comment))
 				return "Comment and notification created"; 
-			return "Notification was not created"; 
-			
+			throw new ServletException("Notification was not created"); 
 		}
-		return "Comment was not created"; 
+		throw new ServletException("The comment and notification were not created"); 
 	}
 	
-	public String editComment(long commentId, String commenterUsername, String commentText)	{
+	public String editComment(long commentId, String commenterUsername, String commentText)	
+		throws ServletException		{
+		
+		if(!this.commentDao.exists(commentId))
+			throw new IllegalArgumentException("The comment with the specified id does not exist.");
+		if(!this.registeredUserDao.userExists(commenterUsername))
+			throw new IllegalArgumentException("The user with the specified username does not exist.");
+		if(commentText.isEmpty())
+			throw new IllegalArgumentException("The comment text is empty.");
 		
 		Comment comment = this.commentDao.findCommentById(commentId); 
 		
-		if(!this.registeredUserDao.userExists(commenterUsername))
-			return "The user does not exist"; 
-		
-		if(comment == null)
-			return "The comment does not exist"; 
-		
 		if(comment.getUserCommenterId().getUsername() != commenterUsername)
-			return "The user did not comment on the post"; 
+			throw new IllegalArgumentException("The user did not leave the comment");
 		
 		comment.setComment(commentText);
 		
 		if(this.commentDao.createComment(comment))
 			return "The comment was edited";
 		
-		return "The comment was not edited"; 
+		throw new ServletException("The comment was not edited");
 	}
 	
 	public String deleteComment(String username, long commentId)	{
 		
+		if(!this.commentDao.exists(commentId))
+			throw new IllegalArgumentException("The comment with the specified id does not exist.");
+		
 		Comment comment = this.commentDao.findCommentById(commentId); 
-		if(comment != null)	{
-			this.commentDao.deleteComment(comment); 
-			return "Comment was deleted"; 
-		}
-		return "Comment was not deleted"; 
+		
+		if(comment.getUserCommenterId().getUsername() != username)
+			throw new IllegalArgumentException("The user did not leave the specified comment.");
+		
+		this.commentDao.deleteComment(comment); 
+		return "Comment was deleted"; 
+		
 	}
 	
 	public List<Comment> getAllComments(long postId, String sortBy, int pageNumber)	{

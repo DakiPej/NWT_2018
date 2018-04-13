@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.meminator.imageModule.configurations.RabbitConfig;
 import com.meminator.imageModule.dao.ImageDAO;
@@ -14,6 +15,7 @@ import com.meminator.imageModule.models.Post;
 import com.meminator.imageModule.models.PostVM;
 import com.meminator.imageModule.models.RegisteredUser;
 
+@Service
 public class RabbitMessageListenerService {
 	 	
 	@Autowired
@@ -25,6 +27,7 @@ public class RabbitMessageListenerService {
     
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME_USERS)
     public void receiveUser(final String username){
+    	System.out.println("Primljen je user : " + username);
         registeredUserDAO.saveUser(new RegisteredUser(username));
     }
     
