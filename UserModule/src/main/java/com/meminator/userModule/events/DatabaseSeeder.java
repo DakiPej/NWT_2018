@@ -3,7 +3,7 @@ package com.meminator.userModule.events;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -75,42 +75,42 @@ public class DatabaseSeeder {
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("dakipej");
 			ru.setEmail("dakipej@gmail.com");
-			ru.setPassword("dakipej");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("sbecirovic");
 			ru.setEmail("sbecirovic@gmail.com");
-			ru.setPassword("sbecirovic");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("tdzirlo");
 			ru.setEmail("tdzirlo@gmail.com");
-			ru.setPassword("tdzirlo");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("pipi");
 			ru.setEmail("pipi@gmail.com");
-			ru.setPassword("pipi");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("seka");
 			ru.setEmail("seka@gmail.com");
-			ru.setPassword("seka");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("aco");
 			ru.setEmail("aco@gmail.com");
-			ru.setPassword("aco");
+			ru.setPassword("12345678");
 			ru = registeredUserRepository.save(ru);
 	
 		} catch (Exception e) {
@@ -131,42 +131,42 @@ public class DatabaseSeeder {
 			String str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("dakipej"));
+			ut.setUserID(registeredUserRepository.getByUsername("dakipej"));
 			ut = userTokenRepository.save(ut);
 			
 			ut = new UserToken();
 			str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("sbecirovic"));
+			ut.setUserID(registeredUserRepository.getByUsername("sbecirovic"));
 			ut = userTokenRepository.save(ut);
 			
 			ut = new UserToken();
 			str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("tdzirlo"));
+			ut.setUserID(registeredUserRepository.getByUsername("tdzirlo"));
 			ut = userTokenRepository.save(ut);
 			
 			ut = new UserToken();
 			str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("pipi"));
+			ut.setUserID(registeredUserRepository.getByUsername("pipi"));
 			ut = userTokenRepository.save(ut);
 			
 			ut = new UserToken();
 			str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("seka"));
+			ut.setUserID(registeredUserRepository.getByUsername("seka"));
 			ut = userTokenRepository.save(ut);
 			
 			ut = new UserToken();
 			str = RandomStringUtils.randomAlphanumeric(32);
 			ut.setToken(String.valueOf(str));
 			ut.setExpirationDateTime(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-			ut.setUserID(registeredUserRepository.getUserByUsername("aco"));
+			ut.setUserID(registeredUserRepository.getByUsername("aco"));
 			ut = userTokenRepository.save(ut);
 			
 		} catch (Exception e) {
@@ -177,48 +177,48 @@ public class DatabaseSeeder {
 	private void followTableSeed() {
 		try {
 			Follow f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("dakipej"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("aco"));
+			f.setUser(registeredUserRepository.getByUsername("dakipej"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("sbecirovic"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("aco"));
+			f.setUser(registeredUserRepository.getByUsername("sbecirovic"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("pipi"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("tdzirlo"));
+			f.setUser(registeredUserRepository.getByUsername("pipi"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("tdzirlo"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("tdzirlo"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("pipi"));
+			f.setUser(registeredUserRepository.getByUsername("tdzirlo"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("pipi"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("sbecirovic"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("dakipej"));
+			f.setUser(registeredUserRepository.getByUsername("sbecirovic"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("dakipej"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("sbecirovic"));
+			f.setUser(registeredUserRepository.getByUsername("dakipej"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("sbecirovic"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("dakipej"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("aco"));
+			f.setUser(registeredUserRepository.getByUsername("dakipej"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("aco"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("dakipej"));
+			f.setUser(registeredUserRepository.getByUsername("aco"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUserID(registeredUserRepository.getUserByUsername("seka"));
-			f.setFollowingUserID(registeredUserRepository.getUserByUsername("pipi"));
+			f.setUser(registeredUserRepository.getByUsername("seka"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("pipi"));
 			f = followRepository.save(f);
 			
 		} catch (Exception e) {

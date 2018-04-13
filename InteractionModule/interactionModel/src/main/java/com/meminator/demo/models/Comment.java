@@ -12,9 +12,17 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
+import com.meminator.demo.interfaces.iNotify;
 
 @Entity
-public class Comment {
+public class Comment implements iNotify{
 	
 	@Id
 	@GeneratedValue
@@ -29,12 +37,32 @@ public class Comment {
 	@Basic(optional=true)
 	@Column(insertable=true)
 	@Temporal(TemporalType.TIMESTAMP)
+	@Past
 	private Date commentDate; 
 	
+	@NotNull
+	@Size(min=1, max=255)
 	String comment; 
 	
+	@Digits(integer=10, fraction=0)
+	@Min(0)
 	int upVoteCount; 
+	@Digits(integer=10, fraction=0)
+	@Min(0)
 	int downVoteCount;
+	
+	public String getType()	{
+		return "Commented"; 
+	}
+	public String getNotifier()	{
+		return this.userCommenterId.getUsername();
+	}
+	public String getPayload()	{
+		return Long.toString(this.id); 
+	}
+	public RegisteredUser getNotified()	{
+		return this.postId.getPoster();
+	}
 	
 	public Comment()	{
 	

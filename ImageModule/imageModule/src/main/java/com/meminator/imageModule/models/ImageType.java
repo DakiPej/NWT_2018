@@ -17,7 +17,7 @@ public class ImageType {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="type_name")
+	@Column(unique=true)
 	@Size(max = 20)
 	private String typeName;
 
