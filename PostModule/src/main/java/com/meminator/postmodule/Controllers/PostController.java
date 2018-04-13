@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -89,6 +90,15 @@ public class PostController {
     public ResponseEntity deletePost(@PathVariable Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/followfeed/{username}")
+    public ResponseEntity getPostsByFollow(@PathVariable String username){
+        try{
+            return  ResponseEntity.status(HttpStatus.OK).body(postService.getByFollow(username));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }

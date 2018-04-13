@@ -13,5 +13,5 @@ public interface IPostRepositroy extends PagingAndSortingRepository<Post,Long> {
 
     List<Post> findAllByTagsIn(List<Tag> tags);
     List<Post> getPostsByUser(RegisteredUser user);
-
+    List<Post> findAllByUserInOrderByTimeStampDesc(List<RegisteredUser> users);
 }
