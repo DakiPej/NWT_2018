@@ -28,30 +28,28 @@ public class AsyncReceiverService {
 		this.postService = postService;
 	}
 	
-	//@RabbitListener(queues = AsyncConfiguration.USERS_TO_BE_ADDED)
-	public void receiveAddedUsers	(final RequiredUsername user)	{
-		this.registeredUserService.createNewRegisteredUser(user.username); 
+	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
+	public void receiveUserToBeDeleted(final String username)	{
+		this.registeredUserService.deleteUser(username); 
 	}
 	
-	//@RabbitListener(queues = AsyncConfiguration.POSTS_TO_BE_ADDED)
+	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_ADDED)
+	public void receiveAddedUsers	(final String username)	{
+		this.registeredUserService.createNewRegisteredUser(username); 
+	}
+	
+	@RabbitListener(queues = AsyncConfiguration.QUEUE_POSTS_TO_BE_ADDED)
 	public void receiveNewPost(final PostInformation post)	{
 		this.postService.createPost(post.postId, post.username);
 	}
-
-	@RabbitListener(queues = AsyncConfiguration.QUEUE_NAME_VOTE)
-	public void receivePostVoteUpdate(final PostVoteVM postVoteVM)	{
-		System.out.println("Post koji treba da se update-uje jeste : " + Long.toString(postVoteVM.postId));
-	}
-	
-	//RabbitListener(queues = AsyncConfiguration.USERS_TO_BE_DELETED)
-	public void receiveUserToBeDeleted(final RequiredUsername user)	{
-		this.registeredUserService.deleteUser(user.username); 
-	}
-	
-	//@RabbitListener(queues = AsyncConfiguration.POSTS_TO_BE_DELETED)
+	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
 	public void receivePostToBeDeleted(final PostInformation postInformation)	{
 		this.postService.deletePost(postInformation.postId); 
 	}
+	/*@RabbitListener(queues = AsyncConfiguration.QUEUE_POST_VOTE)
+	public void receivePostVoteUpdate(final PostVoteVM postVoteVM)	{
+		System.out.println("Post koji treba da se update-uje jeste : " + Long.toString(postVoteVM.postId));
+	}*/
 	
 	private static class RequiredUsername	{
 		public String username; 

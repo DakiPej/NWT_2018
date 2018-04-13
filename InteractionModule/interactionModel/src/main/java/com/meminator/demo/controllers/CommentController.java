@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,43 +28,73 @@ public class CommentController {
 	}
 	
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public String createComment(@RequestBody final commentInfo commentInfo)
+	public ResponseEntity createComment(@RequestBody final CommentInfo commentInfo)
 	{
-		return this.commentService.createComment(
-				Long.valueOf(commentInfo.postId).longValue()
-				, commentInfo.commenterUsername
-				, commentInfo.commentText
-				);
+		try {
+			String response = this.commentService.createComment(
+					Long.valueOf(commentInfo.postId).longValue()
+					, commentInfo.commenterUsername
+					, commentInfo.commentText
+					);
+			return ResponseEntity.status(HttpStatus.OK).body(response); 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage()); 
+		}
 	}
 	@RequestMapping(value="/postId={postId}/sortBy={sortBy}/pageNumber={pageNumber}", method=RequestMethod.GET)
-	public List<CommentViewModel> getAllComments(
+	public ResponseEntity getAllComments(
 			@PathVariable("postId") long postId,
 			@PathVariable("sortBy") String sortBy,
 			@PathVariable("pageNumber") int pageNumber)	{
 		
 		List<Comment> comments = new ArrayList<Comment>(); 
 		List<CommentViewModel>commentsVM = new ArrayList<CommentViewModel>();
-		
-		comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
-		
-		for(int i = 0; i < comments.size(); i ++)	{
-			commentsVM.add(new CommentViewModel(comments.get(i).getId(),
-					comments.get(i).getUserCommenterId().getUsername(),
-					comments.get(i).getComment(),
-					comments.get(i).getUpVoteCount(),
-					comments.get(i).getDownVoteCount()
-					));
+		try {
+			comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
+			
+			for(int i = 0; i < comments.size(); i ++)	{
+				commentsVM.add(new CommentViewModel(comments.get(i).getId(),
+						comments.get(i).getUserCommenterId().getUsername(),
+						comments.get(i).getComment(),
+						comments.get(i).getUpVoteCount(),
+						comments.get(i).getDownVoteCount()
+						));
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(commentsVM); 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage()); 
 		}
-		return commentsVM; 
 	}
-	@RequestMapping(value="/username={username}/commentId={commentId}", method=RequestMethod.DELETE)
-	public String deleteComment(@PathVariable("username") String usnername, @PathVariable("commentId") String commentId)	{
+	@RequestMapping(value="", method=RequestMethod.PUT)
+	public ResponseEntity updateComment(@RequestBody final UpdatedCommentInfo info)	{
+		try {
+			String response = this.commentService.editComment(
+					Long.valueOf(info.commentId).longValue(), 
+					info.commenterUsername, 
+					info.commentText);
+			return ResponseEntity.status(HttpStatus.OK).body(response); 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage()); 
+		}
+	}
+	@RequestMapping(value="", method=RequestMethod.DELETE)
+	public ResponseEntity deleteComment(@RequestBody final UpdatedCommentInfo info)	{
 		
-		return this.commentService.deleteComment(usnername, Long.valueOf(commentId).longValue());
+		try {
+			this.commentService.deleteComment(info.commenterUsername, Long.valueOf(info.commentId).longValue());
+			return ResponseEntity.status(HttpStatus.OK).body("The specified comment was deleted."); 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.OK).body(e.getLocalizedMessage()); 
+		}
 	}
-	private static class commentInfo	{
+	private static class CommentInfo	{
 		public String postId;
 		public String commenterUsername; 
+		public String commentText; 
+	}
+	private static class UpdatedCommentInfo	{
+		public String commentId; 
+		public String commenterUsername;
 		public String commentText; 
 	}
 }

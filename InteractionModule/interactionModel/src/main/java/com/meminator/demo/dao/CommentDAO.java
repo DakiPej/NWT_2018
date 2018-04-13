@@ -45,4 +45,7 @@ public class CommentDAO extends BaseDAO<Comment, CommentRepository>{
 		
 		return comments; 
 	}
+	public boolean exists (long id)	{
+		return this.exists(id); 
+	}
 }

@@ -118,8 +118,11 @@ public class NotificationService {
 		
 	}*/
 	public List<Notification> getAllNotificationsByUsername(String username, int pageNumber)	{
+		if(!this.registeredUseDao.userExists(username))
+			throw new IllegalArgumentException("The user with the specified username does not exist.");
+		
 		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment"); 
-
+		
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
 				pageRequest); 

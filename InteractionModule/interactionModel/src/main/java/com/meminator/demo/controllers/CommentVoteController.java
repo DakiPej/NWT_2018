@@ -1,6 +1,8 @@
 package com.meminator.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,8 +22,13 @@ public class CommentVoteController {
 	}
 	
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public String createCommentVote(@RequestBody final CommentVoteInfo commentVoteInfo)	{
-		return this.commentVoteService.createCommentVote(commentVoteInfo.commentId, commentVoteInfo.voterUsername, commentVoteInfo.upVote);
+	public ResponseEntity createCommentVote(@RequestBody final CommentVoteInfo commentVoteInfo)	{
+		try {
+			String response = this.commentVoteService.createCommentVote(commentVoteInfo.commentId, commentVoteInfo.voterUsername, commentVoteInfo.upVote);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+		}
 	}
 	
 	private static class CommentVoteInfo {

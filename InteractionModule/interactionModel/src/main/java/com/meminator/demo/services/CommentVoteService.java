@@ -1,5 +1,7 @@
 package com.meminator.demo.services;
 
+import javax.servlet.ServletException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,12 @@ public class CommentVoteService {
 		this.commentService = commentService; 
 	}
 	
-	public String createCommentVote(long commentId, String voterUsername, boolean upVote)	{
+	public String createCommentVote(long commentId, String voterUsername, boolean upVote)	
+		throws ServletException	{
+		if(!this.registeredUserDao.userExists(voterUsername))
+			throw new IllegalArgumentException("The user with the specified username does not exist.");
+		if(!this.commentDao.existsById(commentId))
+			throw new IllegalArgumentException("The comment with the specified id does not exist.");
 		
 		Comment comment = new Comment(); 
 		RegisteredUser voter = new RegisteredUser(); 
@@ -70,7 +77,7 @@ public class CommentVoteService {
 			if(this.notificationService.createNotification(commentVote))	{
 				this.commentService.updateVoteCount(commentId, upVote, doesntExist);
 				return "CommentVote and Notification were created"; 
-			}	else return "Notification was not created"; 
-		return "PostVote and Notification were not created"; 
+			}	else throw new ServletException("Notification was not created");
+		throw new ServletException("Notification and post vote were not created.");
 	}
 }

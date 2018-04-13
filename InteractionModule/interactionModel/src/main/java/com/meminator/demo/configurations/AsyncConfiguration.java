@@ -22,30 +22,79 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
 @EnableRabbit
 public class AsyncConfiguration implements RabbitListenerConfigurer	{
 	
-    public static final String EXCHANGE_VOTE_NAME = "vote-queue-exchange";
-    public static final String ROUTING_KEY_VOTE = "*.vote";
-public static final String QUEUE_NAME_VOTE = "voteQueue";
+    public static final String EXCHANGE_UPDATE_POSTS= "post-queue-exchange";
+    
+    public static final String QUEUE_POST_VOTE = "postVoteQueue";
+    public static final String ROUTING_KEY_POST_VOTE = "post.vote";
+    
+    public static final String QUEUE_POSTS_TO_BE_ADDED = "postQueue";
+    public static final String ROUTING_KEY_POSTS_TO_BE_ADDED = "post.create"; 
+    
+    public static final String QUEUE_POSTS_TO_BE_DELETED = "postQueueDelete"; 
+    public static final String ROUTING_KEY_POSTS_TO_BE_DELETED = "post.delete"; 
+    
+    
+    public static final String EXCHANGE_UPDATE_USERS = "user-queue-exchange";
+    
+    public static final String QUEUE_USERS_TO_BE_ADDED = "usersQueue";
+    public static final String ROUTING_KEY_USERS_TO_BE_ADDED = "user.create"; 
+    
+    public static final String QUEUE_USERS_TO_BE_DELETED = "usersQueueDelete";
+    public static final String ROUTING_KEY_USERS_TO_BE_DELETED = "user-delete";
+    
 	
 	@Bean
 	public TopicExchange usersExchange	()	{
-		return new TopicExchange(""); 
+		return new TopicExchange(EXCHANGE_UPDATE_USERS); 
+	}
+	@Bean
+    public TopicExchange postsExchange(){
+        return new TopicExchange(EXCHANGE_UPDATE_POSTS);
 	}
 	
 	@Bean
-    public TopicExchange voteExchange(){
-        return new TopicExchange(EXCHANGE_VOTE_NAME);
+    public Queue postVoteQueue(){
+        return new Queue(QUEUE_POST_VOTE);
+	}
+	@Bean
+	public Queue addPostsQueue()	{
+		return new Queue(QUEUE_POSTS_TO_BE_ADDED); 
+	}
+	@Bean
+	public Queue deletePostsQueue()	{
+		return new Queue(QUEUE_POSTS_TO_BE_DELETED);
+	}
+	@Bean
+	public Queue addUsersQueue()	{
+		return new Queue(QUEUE_USERS_TO_BE_ADDED);
+	}
+	@Bean
+	public Queue deleteUsersQueue()	{
+		return new Queue(QUEUE_USERS_TO_BE_DELETED);
+	}
+	
+	
+	@Bean
+	public Binding declarePostVoteBinding()	{
+	    return BindingBuilder.bind(postVoteQueue()).to(postsExchange()).with(ROUTING_KEY_POST_VOTE);
+	}
+	@Bean
+	public Binding declareCreatePostBinding()	{
+		return BindingBuilder.bind(addPostsQueue()).to(postsExchange()).with(ROUTING_KEY_POSTS_TO_BE_ADDED);
+	}
+	@Bean
+	public Binding declareDeletePostBinding()	{
+		return BindingBuilder.bind(deletePostsQueue()).to(postsExchange()).with(ROUTING_KEY_POSTS_TO_BE_DELETED);
 	}
 	
 	@Bean
-    public Queue voteQueue(){
-        return new Queue(QUEUE_NAME_VOTE);
+	public Binding declareCreateUserBinding()	{
+		return BindingBuilder.bind(addUsersQueue()).to(usersExchange()).with(ROUTING_KEY_USERS_TO_BE_ADDED);
 	}
-	
-	 @Bean
-	    public Binding declareBindingVote(){
-	        return BindingBuilder.bind(voteQueue()).to(voteExchange()).with(ROUTING_KEY_VOTE);
+	@Bean
+	public Binding declareDeleteUserBinding()	{
+		return BindingBuilder.bind(deleteUsersQueue()).to(usersExchange()).with(ROUTING_KEY_USERS_TO_BE_DELETED);
 	}
-	
 	@Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
