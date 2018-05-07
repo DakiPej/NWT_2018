@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.meminator.demo.models.Notification;
 import com.meminator.demo.services.NotificationService;
+import com.meminator.demo.viewModels.NotificationViewModel;
 
 @RestController
 @RequestMapping("/notifications")
@@ -23,18 +26,44 @@ public class NotificationController {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService; 
 	}
-	
-	@RequestMapping("/create")
-	public String createNotification(@RequestBody final NotificationInfo info)	{
+
+	@RequestMapping(value="/username={username}/pageNumber={pageNumber}", method=RequestMethod.GET)
+	//(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
+	public ResponseEntity getAllNotifications(
+			@PathVariable("username") String username, 
+			@PathVariable("pageNumber") int pageNumber)	{
 		
-		return this.notificationService.createNotification(info.notifierUsername, info.username, info.notificationType);
-	}
-	@RequestMapping(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
-	public List<Notification> getAllNotifications(@PathVariable("username") String username, @PathVariable("pageNumber") int pageNumber)	{
 		List<Notification> notifications = new ArrayList<Notification>();
-		
-		notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
-		return notifications;
+		List<NotificationViewModel> notificationsVM = new ArrayList<NotificationViewModel>(); 
+		try {
+			notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
+			
+			for(int i = 0; i < notifications.size(); i ++)	{
+				String typeName = notifications.get(i).getNotificationTypeId().getTypeName();
+				String notifier = notifications.get(i).getNotifierUsername(); 
+				NotificationViewModel notification = new NotificationViewModel(
+						notifications.get(i).getId(),
+						Long.valueOf(notifications.get(i).getContet()).longValue(),
+						""); 
+				
+				if(typeName.equals("Followed"))
+					notification.notificationText = "The user " + notifier + " started following you."; 
+				else if (typeName.equals("Commented"))
+					notification.notificationText = "The user " + notifier + " commented on your post."; 
+				else if (typeName.equals("Post vote"))
+					notification.notificationText = "The user " + notifier + " voted for your post."; 
+				else if (typeName.equals("Comment vote"))
+					notification.notificationText = "The user " + notifier + " voted for your comment."; 
+				else if (typeName.equals("Post repost"))
+					notification.notificationText = "The user " + notifier + " reposted your post."; 
+				notificationsVM.add(notification);
+			}
+			if(notificationsVM.size() == 0)
+				return ResponseEntity.status(HttpStatus.OK).body("No more notifications to show.");
+			return ResponseEntity.status(HttpStatus.OK).body(notificationsVM);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+		}
 		
 	}
 	

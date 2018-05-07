@@ -3,6 +3,7 @@ package com.meminator.demo.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class NotificationType {
@@ -11,6 +12,7 @@ public class NotificationType {
 	@GeneratedValue
 	long id; 
 	
+	@NotNull
 	String typeName; 
 	
 	public NotificationType()	{

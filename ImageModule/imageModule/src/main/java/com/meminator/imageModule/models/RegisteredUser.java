@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 public class RegisteredUser {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(unique=true)
 	private Long id;
 	
@@ -30,6 +31,10 @@ public class RegisteredUser {
 	private String username;
 
 	public RegisteredUser() {
+	}
+	
+	public RegisteredUser(String username) {
+		this.username = username;
 	}
 
 	public Long getId() {

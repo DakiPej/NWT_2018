@@ -21,6 +21,10 @@ public abstract class BaseDAO <M, R extends PagingAndSortingRepository<M, Long>>
 	}
 	
 	protected M one(long id)	{
-		return (M) repo.findById(id);
+		return repo.findById(id).get();
+	}
+	
+	public boolean existsById(long id)	{
+		return repo.existsById(id);
 	}
 }

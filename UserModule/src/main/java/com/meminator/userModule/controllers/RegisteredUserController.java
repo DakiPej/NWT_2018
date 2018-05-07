@@ -133,8 +133,8 @@ public class RegisteredUserController {
 	@RequestMapping("/rabbit")
 	public void rabbit(){
 		System.err.println("Rabbit");
-		FollowMessage followMessage = new FollowMessage("daki", "pej");
-		rabbitTemplate.convertAndSend("user-queue-exchange", "user.follow", followMessage);
-		rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", "nova poruka");
+		//FollowMessage followMessage = new FollowMessage("daki", "pej");
+		//rabbitTemplate.convertAndSend("user-queue-exchange", "user.follow", followMessage);
+		rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", "Irfan");
 	}
 }

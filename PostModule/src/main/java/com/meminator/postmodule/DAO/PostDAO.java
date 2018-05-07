@@ -38,4 +38,8 @@ public class PostDAO extends BaseDAO<Post, IPostRepositroy> {
         return !this.repo.findById(id).isPresent();
     }
 
+    public List<Post> getPostByFollowers(List<RegisteredUser> users){
+        return this.repo.findAllByUserInOrderByTimeStampDesc(users);
+    }
+
 }

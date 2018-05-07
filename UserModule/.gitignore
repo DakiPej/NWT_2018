@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 *.java.hsp
 *.sonarj
 *.sw*
@@ -21,19 +23,28 @@ classes/
 buildSrc/build
 /spring-*/build
 /src/asciidoc/build
+>>>>>>> aaf143394edfaa927611c212a783e66bcfc15a2f
 target/
+!.mvn/wrapper/maven-wrapper.jar
 
-# Eclipse artifacts, including WTP generated manifests
+### STS ###
+.apt_generated
 .classpath
+.factorypath
 .project
-spring-*/src/main/java/META-INF/MANIFEST.MF
+.settings
+.springBeans
 
-# IDEA artifacts and output dirs
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
 *.ipr
-*.iws
-.idea
-out
-test-output
-atlassian-ide-plugin.xml
-.gradletasknamecache
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/

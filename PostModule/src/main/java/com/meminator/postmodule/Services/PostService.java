@@ -1,14 +1,24 @@
 package com.meminator.postmodule.Services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meminator.postmodule.DAO.PostDAO;
 import com.meminator.postmodule.DAO.RegisteredUserDAO;
 import com.meminator.postmodule.DAO.TagDAO;
 import com.meminator.postmodule.Models.Post;
+import com.meminator.postmodule.Models.PostVM;
 import com.meminator.postmodule.Models.RegisteredUser;
 import com.meminator.postmodule.Models.Tag;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +28,8 @@ public class PostService {
     private PostDAO postDAO;
     private RegisteredUserDAO registeredUserDAO;
     private TagDAO tagDAO;
+    private AsyncSender asyncSender;
+    private RestTemplate restTemplate;
 
     @Autowired
     public void setPostDAO(PostDAO postDAO){
@@ -34,6 +46,16 @@ public class PostService {
         this.tagDAO = tagDAO;
     }
 
+    @Autowired
+    public void setAsyncSender(AsyncSender asyncSender){
+        this.asyncSender = asyncSender;
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate){
+        this.restTemplate = restTemplate;
+    }
+
     public Post createPost(Post post, String username){
 
         if(post.getImageURL().equals("")){
@@ -43,8 +65,12 @@ public class PostService {
         Optional<RegisteredUser> user = registeredUserDAO.getUser(username);
         if(user.isPresent()){
             post.setUser(user.get());
-            return postDAO.savePost(post);
 
+            Post newPost =  postDAO.savePost(post);
+            if(newPost != null){
+                asyncSender.sendPost(new PostVM(post));
+            }
+            return newPost;
         }else{
             throw new IllegalArgumentException("User with given username does not exist!");
         }
@@ -122,6 +148,20 @@ public class PostService {
         }else{
             throw new IllegalArgumentException("Post with given id does not exist!");
         }
+    }
+
+    public List<Post> getByFollow(String username) throws Exception {
+
+        JSONObject request = new JSONObject();
+        request.put("username", username);
+        List<String> response = restTemplate.postForObject(
+                "http://userModule/follow/myFriends",
+                username,
+                List.class
+                );
+            System.out.println(response.get(1));
+            List<RegisteredUser> users = registeredUserDAO.findAllByUsernames(response);
+            return postDAO.getPostByFollowers(users);
     }
 
 }

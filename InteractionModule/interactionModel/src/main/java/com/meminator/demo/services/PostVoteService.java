@@ -22,9 +22,11 @@ public class PostVoteService {
 	NotificationDAO notificationDao;
 	PostDAO postDao;
 	RegisteredUserDAO regUserDao; 
+	NotificationService notificationService;
+	PostService postService; 
 	
 	@Autowired
-	public void setPostVoteD(PostVoteDAO postVoteDao)	{
+	public void setPostVoteDao(PostVoteDAO postVoteDao)	{
 		this.postVoteDao = postVoteDao; 
 	}
 	@Autowired
@@ -32,50 +34,56 @@ public class PostVoteService {
 		this.notificationDao = notificationDao; 
 	}
 	@Autowired
-	public void setPostDAO(PostDAO postDao)	{
+	public void setPostDao(PostDAO postDao)	{
 		this.postDao = postDao; 
 	}
 	@Autowired 
 	public void setRegisteredUserDAO(RegisteredUserDAO regUserDao)	{
 		this.regUserDao = regUserDao; 
 	}
-	
-	
-	public String createPostVote (long postId, long voterId, boolean upVote)	{
+	@Autowired
+	public void setNotificationService(NotificationService notificationService)	{
+		this.notificationService = notificationService; 
+	}
+	@Autowired
+	public void setPostService(PostService postService)	{
+		this.postService = postService;
+	}
+	public String createPostVote (long postId, String voterUsername, boolean upVote)	{
 		
 		Post post = new Post(); 
-		RegisteredUser regUser = new RegisteredUser(); 
-		
-		post = this.postDao.findPostById(postId); 
-		regUser = this.regUserDao.getRegisteredUserById(voterId); 
-		
+		RegisteredUser voter = new RegisteredUser(); 
 		PostVote postVote = new PostVote(); 
-		postVote.setPostId(post);
-		postVote.setRegUserId(regUser);
-		postVote.setUpVote(upVote);
 		
-		Notification notification = new Notification(); 
-		notification.setUserId(
-				regUserDao.getRegisteredUserById(
-						post.getRegUserId()
-						.getId()
-						)
-				);
-		NotificationType notificationTypeId = new NotificationType((long) 3); 
-		notificationTypeId.setTypeName("Post vote");
-		notification.setNotificationTypeId(notificationTypeId);
-		notification.setNotifierUsername(
-				this.regUserDao.getRegisteredUserById(voterId)
-					.getUsername()
-				);
-		notification.setCreationMoment(new Date());
-		notification.setContet(String.valueOf(postId));
-		notification.setChecked(false);
+		post = this.postDao.findPostById(postId);
+		voter = this.regUserDao.getRegisteredUserByUsername(voterUsername);
+		postVote = this.postVoteDao.findByPostAndVoter(post, voter);
 		
-		if(this.postVoteDao.createPostVote(postVote))
-			if(this.notificationDao.createNotification(notification))
-				return "PostVote and Notification were created"; 
-			else return "Notification was not created"; 
-		return "Post vote was not created"; 
+		boolean doesntExist = true, doubleVote = true; 
+		
+		if(postVote == null)	{
+		
+			postVote = new PostVote(); 
+			postVote.setPost(post);
+			postVote.setVoter(voter);
+			postVote.setUpVote(upVote); 
+			doubleVote = false; 
+		
+		}	else if(postVote.getUpVote() != upVote)	{
+			postVote.setUpVote(upVote);
+			doesntExist = false; 
+			doubleVote = false; 
+		
+		}
+		if(!doubleVote && this.postVoteDao.createPostVote(postVote))
+			if(this.notificationService.createNotification(postVote))	{
+		
+				this.postService.updateVoteCount(postId, upVote, doesntExist);
+				return "PostVote and Notification were created";
+				
+			}	else return "Notification was not created";
+		
+		return "PostVote and Notification were not created"; 
+		
 	}
 }

@@ -18,4 +18,10 @@ public class PostVoteDAO extends BaseDAO<PostVote, PostVoteRepository>{
 		}
 		return true; 
 	}
+	public PostVote findPostVoteByPostAndVoter(String post, String voter)	{
+		return this.repo.doesExist(post, voter);
+	}
+	public PostVote findByPostAndVoter(Post post, RegisteredUser voter)	{
+		return this.repo.findByPostAndVoter(post, voter);
+	}
 }
