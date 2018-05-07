@@ -154,19 +154,14 @@ public class PostService {
 
         JSONObject request = new JSONObject();
         request.put("username", username);
-        ResponseEntity response = restTemplate.postForEntity(
+        List<String> response = restTemplate.postForObject(
                 "http://userModule/follow/myFriends",
-                request,
-                ResponseEntity.class
+                username,
+                List.class
                 );
-        if(response.getStatusCode() == HttpStatus.OK){
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<String> body = (List<String>) response.getBody();
-            List<RegisteredUser> users = registeredUserDAO.findAllByUsernames(body);
+            System.out.println(response.get(1));
+            List<RegisteredUser> users = registeredUserDAO.findAllByUsernames(response);
             return postDAO.getPostByFollowers(users);
-        }else{
-            throw new Exception(response.getStatusCode().toString());
-        }
     }
 
 }
