@@ -1,0 +1,26 @@
+.login{
+    background:rgb(255, 255, 255, 0.7);
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.label{
+    width:100%;
+    size: 20px;
+    color: #263238;
+    text-align: center;
+    border-bottom: 1px solid;
+    
+}
+
+.label img{
+    height: 100px;
+}
+
+.register{
+    width:100%;
+    size: 15px;
+    color: #263238;
+    text-align: center;
+    border-top: 1px solid;
+}
