@@ -65,7 +65,7 @@ services:
    - meminator
 
  imagemodule:
-  image: dakiepj/imagemodule
+  image: seilab/imagemodule
   depends_on:
    - mysql-imagemodule
    - eurekaserver
