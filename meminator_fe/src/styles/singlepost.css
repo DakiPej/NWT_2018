@@ -1,7 +1,9 @@
 .post{
-    width: 100%;
+    width: 80%;
     height: auto;
     font-size: 0px;
+    margin-left: 10%;
+    margin-bottom:20px;
 }
 .post .post-header{
     margin: 0;

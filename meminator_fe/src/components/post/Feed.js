@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col } from 'react-materialize';
 import axios from 'axios';
 import SinglePost from './SinglePost';
+import '../../styles/feed.css';
+
 
 class Feed extends Component{
 
@@ -16,7 +18,7 @@ class Feed extends Component{
     getPosts = () => {
         axios.get("http://localhost:8082/posts")
         .then(this.handlePosts.bind(this))
-        .catch(function(err){console.log(err)});
+        .catch(this.handleError.bind(this));
     }
 
     handlePosts = (response) => {
@@ -27,17 +29,58 @@ class Feed extends Component{
 
     }
 
+    handleError = (error) => {
+        console.log(error);
+        var posts = [
+            {
+                id:1,
+                user:{username:'cool.username'},
+                date:'11/11/11',
+                imageURL:'https://www.w3schools.com/w3css/img_lights.jpg',
+                upVote:110,
+                downVote:10
+            },
+            {
+                id:2,
+                user:{username:'cool.username'},
+                date:'11/11/11',
+                imageURL:'https://www.w3schools.com/w3css/img_lights.jpg',
+                upVote:110,
+                downVote:10
+            },
+            {
+                id:3,
+                user:{username:'cool.username'},
+                date:'11/11/11',
+                imageURL:'https://www.w3schools.com/w3css/img_lights.jpg',
+                upVote:110,
+                downVote:10
+            },
+            {
+                id:4,
+                user:{username:'cool.username'},
+                date:'11/11/11',
+                imageURL:'https://www.w3schools.com/w3css/img_lights.jpg',
+                upVote:110,
+                downVote:10
+            }
+        ];
+        this.setState({posts});
+    }
+
     render(){
         
         var posts = this.state.posts.map((post) => (<SinglePost key={post.id} post={post}/>));
         
         return(
             <Row>
-                <Col m={4} l={4} />
-                <Col m={4} l={4}>
+                <Col m={2} l={2} />
+                <Col m={8} l={8}>
+                <div className="feed-container">
                     {posts}
+                </div>
                 </Col>
-                <Col m={4} l={4} />
+                <Col m={2} l={2} />
             </Row>
         );
     }
