@@ -1,11 +1,16 @@
 package com.meminator.userModule.services;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.meminator.userModule.models.RegisteredUser;
@@ -16,8 +21,8 @@ import forms.RegisteredUser.CreateUserForm;
 import forms.RegisteredUser.ResetPasswordForm;
 import forms.RegisteredUser.UpdateInfoForm;
 
-@Service
-public class RegisteredUserService {
+@Service(value = "userService")
+public class RegisteredUserService implements UserDetailsService{
 	@Autowired
 	RabbitTemplate rabbitTemplate;
 	
@@ -138,4 +143,15 @@ public class RegisteredUserService {
 		}
 	}
 
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		RegisteredUser user = registeredUserRepository.getByUsername(username);
+		if(user == null){
+			throw new UsernameNotFoundException("Invalid username or password.");
+		}
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+	}
+
+	private List<SimpleGrantedAuthority> getAuthority(RegisteredUser user) {
+		return Arrays.asList(new SimpleGrantedAuthority("ROLE_" + user.getUserTypeID().getTypeName()));
+	}
 }

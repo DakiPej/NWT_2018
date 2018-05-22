@@ -3,6 +3,7 @@ package com.meminator.imageModule.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,5 +50,10 @@ public class RegisteredUserController {
 	        }catch (Exception e){
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 	        }
-	    }
+		}
+		
+		@RequestMapping(value = "/oauth",  method = RequestMethod.GET)
+		public ResponseEntity test(OAuth2Authentication authentication) {
+			return ResponseEntity.ok("Daki dodao test da provjeri radi li oauth2. :D" + authentication.getName());
+		}
 }

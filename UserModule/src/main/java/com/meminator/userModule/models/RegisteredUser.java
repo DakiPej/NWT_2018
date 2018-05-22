@@ -48,7 +48,6 @@ public class RegisteredUser {
 	private String email;
 	
 	@NotNull
-	@Size(min = 8, max = 20)
 	private String password;
 	
 	@Size(max = 255)
