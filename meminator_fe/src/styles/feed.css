@@ -1,8 +1,13 @@
 .feed-container{
     width: 80%;
-    height: auto;
+    height: 95vh;
     scroll-behavior: smooth;
-    background-color: aqua;
     margin-left: 10%;
+    background-color: rgba(38, 50, 56, 0.8);
     padding-top:20px;
+    overflow: scroll;
+}
+
+.feed-container::-webkit-scrollbar{
+    display: none;
 }
