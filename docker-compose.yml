@@ -1,18 +1,6 @@
 version: '3'
 
 services:
- rabbitmq:
-  image: rabbitmq:3.7.4-management
-  hostname: rabbitmq
-  ports:
-   - "5672:5672"
-   - "15672:15672"
-  environment:
-   RABBITMQ_DEFAULT_USER: guest
-   RABBITMQ_DEFAULT_PASS: guest
-  networks:
-   - meminator
-
  eurekaserver:
   image: dakipej/serviceregistry
   ports: 
@@ -25,7 +13,6 @@ services:
   depends_on:
    - mysql
    - eurekaserver
-   - rabbitmq
   ports:
    - 8083:8083
   environment:
@@ -40,90 +27,10 @@ services:
    EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
    #Dodano za security - Oauth2
-   SECURITY_OAUTH2_CLIENT_ACCESS_TOKEN_URI: http://usermodule:8083/oauth/token
-   #SECURITY_OAUTH2_CLIENT_USER_AUTHORIZATION_URI: http://usermodule:8083/oauth/token
+   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_MYOAUTHPROVIDER_TOKENURL: http://usermodule:8083/oauth/token
   networks:
    - meminator
   
- postmodule:
-  image: acimovicalek/postmodule
-  depends_on:
-   - mysql-postmodule
-   - eurekaserver
-   - rabbitmq
-  ports:
-   - 8082:8082
-  environment:
-   #dodano za rabbitmq
-   SPRING_RABBITMQ_HOST: rabbitmq
-   #RABBIT_HOST: rabbitmq
-   #Dodano kako bi aplikacija mogla koristiti mysql servis
-   SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-postmodule:3306/postModuleDB'
-   #Dodano za eureku
-   SPRING_APPLICATION_NAME: postModule
-   SPRING_PROFILES_ACTIVE: enableEureka
-   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
-   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
-   #Dodano za security - Oauth2
-   SECURITY_OAUTH2_CLIENT_CLIENT_ID: devglan-client
-   SECURITY_OAUTH2_CLIENT_CLIENT_SECRET: devglan-secret
-   SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI: http://usermodule:8083/oauth/check_token
-
-  networks:
-   - meminator
-
- imagemodule:
-  image: seilab/imagemodule
-  depends_on:
-   - mysql-imagemodule
-   - eurekaserver
-   - rabbitmq
-  ports:
-   - 8084:8084
-  environment:
-   #dodano za rabbitmq
-   SPRING_RABBITMQ_HOST: rabbitmq
-   #RABBIT_HOST: rabbitmq
-   #Dodano kako bi aplikacija mogla koristiti mysql servis
-   SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-imagemodule:3306/imageModuleDB'
-   #Dodano za eureku
-   SPRING_APPLICATION_NAME: imageModule
-   SPRING_PROFILES_ACTIVE: enableEureka
-   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
-   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
-   #Dodano za security - Oauth2
-   SECURITY_OAUTH2_CLIENT_CLIENT_ID: devglan-client
-   SECURITY_OAUTH2_CLIENT_CLIENT_SECRET: devglan-secret
-   SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI: http://usermodule:8083/oauth/check_token
-  networks:
-   - meminator
-
- interactionmodule:
-  image: dakipej/interactionmodule
-  depends_on:
-   - mysql-interactionmodule
-   - eurekaserver
-   - rabbitmq
-  ports:
-   - 8081:8081
-  environment:
-   #dodano za rabbitmq
-   SPRING_RABBITMQ_HOST: rabbitmq
-   #RABBIT_HOST: rabbitmq
-   #Dodano kako bi aplikacija mogla koristiti mysql servis
-   SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-interactionmodule:3306/interactionModuleDB'
-   #Dodano za eureku
-   SPRING_APPLICATION_NAME: interactionModule
-   SPRING_PROFILES_ACTIVE: enableEureka
-   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
-   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
-   #Dodano za security - Oauth2
-   SECURITY_OAUTH2_CLIENT_CLIENT_ID: devglan-client
-   SECURITY_OAUTH2_CLIENT_CLIENT_SECRET: devglan-secret
-   SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI: http://usermodule:8083/oauth/check_token
-  networks:
-   - meminator
-
  gateway:
   image: dakipej/gateway
   depends_on:
@@ -135,6 +42,8 @@ services:
    SPRING_PROFILES_ACTIVE: enableEureka
    EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
    EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
+   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_MYOAUTHPROVIDER_AUTHORIZATIONURI: http://localhost:8083/oauth/authorize
+   ZUUL_ROUTES_GETALL_URL: http://usermodule:8083/user/getAll
   networks:
    - meminator
 
@@ -146,36 +55,6 @@ services:
    - MYSQL_DATABASE=userModuleDB
    - MYSQL_USER=demo_user
    - MYSQL_PASSWORD=demo_pass
-  networks: 
-   - meminator
-
- mysql-postmodule:
-  image: mysql:5.6
-  environment:
-   - MYSQL_ROOT_PASSWORD=password
-   - MYSQL_DATABASE=postModuleDB
-   - MYSQL_USER=meminator
-   - MYSQL_PASSWORD=password
-  networks: 
-   - meminator
-
- mysql-imagemodule:
-  image: mysql:5.6
-  environment:
-   - MYSQL_ROOT_PASSWORD=password
-   - MYSQL_DATABASE=imageModuleDB
-   - MYSQL_USER=meminator
-   - MYSQL_PASSWORD=password
-  networks: 
-   - meminator
-
- mysql-interactionmodule:
-  image: mysql:5.6
-  environment:
-   - MYSQL_ROOT_PASSWORD=password
-   - MYSQL_DATABASE=interactionModuleDB
-   - MYSQL_USER=meminator
-   - MYSQL_PASSWORD=password
   networks: 
    - meminator
 
