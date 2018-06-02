@@ -4,12 +4,10 @@ import '../styles/profiledetails.css';
 
 
 class InfoProfile extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
+
+  state = {
       data: this.props.data
-    };
-  }
+    }
 
     render(){
 

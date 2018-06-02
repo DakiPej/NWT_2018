@@ -6,9 +6,8 @@ import InfoProfile from './InfoProfile';
 import EditProfile from './EditProfile';
 
 class ProfileDetails extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
+
+    state = {
       data:{
         firstname: 'Default',
         lastname: 'Default',
@@ -21,20 +20,20 @@ class ProfileDetails extends Component{
       },
       details: true
 
-    };
-    this.getDetails=this.getDetails.bind(this);
-  }
+    }
+
+
   componentDidMount(){
     this.getDetails();
   }
-  getDetails(){
+  getDetails = () => {
 
   }
-  handleSuccess(response) {
+  handleSuccess=(response)=> {
 
     }
 
-    handleError(error) {
+    handleError=(error)=> {
       console.log("Data not found");
     }
 

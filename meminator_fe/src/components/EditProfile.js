@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button,Modal } from 'react-materialize';
 import '../styles/profiledetails.css';
+import $ from 'jquery'
 
 
 
 class EditProfile extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
+    state = {
       password: '',
       password2: '',
       passwordOriginal:'',
@@ -40,23 +39,14 @@ class EditProfile extends Component{
         email:'',
         image:'',
       },
-      showSubmit: false,
-      showPasswordChange: false
-    };
-    this.onProfileSubmit = this.onProfileSubmit.bind(this);
-    this.onValidate = this.onValidate.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.validatePassword=this.validatePassword.bind(this);
-    this.fileChangedHandler=this.fileChangedHandler.bind(this);
-    this.onPasswordChange=this.onPasswordChange.bind(this);
-  }
-  onPasswordChange(event){
+    }
+
+  onPasswordChange = (event) => {
     event.preventDefault();
     if(this.validatePassword()){
-
     }
   }
-  fileChangedHandler(event){
+  fileChangedHandler = (event) => {
   this.setState({image: event.target.files[0]})
   var file=event.target.files[0];
   if (file!==undefined){
@@ -84,7 +74,7 @@ class EditProfile extends Component{
   const formData = new FormData()
   formData.append('myFile', this.state.selectedFile, this.state.selectedFile.name)
   axios.post('my-domain.com/file-upload', formData)*/
-  onValidate() {
+  onValidate = () => {
     var validate=true;
     var error=this.state.error;
     var errorMessage = this.state.errorMessage;
@@ -128,8 +118,7 @@ class EditProfile extends Component{
       this.setState({error: error,errorMessage:errorMessage});
       return validate;
   }
-  validatePassword()
-  {
+  validatePassword = () =>  {
     var validate=true;
     var error=this.state.error;
     var errorMessage = this.state.errorMessage;
@@ -154,7 +143,7 @@ class EditProfile extends Component{
      return validate;
 
   }
-  onProfileSubmit(event){
+  onProfileSubmit = (event) => {
 
 
     event.preventDefault();
@@ -162,15 +151,15 @@ class EditProfile extends Component{
       //axios
     }
   }
-  handleSuccess(response) {
+  handleSuccess = (response)  => {
 
     }
 
-    handleError(error) {
+    handleError = (error) => {
         alert("Registration failed")
     }
 
-  onChange(e) {
+  onChange=(e)=> {
   this.setState({[e.target.name]:e.target.value});
 
   switch(e.target.name){
@@ -273,11 +262,12 @@ class EditProfile extends Component{
                {this.state.error.passwordOriginal?<div className="error">{this.state.errorMessage.passwordOriginal}</div>:""}
                <Button small onClick={this.onProfileSubmit} className="blue-grey right " style={{width:"100%",margin:"10px 0"}}><Icon left>send</Icon>Submit</Button>
                <hr className="separator"/>
-               <Modal
+               <Modal name="Modal"
+
                 header="Password change" style={{color:"black"}}
                 actions={
                     <div>
-                    <Button modal="close" onClick={this.onPasswordChange} className="blue-gray">Change password</Button>
+                    <Button onClick={this.onPasswordChange} className="blue-gray">Change password</Button>
                     <Button flat modal="close">Dismiss</Button>
                     </div>
                     }
@@ -286,7 +276,7 @@ class EditProfile extends Component{
                       {this.state.error.password?<div className="error">{this.state.errorMessage.password}</div>:""}
                       <Input type="password" style={{color:"black"}} name="password2"  id="modal-input" className={this.state.error.password2}  onChange={this.onChange} label="Repeat password" s={12} />
                       {this.state.error.password2?<div className="error">{this.state.errorMessage.password2}</div>:""}
-                      <Input type="password" style={{color:"black"}} name="password2"  id="modal-input" className={this.state.error.passwordChange}  onChange={this.onChange} label="Current password" s={12} />
+                      <Input type="password" style={{color:"black"}} name="passwordChange"  id="modal-input" className={this.state.error.passwordChange}  onChange={this.onChange} label="Current password" s={12} />
                       {this.state.error.passwordChange?<div className="error">{this.state.errorMessage.passwordChange}</div>:""}
                       </Modal>
 
@@ -295,7 +285,6 @@ class EditProfile extends Component{
             </div>
         );
     }
-
 }
 
 export default EditProfile;

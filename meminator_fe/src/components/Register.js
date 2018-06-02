@@ -5,9 +5,7 @@ import '../styles/register.css';
 
 
 class Register extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
+  state = {
       username: '',
       password: '',
       password2: '',
@@ -30,12 +28,9 @@ class Register extends Component{
         password2:'',
         email:''
       }
-    };
-    this.onRegister = this.onRegister.bind(this);
-    this.onValidate = this.onValidate.bind(this);
-    this.onChange = this.onChange.bind(this);
-  }
-  onValidate() {
+    }
+
+  onValidate=() =>{
     var validate=true;
     var error=this.state.error;
     var errorMessage = this.state.errorMessage;
@@ -88,7 +83,7 @@ class Register extends Component{
       return validate;
   }
 
-  onRegister(event){
+  onRegister=(event)=>{
 
 
     event.preventDefault();
@@ -96,15 +91,15 @@ class Register extends Component{
       //axios
     }
   }
-  handleSuccess(response) {
+  handleSuccess=(response)=> {
 
     }
 
-    handleError(error) {
+    handleError=(error)=> {
         alert("Registration failed")
     }
 
-  onChange(e) {
+  onChange=(e)=> {
   this.setState({[e.target.name]:e.target.value});
 
   switch(e.target.name){
