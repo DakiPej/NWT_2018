@@ -34,6 +34,8 @@ services:
    #RABBIT_HOST: rabbitmq
    #Dodano kako bi aplikacija mogla koristiti mysql servis
    SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/userModuleDB'
+   #SPRING_DATASOURCE_USERNAME: demo_user
+   #SPRING_DATASOURCE_PASSWORD: demo_pass
    #Dodano za eureku
    SPRING_APPLICATION_NAME: userModule
    SPRING_PROFILES_ACTIVE: enableEureka
@@ -46,7 +48,7 @@ services:
    - meminator
   
  postmodule:
-  image: acimovicalek/postmodule
+  image: dakipej/postmodule
   depends_on:
    - mysql-postmodule
    - eurekaserver
@@ -68,12 +70,11 @@ services:
    SECURITY_OAUTH2_CLIENT_CLIENT_ID: devglan-client
    SECURITY_OAUTH2_CLIENT_CLIENT_SECRET: devglan-secret
    SECURITY_OAUTH2_RESOURCE_TOKEN_INFO_URI: http://usermodule:8083/oauth/check_token
-
   networks:
    - meminator
 
  imagemodule:
-  image: seilab/imagemodule
+  image: dakipej/imagemodule
   depends_on:
    - mysql-imagemodule
    - eurekaserver

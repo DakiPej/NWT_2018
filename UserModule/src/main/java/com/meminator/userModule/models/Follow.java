@@ -4,8 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Follow {
@@ -15,10 +18,14 @@ public class Follow {
 	
 	@NotNull
 	@ManyToOne
+	@JoinColumn(referencedColumnName = "id", nullable = false)
+	@JsonIgnore
 	private RegisteredUser user;
 
 	@NotNull
 	@ManyToOne
+	@JoinColumn(referencedColumnName = "id", nullable = false)
+	@JsonIgnore
 	private RegisteredUser followedUser;
 
 	public Long getId() {
@@ -29,6 +36,8 @@ public class Follow {
 		this.id = id;
 	}
 
+	@JoinColumn(referencedColumnName = "id", nullable = false)
+	@JsonIgnore
 	public RegisteredUser getUser() {
 		return user;
 	}
@@ -37,6 +46,8 @@ public class Follow {
 		this.user = user;
 	}
 
+	@JoinColumn(referencedColumnName = "id", nullable = false)
+	@JsonIgnore
 	public RegisteredUser getFollowedUser() {
 		return followedUser;
 	}

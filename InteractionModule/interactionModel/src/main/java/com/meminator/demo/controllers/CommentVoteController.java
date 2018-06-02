@@ -3,6 +3,8 @@ package com.meminator.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,10 +23,11 @@ public class CommentVoteController {
 		this.commentVoteService = commentVoteService; 
 	}
 	
+	@PreAuthorize("hasRole('ROLE_user')")
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public ResponseEntity createCommentVote(@RequestBody final CommentVoteInfo commentVoteInfo)	{
+	public ResponseEntity createCommentVote(OAuth2Authentication authentication, @RequestBody final CommentVoteInfo commentVoteInfo)	{
 		try {
-			String response = this.commentVoteService.createCommentVote(commentVoteInfo.commentId, commentVoteInfo.voterUsername, commentVoteInfo.upVote);
+			String response = this.commentVoteService.createCommentVote(commentVoteInfo.commentId, authentication.getName(), commentVoteInfo.upVote);
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
@@ -33,7 +36,16 @@ public class CommentVoteController {
 	
 	private static class CommentVoteInfo {
 		public long commentId; 
-		public String voterUsername;
 		public boolean upVote; 
+
+		public CommentVoteInfo(){}
+
+		public void setCommentId(long commentId) {
+			this.commentId = commentId;
+		}
+		public void setUpVote(boolean upVote) {
+			this.upVote = upVote;
+		}
+
 	}
 }

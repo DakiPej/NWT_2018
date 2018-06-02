@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,16 +29,17 @@ public class NotificationController {
 		this.notificationService = notificationService; 
 	}
 
+	@PreAuthorize("hasRole('ROLE_user')")
 	@RequestMapping(value="/username={username}/pageNumber={pageNumber}", method=RequestMethod.GET)
 	//(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
-	public ResponseEntity getAllNotifications(
+	public ResponseEntity getAllNotifications(OAuth2Authentication authentication,
 			@PathVariable("username") String username, 
 			@PathVariable("pageNumber") int pageNumber)	{
 		
 		List<Notification> notifications = new ArrayList<Notification>();
 		List<NotificationViewModel> notificationsVM = new ArrayList<NotificationViewModel>(); 
 		try {
-			notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
+			notifications = this.notificationService.getAllNotificationsByUsername(authentication.getName(), pageNumber);
 			
 			for(int i = 0; i < notifications.size(); i ++)	{
 				String typeName = notifications.get(i).getNotificationTypeId().getTypeName();
@@ -69,10 +72,16 @@ public class NotificationController {
 	
 	private static class NotificationInfo	{
 		
-		public String notifierUsername;
-		public String username; 
+		public String notifierUsername; 
 		public String notificationType; 
 		
-		
+		public NotificationInfo(){}
+
+		public void setNotificationType(String notificationType) {
+			this.notificationType = notificationType;
+		}
+		public void setNotifierUsername(String notifierUsername) {
+			this.notifierUsername = notifierUsername;
+		}
 	}
 }

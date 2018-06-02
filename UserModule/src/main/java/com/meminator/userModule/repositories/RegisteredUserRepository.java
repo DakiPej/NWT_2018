@@ -18,6 +18,6 @@ public interface RegisteredUserRepository extends CrudRepository<RegisteredUser,
 	@Query("SELECT ru FROM RegisteredUser ru")
 	List<RegisteredUser> getAll();
 	
-	@Query("SELECT ru FROM RegisteredUser ru WHERE username LIKE %:username%")
-	List<RegisteredUser> searchByUsername(@Param ("username") String username);
+	@Query("SELECT ru.username FROM RegisteredUser ru WHERE username LIKE %:username%")
+	List<String> searchByUsername(@Param ("username") String username);
 }

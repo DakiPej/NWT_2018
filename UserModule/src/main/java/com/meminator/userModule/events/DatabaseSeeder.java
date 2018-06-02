@@ -212,12 +212,12 @@ public class DatabaseSeeder {
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUser(registeredUserRepository.getByUsername("dakipej"));
-			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
-			f = followRepository.save(f);
-			
-			f = new Follow();
 			f.setUser(registeredUserRepository.getByUsername("aco"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
+			f = followRepository.save(f);
+
+			f = new Follow();
+			f.setUser(registeredUserRepository.getByUsername("pipi"));
 			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
 			f = followRepository.save(f);
 			
