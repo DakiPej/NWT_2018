@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+ eurekaserver:
+  image: dakipej/serviceregistry
+  ports: 
+   - 8761:8761
+  networks:
+   - meminator
+
+ usermodule:
+  image: dakipej/usermodule
+  depends_on:
+   - mysql
+   - eurekaserver
+  ports:
+   - 8083:8083
+  environment:
+   #dodano za rabbitmq
+   SPRING_RABBITMQ_HOST: rabbitmq
+   #RABBIT_HOST: rabbitmq
+   #Dodano kako bi aplikacija mogla koristiti mysql servis
+   SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/userModuleDB'
+   #Dodano za eureku
+   SPRING_APPLICATION_NAME: userModule
+   SPRING_PROFILES_ACTIVE: enableEureka
+   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
+   #Dodano za security - Oauth2
+   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_MYOAUTHPROVIDER_TOKENURL: http://usermodule:8083/oauth/token
+  networks:
+   - meminator
+  
+ gateway:
+  image: dakipej/gateway
+  depends_on:
+   - eurekaserver
+  ports:
+   - 8080:8080
+  environment:
+   SPRING_APPLICATION_NAME: gateway
+   SPRING_PROFILES_ACTIVE: enableEureka
+   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
+
+   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_MYOAUTHPROVIDER_AUTHORIZATIONURI: http://localhost:8083/oauth/authorize
+  networks:
+   - meminator
+
+ #MYSQL podesen, ne diraj!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mysql:
+  image: mysql:5.6
+  environment:
+   - MYSQL_ROOT_PASSWORD=password
+   - MYSQL_DATABASE=userModuleDB
+   - MYSQL_USER=demo_user
+   - MYSQL_PASSWORD=demo_pass
+  networks: 
+   - meminator
+
+networks:
+ meminator:
+  driver: bridge

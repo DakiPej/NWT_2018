@@ -7,13 +7,14 @@ import Landing from './components/Landing';
 import SinglePost from './components/post/SinglePost';
 import Register from './components/Register';
 import ProfileDetails from './components/ProfileDetails';
+import Feed from './components/post/Feed';
 
 class App extends Component {
   render() {
     return (
       <div>
       <Header />
-      <Register />
+      <Feed />
       </div>
     );
   }
