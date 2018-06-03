@@ -16,7 +16,7 @@ class Feed extends Component{
     }
 
     getPosts = () => {
-        axios.get("http://localhost:8082/posts")
+        axios.get("http://138.68.186.248:8080/postmodule/posts")
         .then(this.handlePosts.bind(this))
         .catch(this.handleError.bind(this));
     }
