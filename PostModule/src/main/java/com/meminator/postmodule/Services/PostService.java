@@ -171,7 +171,7 @@ public class PostService {
         JSONObject request = new JSONObject();
         request.put("username", username);
         List<String> response = restTemplate.postForObject(
-                "http://userModule/follow/myFriends",
+                "http://userModule/myFriends",
                 username,
                 List.class
                 );

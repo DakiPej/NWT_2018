@@ -52,8 +52,8 @@ public class FollowController {
 		}
 	}
 	
-	@PreAuthorize("hasRole('ROLE_user')")
-	@RequestMapping(value="/myFriends", method=RequestMethod.GET)
+	@PreAuthorize("isAnonymous()  or hasRole('ROLE_user')")
+	@RequestMapping(value="/myFriends", method=RequestMethod.POST)
 	@ResponseBody
 	//public ResponseEntity myFriends(OAuth2Authentication authentication) {
 	public ResponseEntity myFriends(@RequestBody final String username) {
@@ -66,8 +66,8 @@ public class FollowController {
 		}
 	}
 
-	@PreAuthorize("hasRole('ROLE_user')")
-	@RequestMapping(value="/followedBy", method=RequestMethod.GET)
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	@RequestMapping(value="/followedBy", method=RequestMethod.POST)
 	@ResponseBody
 	//public ResponseEntity myFollowers(OAuth2Authentication authentication) {
 	public ResponseEntity myFollowers(@RequestBody final String username) {
