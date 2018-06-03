@@ -1,6 +1,7 @@
 package com.meminator.postmodule.Controllers;
 
 import com.meminator.postmodule.Models.Post;
+import com.meminator.postmodule.Models.PostVM;
 import com.meminator.postmodule.Models.Tag;
 import com.meminator.postmodule.Services.PostService;
 import com.meminator.postmodule.Services.TagService;
@@ -27,8 +28,8 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ROLE_user')")
-    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity createPost(OAuth2Authentication authentication, @RequestBody Post post){
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity createPost(OAuth2Authentication authentication, @RequestBody PostVM post){
 
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post, authentication.getName()));
@@ -93,17 +94,11 @@ public class PostController {
         }
     }
 
-    /**
-     * 
-     * Metodu deletePost treba prepraviti. 
-     * 
-     */
-
     @PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity deletePost(OAuth2Authentication authentication, @PathVariable Long id){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id, authentication.getName()));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }

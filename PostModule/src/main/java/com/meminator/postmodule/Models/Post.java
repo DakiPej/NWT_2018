@@ -26,7 +26,6 @@ public class Post {
     private RegisteredUser user;
     @NotNull
     private String imageURL;
-    @NotNull
     private Long imageID;
     @Column(name="timeStamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
