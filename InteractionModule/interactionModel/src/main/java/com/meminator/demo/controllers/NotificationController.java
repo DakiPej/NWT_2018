@@ -1,5 +1,6 @@
 package com.meminator.demo.controllers;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.meminator.demo.models.Notification;
 import com.meminator.demo.services.NotificationService;
+import com.meminator.demo.services.RegisteredUserService;
+import com.meminator.demo.viewModels.NotificationResponse;
 import com.meminator.demo.viewModels.NotificationViewModel;
 
 @RestController
@@ -21,52 +24,65 @@ import com.meminator.demo.viewModels.NotificationViewModel;
 public class NotificationController {
 	
 	NotificationService notificationService; 
+	RegisteredUserService registeredUserService ; 
 	
 	@Autowired
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService; 
 	}
+	@Autowired
+	public void setRegisteredUserService(RegisteredUserService registeredUserService)	{
+		this.registeredUserService = registeredUserService ; 
+	}
 
-	@RequestMapping(value="/username={username}/pageNumber={pageNumber}", method=RequestMethod.GET)
+	
+	@RequestMapping(value="/lastTimeChecked/{username}", method=RequestMethod.GET)
+	public ResponseEntity getLastTimeChecked(@PathVariable("username") String username)	{
+		Timestamp lastTimeChecked ; 
+		
+		try {
+			lastTimeChecked = this.registeredUserService.getLastTimeChecked(username) ; 
+			
+			return ResponseEntity.status(HttpStatus.OK).body(lastTimeChecked.getTime()) ; 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
+		}
+	}
+	@RequestMapping(value="/{username}/{pageNumber}/{lastTimeChecked}", method=RequestMethod.GET)
 	//(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
 	public ResponseEntity getAllNotifications(
 			@PathVariable("username") String username, 
-			@PathVariable("pageNumber") int pageNumber)	{
+			@PathVariable("pageNumber") int pageNumber, 
+			@PathVariable("lastTimeChecked") long lastTimeCheckedMillisec)	{
 		
+		System.out.println("Request dosao.");
 		List<Notification> notifications = new ArrayList<Notification>();
-		List<NotificationViewModel> notificationsVM = new ArrayList<NotificationViewModel>(); 
+		int notificationCount ; 
+		Timestamp lastChecked = new Timestamp (lastTimeCheckedMillisec) ; 
+		
 		try {
+			notificationCount = this.notificationService.getNewNotificationCount(username, lastChecked) ;
+			if(notificationCount == 0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No more notifications to show") ;
+			
+			System.out.println("TU SMO ................................................");
 			notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
 			
-			for(int i = 0; i < notifications.size(); i ++)	{
-				String typeName = notifications.get(i).getNotificationTypeId().getTypeName();
-				String notifier = notifications.get(i).getNotifierUsername(); 
-				NotificationViewModel notification = new NotificationViewModel(
-						notifications.get(i).getId(),
-						Long.valueOf(notifications.get(i).getContet()).longValue(),
-						""); 
-				
-				if(typeName.equals("Followed"))
-					notification.notificationText = "The user " + notifier + " started following you."; 
-				else if (typeName.equals("Commented"))
-					notification.notificationText = "The user " + notifier + " commented on your post."; 
-				else if (typeName.equals("Post vote"))
-					notification.notificationText = "The user " + notifier + " voted for your post."; 
-				else if (typeName.equals("Comment vote"))
-					notification.notificationText = "The user " + notifier + " voted for your comment."; 
-				else if (typeName.equals("Post repost"))
-					notification.notificationText = "The user " + notifier + " reposted your post."; 
-				notificationsVM.add(notification);
-			}
-			if(notificationsVM.size() == 0)
-				return ResponseEntity.status(HttpStatus.OK).body("No more notifications to show.");
-			return ResponseEntity.status(HttpStatus.OK).body(notificationsVM);
+			System.out.println("DI SMO ................................................." + notifications.size());
+			NotificationResponse response = new NotificationResponse(notifications, notificationCount) ;
+			
+			System.out.println("COUNT MU JE " + response.notificationCount);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (Exception e) {
+			System.out.println("EVO GA IDE GRESKA " + e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 		}
 		
 	}
 	
+	/*@RequestMapping(value="NewNotifications/{username}/{pageNumber}", method=RequestMethod.GET) 
+	public ResponseEntity
+	*/
 	private static class NotificationInfo	{
 		
 		public String notifierUsername;

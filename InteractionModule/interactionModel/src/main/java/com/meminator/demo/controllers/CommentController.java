@@ -41,16 +41,15 @@ public class CommentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage()); 
 		}
 	}
-	@RequestMapping(value="/postId={postId}/sortBy={sortBy}/pageNumber={pageNumber}", method=RequestMethod.GET)
+	@RequestMapping(value="/{postId}/{pageNumber}", method=RequestMethod.GET)
 	public ResponseEntity getAllComments(
 			@PathVariable("postId") long postId,
-			@PathVariable("sortBy") String sortBy,
 			@PathVariable("pageNumber") int pageNumber)	{
 		
 		List<Comment> comments = new ArrayList<Comment>(); 
 		List<CommentViewModel>commentsVM = new ArrayList<CommentViewModel>();
 		try {
-			comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
+			comments = this.commentService.getAllComments(postId, pageNumber);
 			
 			for(int i = 0; i < comments.size(); i ++)	{
 				commentsVM.add(new CommentViewModel(comments.get(i).getId(),
@@ -81,7 +80,8 @@ public class CommentController {
 	public ResponseEntity deleteComment(@RequestBody final UpdatedCommentInfo info)	{
 		
 		try {
-			this.commentService.deleteComment(info.commenterUsername, Long.valueOf(info.commentId).longValue());
+			this.commentService.deleteComment(info.commenterUsername,
+					Long.valueOf(info.commentId).longValue());
 			return ResponseEntity.status(HttpStatus.OK).body("The specified comment was deleted."); 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.OK).body(e.getLocalizedMessage()); 

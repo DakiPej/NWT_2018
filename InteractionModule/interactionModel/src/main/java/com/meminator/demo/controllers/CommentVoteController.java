@@ -30,7 +30,21 @@ public class CommentVoteController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 		}
 	}
+	@RequestMapping(value="", method=RequestMethod.DELETE)
+	public ResponseEntity deleteCommentVote(@RequestBody final DeleteCommentVoteInfo info)	{
+		try {
+			String response = this.commentVoteService.deleteCommentVote(info.commentId, info.voterUsername) ;
+					
+			 return ResponseEntity.status(HttpStatus.OK).body(response) ; 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
+		}
+	}
 	
+	private static class DeleteCommentVoteInfo	{
+		public long commentId ; 
+		public String voterUsername ; 
+	}
 	private static class CommentVoteInfo {
 		public long commentId; 
 		public String voterUsername;

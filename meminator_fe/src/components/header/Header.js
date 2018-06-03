@@ -4,6 +4,7 @@ import {
     NavItem,
     Icon
 } from 'react-materialize';
+import Notification from '../notifications/NotificationContainer' 
 
 class Header extends Component{
     render(){
@@ -12,6 +13,7 @@ class Header extends Component{
                 <NavItem href='get-started.html'><Icon>home</Icon></NavItem>
                 <NavItem href='get-started.html'><Icon>explore</Icon></NavItem>
                 <NavItem href='get-started.html'><Icon>input</Icon></NavItem>
+                <Notification />
             </Navbar>
         );
     }
