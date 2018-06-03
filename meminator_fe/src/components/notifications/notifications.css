@@ -1,0 +1,18 @@
+.active {
+
+}
+
+.dropDownDiv {
+    display: flex ; 
+    width: 400px ; 
+}
+
+.dropDownDiv span  {
+    width: 100% ; 
+}
+
+.notificationDiv {
+    width: 100% ; 
+}
+
+
