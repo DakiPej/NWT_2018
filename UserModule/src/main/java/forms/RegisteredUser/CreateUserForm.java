@@ -2,19 +2,11 @@ package forms.RegisteredUser;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-
-import com.meminator.userModule.models.UserType;
 
 public class CreateUserForm {
 	
@@ -24,8 +16,6 @@ public class CreateUserForm {
 	@Size(max = 20)
 	private String lastName;
 	
-	@Temporal(TemporalType.DATE)
-	private Date birthdate;
 	
 	@Size(min = 3, max = 15)
 	@NotNull
@@ -54,14 +44,6 @@ public class CreateUserForm {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public Date getBirthdate() {
-		return birthdate;
-	}
-
-	public void setBirthdate(Date birthdate) {
-		this.birthdate = birthdate;
 	}
 
 	public String getUsername() {

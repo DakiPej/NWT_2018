@@ -1,10 +1,12 @@
 package com.meminator.userModule.controllers;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,52 +14,69 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.meminator.userModule.services.FollowService;
 
-import forms.FollowForms.FriendForm;
 import io.swagger.annotations.Api;
 
 @Controller
 @Api(value="registered user")
-@RequestMapping(value="/follow")
+@RequestMapping
 public class FollowController {
 	@Autowired
 	FollowService followService;
 	
-	@RequestMapping(value="/addFriend", method=RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_user')")
+	@RequestMapping(value="/follow/{friend}", method=RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<Boolean> addFriend(@RequestBody @Valid final FriendForm friendForm){
+	public ResponseEntity addFriend(OAuth2Authentication authentication, @PathVariable final String friend){
 		try {
-			if(followService.addFriend(friendForm))
-				return ResponseEntity.ok(true);
-			else 
-				return ResponseEntity.badRequest().body(false);
+			return ResponseEntity.status(HttpStatus.OK).body(followService.addFriend(authentication.getName(), friend));
+		} catch (IllegalArgumentException e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body(false);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error.");
 		}
 	}
 	
-	@RequestMapping(value="/removeFriend", method=RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_user')")
+	@RequestMapping(value="/unfollow/{friend}", method=RequestMethod.DELETE)
 	@ResponseBody
-	public ResponseEntity<Boolean> removeFriend(@RequestBody @Valid final FriendForm friendForm){
+	public ResponseEntity<Boolean> removeFriend(OAuth2Authentication authentication, @PathVariable final String friend){
 		try {
-			if(followService.removeFriend(friendForm))
+			if(followService.removeFriend(authentication.getName(), friend))
 				return ResponseEntity.ok(true);
 			else 
-				return ResponseEntity.badRequest().body(false);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body(false);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
 		}
 	}
 	
+	@PreAuthorize("isAnonymous()  or hasRole('ROLE_user')")
 	@RequestMapping(value="/myFriends", method=RequestMethod.POST)
 	@ResponseBody
+	//public ResponseEntity myFriends(OAuth2Authentication authentication) {
 	public ResponseEntity myFriends(@RequestBody final String username) {
 		try {
-			return ResponseEntity.ok(followService.myFriends(username));
+			//return ResponseEntity.status(HttpStatus.OK).body(followService.myFriends(authentication.getName()));
+			return ResponseEntity.status(HttpStatus.OK).body(followService.myFriends(username));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body("Error ocurred.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error.");
+		}
+	}
+
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	@RequestMapping(value="/followedBy", method=RequestMethod.POST)
+	@ResponseBody
+	//public ResponseEntity myFollowers(OAuth2Authentication authentication) {
+	public ResponseEntity myFollowers(@RequestBody final String username) {
+		try {
+			//return ResponseEntity.status(HttpStatus.OK).body(followService.myFollowers(authentication.getName()));
+			return ResponseEntity.status(HttpStatus.OK).body(followService.myFollowers(username));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error.");
 		}
 	}
 }

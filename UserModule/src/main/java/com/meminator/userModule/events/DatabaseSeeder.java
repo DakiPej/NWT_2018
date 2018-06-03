@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.meminator.userModule.models.Follow;
@@ -61,7 +63,7 @@ public class DatabaseSeeder {
 	private void userTypeTableSeed() {
 		try {
 			UserType ut = new UserType();
-			ut.setTypeName("Regular user");
+			ut.setTypeName("user");
 			ut = userTypeRepository.save(ut);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -72,45 +74,48 @@ public class DatabaseSeeder {
 		try {
 			RegisteredUser ru = new RegisteredUser();
 			
+			PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String hashedPassword = passwordEncoder.encode("password");
+
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("dakipej");
 			ru.setEmail("dakipej@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("sbecirovic");
 			ru.setEmail("sbecirovic@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("tdzirlo");
 			ru.setEmail("tdzirlo@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("pipi");
 			ru.setEmail("pipi@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("seka");
 			ru.setEmail("seka@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 			
 			ru = new RegisteredUser();
 			ru.setUserTypeID(userTypeRepository.findUserTypeById(Long.valueOf(1)));
 			ru.setUsername("aco");
 			ru.setEmail("aco@gmail.com");
-			ru.setPassword("12345678");
+			ru.setPassword(hashedPassword);
 			ru = registeredUserRepository.save(ru);
 	
 		} catch (Exception e) {
@@ -207,12 +212,12 @@ public class DatabaseSeeder {
 			f = followRepository.save(f);
 			
 			f = new Follow();
-			f.setUser(registeredUserRepository.getByUsername("dakipej"));
-			f.setFollowedUser(registeredUserRepository.getByUsername("aco"));
-			f = followRepository.save(f);
-			
-			f = new Follow();
 			f.setUser(registeredUserRepository.getByUsername("aco"));
+			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
+			f = followRepository.save(f);
+
+			f = new Follow();
+			f.setUser(registeredUserRepository.getByUsername("pipi"));
 			f.setFollowedUser(registeredUserRepository.getByUsername("dakipej"));
 			f = followRepository.save(f);
 			

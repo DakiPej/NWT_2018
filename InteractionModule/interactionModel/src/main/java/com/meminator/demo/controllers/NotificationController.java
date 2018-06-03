@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,23 +37,31 @@ public class NotificationController {
 		this.registeredUserService = registeredUserService ; 
 	}
 
-	
-	@RequestMapping(value="/lastTimeChecked/{username}", method=RequestMethod.GET)
-	public ResponseEntity getLastTimeChecked(@PathVariable("username") String username)	{
+//<<<<<<< HEAD
+	@PreAuthorize("hasRole('ROLE_user')")
+	//@RequestMapping(value="/lastTimeChecked/{username}", method=RequestMethod.GET)
+	@RequestMapping(value="/lastTimeChecked", method=RequestMethod.GET)
+	public ResponseEntity getLastTimeChecked(OAuth2Authentication authentication/*@PathVariable("username") String username*/)	{
 		Timestamp lastTimeChecked ; 
 		
 		try {
-			lastTimeChecked = this.registeredUserService.getLastTimeChecked(username) ; 
+			lastTimeChecked = this.registeredUserService.getLastTimeChecked(authentication.getName()/*username*/) ; 
 			
 			return ResponseEntity.status(HttpStatus.OK).body(lastTimeChecked.getTime()) ; 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
 		}
 	}
-	@RequestMapping(value="/{username}/{pageNumber}/{lastTimeChecked}", method=RequestMethod.GET)
+	
+	@PreAuthorize("hasRole('ROLE_user')")
+	//@RequestMapping(value="/{username}/{pageNumber}/{lastTimeChecked}", method=RequestMethod.GET)
+	@RequestMapping(value="/{pageNumber}/{lastTimeChecked}", method=RequestMethod.GET)
+//=======
+//	@RequestMapping(value="/username={username}/pageNumber={pageNumber}", method=RequestMethod.GET)
+//>>>>>>> 3bd54351e027575865a0d7093e8cc854c0b50a13
 	//(value="/getNotifications/{username}/{pageNumber}", method=RequestMethod.GET)
-	public ResponseEntity getAllNotifications(
-			@PathVariable("username") String username, 
+	public ResponseEntity getAllNotifications(OAuth2Authentication authentication,
+			//@PathVariable("username") String username, 
 			@PathVariable("pageNumber") int pageNumber, 
 			@PathVariable("lastTimeChecked") long lastTimeCheckedMillisec)	{
 		
@@ -61,11 +71,15 @@ public class NotificationController {
 		Timestamp lastChecked = new Timestamp (lastTimeCheckedMillisec) ; 
 		
 		try {
-			notificationCount = this.notificationService.getNewNotificationCount(username, lastChecked) ;
+//<<<<<<< HEAD
+			notificationCount = this.notificationService.getNewNotificationCount(authentication.getName(), lastChecked) ;
 			if(notificationCount == 0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No more notifications to show") ;
 			
 			System.out.println("TU SMO ................................................");
-			notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
+//			notifications = this.notificationService.getAllNotificationsByUsername(username, pageNumber);
+//=======
+			notifications = this.notificationService.getAllNotificationsByUsername(authentication.getName(), pageNumber);
+//>>>>>>> 3bd54351e027575865a0d7093e8cc854c0b50a13
 			
 			System.out.println("DI SMO ................................................." + notifications.size());
 			NotificationResponse response = new NotificationResponse(notifications, notificationCount) ;
@@ -85,10 +99,16 @@ public class NotificationController {
 	*/
 	private static class NotificationInfo	{
 		
-		public String notifierUsername;
-		public String username; 
+		public String notifierUsername; 
 		public String notificationType; 
 		
-		
+		public NotificationInfo(){}
+
+		public void setNotificationType(String notificationType) {
+			this.notificationType = notificationType;
+		}
+		public void setNotifierUsername(String notifierUsername) {
+			this.notifierUsername = notifierUsername;
+		}
 	}
 }

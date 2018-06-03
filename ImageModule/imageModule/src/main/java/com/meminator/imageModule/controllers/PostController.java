@@ -25,7 +25,7 @@ public class PostController {
 	    }
 
 	    @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-	    public ResponseEntity createUser(@RequestBody Post post){
+	    public ResponseEntity createPost(@RequestBody Post post){
 	        try{
 	            return ResponseEntity.status(HttpStatus.OK).body(postService.createPost(post));
 	        }catch (Exception e){
@@ -34,7 +34,7 @@ public class PostController {
 	    }
 
 	    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-	    public ResponseEntity getUser(@PathVariable Long id){
+	    public ResponseEntity getPost(@PathVariable Long id){
 	        try{
 	            return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(id));
 	        }catch (IllegalArgumentException e){
@@ -42,9 +42,10 @@ public class PostController {
 	        }catch (Exception e){
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 	        }
-	    }
+		}
+		
 	    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	    public ResponseEntity deleteUser(@PathVariable Long id){
+	    public ResponseEntity deletePost(@PathVariable Long id){
 	        try{
 	            return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id));
 	        }catch (Exception e){

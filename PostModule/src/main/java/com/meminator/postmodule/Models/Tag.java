@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Tag {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Size(max = 15)
     private String name;

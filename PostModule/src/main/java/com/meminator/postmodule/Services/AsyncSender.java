@@ -1,6 +1,7 @@
 package com.meminator.postmodule.Services;
 
 import com.meminator.postmodule.Models.PostVM;
+import com.meminator.postmodule.Models.PostVMS;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class AsyncSender {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendPost(PostVM postVM){
+    public void sendPost(PostVMS postVM){
 
         rabbitTemplate.convertAndSend("posts-queue-exchange","post.create", postVM);
 

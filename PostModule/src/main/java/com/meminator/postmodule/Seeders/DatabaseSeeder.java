@@ -1,11 +1,13 @@
 package com.meminator.postmodule.Seeders;
 
 import com.meminator.postmodule.Models.Post;
+import com.meminator.postmodule.Models.PostVMS;
 import com.meminator.postmodule.Models.RegisteredUser;
 import com.meminator.postmodule.Models.Tag;
 import com.meminator.postmodule.Repositories.IPostRepositroy;
 import com.meminator.postmodule.Repositories.IRegisteredUserRepository;
 import com.meminator.postmodule.Repositories.ITagRepositroy;
+import com.meminator.postmodule.Services.AsyncSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -25,6 +27,7 @@ public class DatabaseSeeder {
     private IRegisteredUserRepository registeredUserRepository;
     private ITagRepositroy tagRepositroy;
     private JdbcTemplate jdbcTemplate;
+    private AsyncSender asyncSender;
 
     @Autowired
     public DatabaseSeeder(IPostRepositroy postRepositroy, IRegisteredUserRepository registeredUserRepository, ITagRepositroy tagRepositroy, JdbcTemplate jdbcTemplate) {
@@ -40,6 +43,13 @@ public class DatabaseSeeder {
         seedTag();
         seedPost();
     }
+
+
+    @Autowired
+    public void setAsyncSender(AsyncSender asyncSender){
+        this.asyncSender = asyncSender;
+    }
+
 
     private void seedTag() {
         String tu0 = "Funny", tu1= "Sad", tu2 = "Meme", tu3 = "2018";
@@ -96,6 +106,7 @@ public class DatabaseSeeder {
                 for(Tag t: tags) {
                     p.addTag(t);
                 }
+                asyncSender.sendPost(new PostVMS(p));
             }
             tagRepositroy.saveAll(tags);
             postRepositroy.saveAll(posts);

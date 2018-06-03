@@ -5,8 +5,8 @@ import javax.validation.constraints.Size;
 
 public class ResetPasswordForm {
 	@NotNull
-	@Size(min = 3, max = 15)
-	private String username;
+	@Size(min = 8, max = 20)
+	private String oldPassword;
 	
 	@NotNull
 	@Size(min = 8, max = 20)
@@ -16,12 +16,12 @@ public class ResetPasswordForm {
 	@Size(min = 8, max = 20)
 	private String newPasswordR;
 
-	public String getUsername() {
-		return username;
+	public String getOldPassword() {
+		return oldPassword;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
 	}
 
 	public String getNewPassword() {

@@ -5,6 +5,8 @@ import com.meminator.postmodule.Services.RegisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +20,12 @@ public class RegisteredUserController {
         this.registeredUserService = registeredUserService;
     }
 
+    @RequestMapping(value = "/oauth",  method = RequestMethod.GET)
+    public ResponseEntity test(OAuth2Authentication authentication) {
+        return ResponseEntity.ok("Daki dodao test da provjeri radi li oauth2. :D" + authentication.getName());
+    }
+
+    @PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity createUser(@RequestBody RegisteredUser registeredUser){
         try{
@@ -27,6 +35,7 @@ public class RegisteredUserController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, value = "/{username}")
     public ResponseEntity getUser(@PathVariable String username){
         try{
@@ -37,7 +46,7 @@ public class RegisteredUserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-
+	@PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{username}")
     public ResponseEntity deleteUser(@PathVariable String username){
         try{

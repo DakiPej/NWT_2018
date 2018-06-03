@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,23 +38,26 @@ public class ImageController {
     public void setRegisteredUserService(ImageService imageService){
         this.imageService = imageService;
     }
-    
-    @RequestMapping(method = RequestMethod.POST, value="/upload/profile/{username}")
-    public ResponseEntity createProfilePicture(MultipartHttpServletRequest request,@PathVariable String username){
+	
+	@PreAuthorize("hasRole('ROLE_user')")
+    @RequestMapping(method = RequestMethod.POST, value="/upload/profile")
+    public ResponseEntity createProfilePicture(MultipartHttpServletRequest request, OAuth2Authentication authentication){
         
     	try{   
     		Iterator<String> itr = request.getFileNames();
     		 while (itr.hasNext()) {
                  String uploadedFile = itr.next();
                  MultipartFile file = request.getFile(uploadedFile);
-                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createProfilePicture(file,username));
+                 return ResponseEntity.status(HttpStatus.OK).body(imageService.createProfilePicture(file, authentication.getName()));
     		 }
     	        return new ResponseEntity<>("{Prazno}", HttpStatus.OK);
     		 }catch (Exception e){
  	        	System.out.println(e.getMessage().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
-    }
+	}
+	
+	@PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.POST, value="/upload/meme")
     public ResponseEntity<Long> createMeme(MultipartHttpServletRequest request){
         
@@ -68,7 +73,8 @@ public class ImageController {
             return (ResponseEntity<Long>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
     }
-    
+	
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, value = "/{id}", 
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
@@ -94,7 +100,8 @@ public class ImageController {
     	
         
     }
-    
+	
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, value = "/profile/{username}", 
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImageByUsername(@PathVariable String username) throws IOException {
@@ -120,7 +127,8 @@ public class ImageController {
     	
         
     }
-    
+	
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, value = "/meme/{id}", 
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImageByPostId(@PathVariable Long id) throws IOException {
@@ -147,7 +155,8 @@ public class ImageController {
     	
         
     }
-    
+	
+	@PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity deleteImage(@PathVariable Long id){
         try{
@@ -156,15 +165,18 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
-    
-    @RequestMapping(method = RequestMethod.DELETE, value = "/profile/{username}")
-    public ResponseEntity deleteImageByUsername(@PathVariable String username){
+	
+	@PreAuthorize("hasRole('ROLE_user')")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/profile")
+    public ResponseEntity deleteImageByUsername(OAuth2Authentication authentication){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImageByUsername(username));
+            return ResponseEntity.status(HttpStatus.OK).body(imageService.deleteImageByUsername(authentication.getName()));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
-    }
+	}
+	
+	@PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/meme/{id}")
     public ResponseEntity deleteImageByPostId(@PathVariable Long id){
         try{

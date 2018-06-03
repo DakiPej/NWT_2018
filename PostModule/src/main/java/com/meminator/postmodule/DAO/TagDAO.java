@@ -26,4 +26,6 @@ public class TagDAO extends BaseDAO<Tag, ITagRepositroy> {
         return this.repo.getByName(name);
     }
 
+    public List<Tag> getAllInList(List<String> names) {return  this.repo.getAllByNameIn(names); }
+
 }

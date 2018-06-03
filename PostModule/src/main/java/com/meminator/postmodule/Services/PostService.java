@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meminator.postmodule.DAO.PostDAO;
 import com.meminator.postmodule.DAO.RegisteredUserDAO;
 import com.meminator.postmodule.DAO.TagDAO;
-import com.meminator.postmodule.Models.Post;
-import com.meminator.postmodule.Models.PostVM;
-import com.meminator.postmodule.Models.RegisteredUser;
-import com.meminator.postmodule.Models.Tag;
+import com.meminator.postmodule.Models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,19 +53,31 @@ public class PostService {
         this.restTemplate = restTemplate;
     }
 
-    public Post createPost(Post post, String username){
+    public Post createPost(PostVM postVM, String username){
 
-        if(post.getImageURL().equals("")){
+        if(postVM.getImageURL().equals("")){
             throw new IllegalArgumentException("Url of an image isn't specified!");
         }
 
         Optional<RegisteredUser> user = registeredUserDAO.getUser(username);
         if(user.isPresent()){
+            Post post = new Post();
             post.setUser(user.get());
-
+            post.setInfo(postVM.getInfo());
+            post.setImageURL(postVM.getImageURL());
+            Optional<Post> repost = postDAO.getPost(postVM.getRepostID());
+            post.setRepost(repost.isPresent()?repost.get():null);
+            List<Tag> tags = tagDAO.getAllInList(postVM.getTags());
+            for(Tag i: tags){
+                if(postVM.getTags().contains(i.getName())) postVM.getTags().remove(i.getName());
+            }
+            for(String i: postVM.getTags()){
+                tags.add(tagDAO.createTag(new Tag(i)));
+            }
+            post.setTags(tags);
             Post newPost =  postDAO.savePost(post);
             if(newPost != null){
-                asyncSender.sendPost(new PostVM(post));
+                asyncSender.sendPost(new PostVMS(post));
             }
             return newPost;
         }else{
@@ -128,8 +137,15 @@ public class PostService {
         }
     }
 
-    public boolean deletePost(Long id){
-        return postDAO.deletePost(id);
+    public boolean deletePost(Long id, String username){
+        Optional<Post> post = postDAO.getPost(id);
+        if(post.isPresent())
+            if(post.get().getUser().getUsername().equals(username)) {
+                asyncSender.deletePost(id);
+                return postDAO.deletePost(id);
+            }
+            else throw new SecurityException("User cannot delete this post!");
+        else throw new IllegalArgumentException("Post with given id does not exist!");
     }
 
     public Post editPost(Long id, Post newpost){
@@ -155,7 +171,7 @@ public class PostService {
         JSONObject request = new JSONObject();
         request.put("username", username);
         List<String> response = restTemplate.postForObject(
-                "http://userModule/follow/myFriends",
+                "http://userModule/myFriends",
                 username,
                 List.class
                 );
