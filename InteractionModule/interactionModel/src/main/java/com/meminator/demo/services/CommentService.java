@@ -44,8 +44,7 @@ public class CommentService {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService; 
 	}
-	public String createComment(long postId, String commenterUsername, String commentText)	
-		throws ServletException		{
+	public String createComment(long postId, String commenterUsername, String commentText)	{
 		
 		if(!this.registeredUserDao.userExists(commenterUsername))
 			throw new IllegalArgumentException("The user with the specified username does not exist.");
@@ -68,15 +67,15 @@ public class CommentService {
 		if(this.commentDao.createComment(comment))	{
 			if(this.notificationService.createNotification(comment))
 				return "Comment and notification created"; 
-			throw new ServletException("Notification was not created"); 
+			throw new IllegalArgumentException("Notification was not created"); 
 		}
-		throw new ServletException("The comment and notification were not created"); 
+		throw new IllegalArgumentException("The comment and notification were not created"); 
 	}
 	
 	public String editComment(long commentId, String commenterUsername, String commentText)	
 		throws ServletException		{
 		
-		if(!this.commentDao.exists(commentId))
+		if(!this.commentDao.existsById(commentId)) 
 			throw new IllegalArgumentException("The comment with the specified id does not exist.");
 		if(!this.registeredUserDao.userExists(commenterUsername))
 			throw new IllegalArgumentException("The user with the specified username does not exist.");
@@ -85,7 +84,7 @@ public class CommentService {
 		
 		Comment comment = this.commentDao.findCommentById(commentId); 
 		
-		if(comment.getUserCommenterId().getUsername() != commenterUsername)
+		if(!comment.getUserCommenterId().getUsername().equals(commenterUsername))
 			throw new IllegalArgumentException("The user did not leave the comment");
 		
 		comment.setComment(commentText);
@@ -103,7 +102,7 @@ public class CommentService {
 		
 		Comment comment = this.commentDao.findCommentById(commentId); 
 		
-		if(comment.getUserCommenterId().getUsername() != username)
+		if(!comment.getUserCommenterId().getUsername().equals(username))
 			throw new IllegalArgumentException("The user did not leave the specified comment.");
 		
 		this.commentDao.deleteComment(comment); 
@@ -111,8 +110,8 @@ public class CommentService {
 		
 	}
 	
-	public List<Comment> getAllComments(long postId, String sortBy, int pageNumber)	{
-		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, sortBy);
+	public List<Comment> getAllComments(long postId, int pageNumber)	{
+		Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "commentDate");
 		
 		return this.commentDao.getAllCommentsByPostId(
 				this.postDao.findPostById(postId),
@@ -122,6 +121,10 @@ public class CommentService {
 	public void updateVoteCount(long commentId, boolean upVote, boolean doesntExist)	{
 		Comment comment = this.commentDao.findCommentById(commentId); 
 		
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DOŠAO SAM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("PARAMETRI SU : \n ID JE " + commentId 
+					+ " \n upVote je " + upVote 
+					+ "\n doesntExist je " + doesntExist);
 		if(doesntExist)	
 			if(upVote)
 				comment.setUpVoteCount(comment.getUpVoteCount() + 1);
@@ -134,7 +137,7 @@ public class CommentService {
 			}
 			else {
 				comment.setUpVoteCount(comment.getUpVoteCount() - 1);
-				comment.setDownVoteCount(comment.getDownVoteCount() - 1);
+				comment.setDownVoteCount(comment.getDownVoteCount() + 1);
 			}
 		this.commentDao.createComment(comment);
 	}

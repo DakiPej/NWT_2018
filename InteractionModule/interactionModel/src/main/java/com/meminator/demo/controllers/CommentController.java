@@ -43,6 +43,20 @@ public class CommentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 		}
 	}
+//<<<<<<< HEAD
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	@RequestMapping(value="/{postId}/{pageNumber}", method=RequestMethod.GET)
+	public ResponseEntity getAllComments(
+			@PathVariable("postId") long postId,
+			@PathVariable("pageNumber") int pageNumber)	{
+		
+		List<Comment> comments = new ArrayList<Comment>(); 
+		List<CommentViewModel>commentsVM = new ArrayList<CommentViewModel>();
+		try {
+			comments = this.commentService.getAllComments(postId, pageNumber);
+			
+			for(int i = 0; i < comments.size(); i ++)	{
+/*=======
 
 	@RequestMapping(value = "/postId={postId}/sortBy={sortBy}/pageNumber={pageNumber}", method = RequestMethod.GET)
 	public ResponseEntity getAllComments(@PathVariable("postId") long postId, @PathVariable("sortBy") String sortBy,
@@ -54,6 +68,7 @@ public class CommentController {
 			comments = this.commentService.getAllComments(postId, sortBy, pageNumber);
 
 			for (int i = 0; i < comments.size(); i++) {
+>>>>>>> 3bd54351e027575865a0d7093e8cc854c0b50a13 */
 				commentsVM.add(new CommentViewModel(comments.get(i).getId(),
 						comments.get(i).getUserCommenterId().getUsername(), comments.get(i).getComment(),
 						comments.get(i).getUpVoteCount(), comments.get(i).getDownVoteCount()));
@@ -85,8 +100,14 @@ public class CommentController {
 			@RequestBody final UpdatedCommentInfo info) {
 
 		try {
+//<<<<<<< HEAD
+			/*        this.commentService.deleteComment(info.commenterUsername,
+					Long.valueOf(info.commentId).longValue());
+			return ResponseEntity.status(HttpStatus.OK).body("The specified comment was deleted.");  */ 
+//=======
 			this.commentService.deleteComment(authentication.getName(), Long.valueOf(info.commentId).longValue());
 			return ResponseEntity.status(HttpStatus.OK).body("The specified comment was deleted.");
+//>>>>>>> 3bd54351e027575865a0d7093e8cc854c0b50a13
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.OK).body(e.getLocalizedMessage());
 		}
