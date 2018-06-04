@@ -33,6 +33,9 @@ class Notification extends Component   {
     constructor(props)  {
         super(props) ;
         
+        var token = sessionStorage.getItem("token") ; 
+        var username = sessionStorage.getItem("username") ; 
+
         this.state = {
             notificationPageNumber: 0, 
             notifications: [],
@@ -52,15 +55,18 @@ class Notification extends Component   {
             this.initialNotifications() ; 
         }, 100);
         //this.initialNotifications() ; 
-        const intervalId = setInterval(this.fetchAsync,5000);
+        const intervalId = setInterval(this.fetchAsync,15000);
         this.setState(()=>({/*notifications, */intervalId}));
 
     }
 
     initialNotifications = () => {
+        console.log(sessionStorage.getItem("token")) ; 
         const pageNumber = this.state.notificationPageNumber ; 
         const lastTimeChecked = this.state.lastTimeChecked ;  
-        axios.get("http://localhost:8081/notifications/dakipej/" + pageNumber + "/" + lastTimeChecked)
+        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
+        axios.get("http://138.68.186.248:8080/interactionmodule/notifications/" + pageNumber + "/" + lastTimeChecked
+        , { headers: {Authorization : authorization }})
         .then(this.handleNewRequests)
         .catch(this.catchNewRequests) ; 
     }
@@ -74,7 +80,10 @@ class Notification extends Component   {
     }
 
     getLastTimeChecked = () => {
-        axios.get("http://localhost:8081/users/lastTimeChecked/dakipej")
+        console.log(sessionStorage.getItem("token")) ;
+        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
+        axios.get("http://138.68.186.248:8080/interactionmodule/notifications/lastTimeChecked/"
+        , { headers: {Authorization : authorization }})
         .then(this.handleGetLastTimeChecked.bind(this))
         .catch(function(err)    {
             console.log(err);
@@ -87,6 +96,8 @@ class Notification extends Component   {
     }
 
     handleGetLastTimeChecked = (response) => {
+        
+        console.log(response.data) ; 
         const lastTimeChecked = response.data ; 
         const isFetching = false ; 
 
@@ -100,11 +111,14 @@ class Notification extends Component   {
     }
 
     fetchAsync = () => {
+        console.log(sessionStorage.getItem("token")) ;
         const pageNumber = this.state.notificationPageNumber ;  
         const lastTimeChecked = this.state.lastTimeChecked ; 
+        const authorization = "Bearer " + sessionStorage.getItem("token");
 
         if(!this.state.isFetching)
-            axios.get('http://localhost:8081/notifications/dakipej/' + pageNumber + "/" + Date.now())
+            axios.get('http://138.68.186.248:8080/interactionmodule/notifications/' + pageNumber + "/" + Date.now()
+            , { headers: {Authorization : authorization }})
             .then(this.handleNewRequests.bind(this))
             .catch(this.catchNewRequests.bind(this)) ; 
         // if(!this.state.isFetching){

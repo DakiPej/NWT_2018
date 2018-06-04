@@ -13,6 +13,9 @@ class Header extends Component{
                 <NavItem href='get-started.html'><Icon>home</Icon></NavItem>
                 <NavItem href='get-started.html'><Icon>explore</Icon></NavItem>
                 <NavItem href='get-started.html'><Icon>input</Icon></NavItem>
+                {sessionStorage.getItem("username") &&
+                <Notification />
+            }
             </Navbar>
         );
     }
