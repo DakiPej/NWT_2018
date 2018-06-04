@@ -66,27 +66,51 @@ class Notification extends Component {
     }
 
     reRoute = (notificationText, objectId) => {
+        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
         
-        console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ; 
-        console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ; 
-        // if(notificationText.includes("commented"))  {
-        //     console.log("USAO U COMMENTED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        //     axios.get("http://138.68.186.248:8082/posts/1")
-        //     .then(this.handleGetPost)
-        //     .catch(this.handleErrorGetPost)
-        // }
-        
-        // else if(notificationText.includes("post"))   {
-        //     window.location="/post/" + objectId ; 
-        
-        // } 
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ; 
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ; 
+         if(notificationText.includes("commented on your post"))  {
+            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId, 
+            {
+                headers: {Authorization: authorization}
+            })
+            .then(this.handleGetPostId)
+            .catch(this.handleErrorGetPostId) ; 
+
+         }
+         else if(notificationText.includes("voted for your post"))   {
+             axios.get("http://138.68.184.248:8080/interactionmodule/postVotes/postId/" + objectId,
+            {
+                headers: {Authorization: authorization}
+            })
+            .then(this.handleGetPostId)
+            .catch(this.handleErrorGetPostId) ;             
+        } 
+        else if(notificationText.includes("voted for your comment"))    {
+            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId, 
+        {
+            headers: {Authorization: authorization}
+        })
+        .then(this.handleGetPostId)
+        .catch(this.handleErrorGetPostId) ; 
+        }
+        else if(notificationText.includes("started following you"))    {
+            //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
+        }
+        else if(notificationText.includes("reposted your post"))   {
+            //PREUSMJERITI NA TAJ POST ILI REPOST ?????
+        } 
     }
-    handleGetPost = (response) => {
+    handleGetPostId = (response) => {
         console.log(response.data) ; 
     }
-    handleErrorGetPost = (error) => {
+    handleErrorGetPostId = (error) => {
         console.log(error.data) ; 
     }
+
+
+
     initialNotifications = () => {
         //console.log(sessionStorage.getItem("token")) ; 
         const pageNumber = this.state.notificationPageNumber;
