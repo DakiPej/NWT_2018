@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.meminator.demo.configurations.AsyncConfiguration;
+import com.meminator.demo.services.NotificationService;
 import com.meminator.demo.services.PostService;
 import com.meminator.demo.services.PostVoteService;
 import com.meminator.demo.services.RegisteredUserService;
@@ -14,6 +15,7 @@ public class AsyncReceiverService {
 	RegisteredUserService registeredUserService;
 	PostVoteService postVoteService; 
 	PostService postService; 
+	NotificationService notificationService ; 
 	
 	@Autowired
 	public void setRegisteredUserService(RegisteredUserService registeredUserService)	{
@@ -26,6 +28,10 @@ public class AsyncReceiverService {
 	@Autowired
 	public void setPostService(PostService postService)	{
 		this.postService = postService;
+	}
+	@Autowired
+	public void setNotificationService(NotificationService notificationService)	{
+		this.notificationService = notificationService ;
 	}
 	
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
@@ -46,11 +52,20 @@ public class AsyncReceiverService {
 	public void receivePostToBeDeleted(final PostInformation postInformation)	{
 		this.postService.deletePost(postInformation.postId); 
 	}
+	@RabbitListener(queues = AsyncConfiguration.QUEUE_FOLLOW_NOTIFICATIONS)
+	public void receiverFollowNotifications(final FollowObject followObject)	{
+		this.notificationService.createFollowNotification(followObject.user, followObject.followedUser);
+	}
 	/*@RabbitListener(queues = AsyncConfiguration.QUEUE_POST_VOTE)
 	public void receivePostVoteUpdate(final PostVoteVM postVoteVM)	{
 		System.out.println("Post koji treba da se update-uje jeste : " + Long.toString(postVoteVM.postId));
 	}*/
 	
+	
+	private static class FollowObject	{
+		public String user; 
+		public String followedUser ; 
+	}
 	private static class RequiredUsername	{
 		public String username; 
 	}

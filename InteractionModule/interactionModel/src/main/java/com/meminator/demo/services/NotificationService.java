@@ -90,6 +90,26 @@ public class NotificationService {
 		notification.setChecked(false);
 		return this.notificationDao.createNotification(notification);
 	}
+	
+	public void createFollowNotification(String user, String followedUser)	{
+		Notification notif = new Notification() ; 
+		
+		RegisteredUser notifier = this.registeredUseDao.getRegisteredUserByUsername(user) ;
+		RegisteredUser notified = this.registeredUseDao.getRegisteredUserByUsername(followedUser) ; 
+		
+		NotificationType nt = this.notificationTypeDao.getNotificationTypeByTypeName("Followed") ; 
+		
+		notif.setNotifierUsername(user);
+		notif.setContet(
+				Long.toString(notifier.getId())
+				);
+		notif.setCreationMoment(new Date());
+		notif.setNotificationTypeId(nt);
+		notif.setUserId(notified);
+		notif.setChecked(false);
+		this.notificationDao.createNotification(notif) ; 
+			
+	}
 	/*public String createNotification(String notifierUsername, String username, String notificationType)	{
 		Notification notification = new Notification(); 
 		

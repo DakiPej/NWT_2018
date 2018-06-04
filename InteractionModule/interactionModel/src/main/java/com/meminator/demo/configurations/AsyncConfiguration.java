@@ -40,8 +40,10 @@ public class AsyncConfiguration implements RabbitListenerConfigurer	{
     public static final String ROUTING_KEY_USERS_TO_BE_ADDED = "user.create"; 
     
     public static final String QUEUE_USERS_TO_BE_DELETED = "usersQueueDelete";
-    public static final String ROUTING_KEY_USERS_TO_BE_DELETED = "user-delete";
+    public static final String ROUTING_KEY_USERS_TO_BE_DELETED = "user.delete";
     
+    public static final String QUEUE_FOLLOW_NOTIFICATIONS = "followQUEUQ" ; 
+    public static final String ROUTING_KEY_FOLLOW_NOTIFICATIONS = "user.follow" ; 
 	
 	@Bean
 	public TopicExchange usersExchange	()	{
@@ -72,7 +74,10 @@ public class AsyncConfiguration implements RabbitListenerConfigurer	{
 	public Queue deleteUsersQueue()	{
 		return new Queue(QUEUE_USERS_TO_BE_DELETED);
 	}
-	
+	@Bean
+	public Queue followUserQueue()	{
+		return new Queue(QUEUE_FOLLOW_NOTIFICATIONS) ; 
+	}
 	
 	@Bean
 	public Binding declarePostVoteBinding()	{
@@ -94,6 +99,10 @@ public class AsyncConfiguration implements RabbitListenerConfigurer	{
 	@Bean
 	public Binding declareDeleteUserBinding()	{
 		return BindingBuilder.bind(deleteUsersQueue()).to(usersExchange()).with(ROUTING_KEY_USERS_TO_BE_DELETED);
+	}
+	@Bean 
+	public Binding declareFollowNotificationBinding()	{
+		return BindingBuilder.bind(followUserQueue()).to(usersExchange()).with(ROUTING_KEY_FOLLOW_NOTIFICATIONS) ; 
 	}
 	@Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
