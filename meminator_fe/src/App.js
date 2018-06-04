@@ -9,6 +9,7 @@ import SinglePost from './components/post/SinglePost';
 import Register from './components/Register';
 import ProfileDetails from './components/ProfileDetails';
 import Feed from './components/post/Feed';
+import SinglePostDetails from './containers/SinglePostDetails';
 
 class App extends Component {
   render() {
@@ -20,6 +21,7 @@ class App extends Component {
         <Route exact path="/login" component={Landing}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/feed" component={Feed}/>
+        <Route exact path="/post/:id" component={SinglePostDetails}/>
       </Switch>
       </div>
     );
