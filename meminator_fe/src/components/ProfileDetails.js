@@ -5,62 +5,55 @@ import '../styles/profiledetails.css';
 import InfoProfile from './InfoProfile';
 import EditProfile from './EditProfile';
 
+
 class ProfileDetails extends Component{
 
     state = {
-      data:{
-        firstname: 'Default',
-        lastname: 'Default',
-        username: 'Default',
-        email: 'Default@default.com',
-        info: 'Dead inside obviouslys',
-        followers: 3,
-        following: 2,
-        image: 'http://i0.kym-cdn.com/entries/icons/original/000/003/619/ForeverAlone.jpg'
-      },
-      details: true
+      username: this.props.match.params.username,
+      details: true,
+      userProfile: true
 
     }
 
 
-  componentDidMount(){
-    this.getDetails();
-  }
-  getDetails = () => {
-
-  }
-  handleSuccess=(response)=> {
-
+    componentDidMount(){
+      if (this.props.match.params.username!=sessionStorage.getItem("username"))
+          this.setState({userProfile: false});
+      else
+          this.setState({userProfile: true});
     }
-
-    handleError=(error)=> {
-      console.log("Data not found");
-    }
-
-
-
 
     render(){
 
-        return(
-            <div style={{marginTop:"1vh",height:"60vh", width:"50%", justifyContent:"center", flexDirection:"column",alignItems:"center", paddingBottom:"1vh"}}>
-            <Row className="forma">
-            <Col  className="main" s={12} m={8} offset="s1 m8">
-            {this.state.details?   <div> <InfoProfile data={this.state.data} />
+        var profil=<div></div>
+        if (this.state.userProfile)
+        {
+          profil= <div> {this.state.details? <div> <InfoProfile username={this.state.username} userProfile={this.state.userProfile}/>
             <Button small  className="blue-grey btn-floating right" onClick={() => this.setState({ details: false })}><Icon>edit</Icon></Button>
             </div>:
             <div>
-            <EditProfile data={this.state.data}/>
+            <EditProfile  username={this.state.username} />
             <Button small  className="blue-grey btn-floating right" onClick={() => this.setState({ details: true })} ><Icon>done_all</Icon></Button>
             </div>
-            }
-              <br/>
-              <div>
-              <br/>
-              </div>
-              </Col>
+          }
+          </div>;
+        }
+        else {
+          profil=<div><InfoProfile  username={this.state.username} userProfile={this.state.userProfile}/></div>
+        }
+
+        return(
+            <div style={{marginTop:"1vh",height:"60vh", width:"50%", justifyContent:"center", flexDirection:"column",alignItems:"center", paddingBottom:"1vh"}}>
+              <Row className="forma">
+                <Col  className="main" s={12} m={8} offset="s1 m8">
+                  {profil}
+                  <br/>
+                  <div>
+                    <br/>
+                  </div>
+                </Col>
               </Row>
-            </div>
+              </div>
             );
       }
 }
