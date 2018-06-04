@@ -14,7 +14,7 @@ class Landing extends Component{
         var session_url = 'http://138.68.186.248:8080/usermodule/oauth/token';
         var username_b = 'devglan-client';
         var password_b = 'devglan-secret';
-        var credentials = btoa(username_b + ':' + password_b);
+        var credentials = btoa(username_b + ':' + password_b);  
         var basicAuth = 'Basic ' + credentials;
         axios.post(session_url, {
           headers: {    
