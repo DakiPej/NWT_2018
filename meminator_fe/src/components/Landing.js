@@ -18,8 +18,9 @@ class Landing extends Component{
         var basicAuth = 'Basic ' + credentials;
         axios.post(session_url, {
           headers: {    
-            'Authorization':  basicAuth,
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Authorization":  basicAuth,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "cache-control": "no-cache"
             },
             data:{
               'username' : this.state.username,
