@@ -1,37 +1,31 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button,Modal } from 'react-materialize';
 import '../styles/profiledetails.css';
-import $ from 'jquery'
-
+import axios from 'axios';
 
 
 class EditProfile extends Component{
     state = {
       password: '',
       password2: '',
-      passwordOriginal:'',
       passwordChange:'',
+      firstname: '',
+      lastname: '',
+      password: '',
+      info: '',
       image: '',
-      username: this.props.data.username,
-      email: this.props.data.email,
-      firstname: this.props.data.firstName,
-      lastname: this.props.data.lastName,
-      info: this.props.data.info,
+      data: {},
       error: {
-        username: '',
         firstname: '',
         lastname: '',
         password: '',
         password2: '',
         email: '',
-        passwordOriginal:'',
         image:'file-path',
         passwordChange:''
       },
       errorMessage:{
         passwordChange:'',
-        username:'',
-        passwordOriginal:'',
         firstname:'',
         lastname: '',
         password:'',
@@ -40,12 +34,98 @@ class EditProfile extends Component{
         image:'',
       },
     }
+    componentDidMount(){
+    this.getDetails();
+    }
+
+    getDetails = () => {
+      axios.get("http://138.68.186.248:8080/usermodule/users/"+this.props.username).then(this.handleSuccess)
+    .catch(this.handleError);
+    }
+
+    handleSuccess=(response)=> {
+      console.log(response.data);
+      this.setState({data:response.data,firstname: response.data.firstName,lastname: response.data.lastName,
+      email: response.data.email,username:response.data.username, info:response.data.info});
+      }
+
+      handleError=(error)=> {
+        console.log("Data not found");
+      }
 
   onPasswordChange = (event) => {
     event.preventDefault();
     if(this.validatePassword()){
+      var date = {
+      oldPassword: this.state.passwordChange,
+      newPassword: this.state.password,
+      newPasswordR: this.state.password2,
+      };
+      console.log(date);
+      axios({
+        url: 'http://138.68.186.248:8080/usermodule/users/resetPassword',
+        method: 'put',
+         headers: {
+           'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+           'Content-Type': 'application/json'
+      },
+        data:date
+      }
+    ).then(this.handlePasswordChangeSuccess).catch(this.handlePasswordChangeError);
     }
   }
+  handlePasswordChangeSuccess=(response)=>{
+    alert("Password successfully changed!");
+  }
+  handlePasswordChangeError=(e)=>{
+    alert("Information change failed: " + e.data);
+  }
+  onProfileSubmit = (event) => {
+
+    event.preventDefault();
+    if (this.onValidate()){
+      if (this.state.image!=='')
+      {
+        const formData = new FormData()
+        formData.append('request', this.state.image, this.state.image.name)
+        axios({
+          url: 'http://138.68.186.248:8080/imagemodule/images/upload/profile',
+          method: 'post',
+           headers: {
+             'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+        },
+          data:formData
+        }
+      ).then().catch((error)=>{alert("Image upload failed")});
+      }
+      var date = {
+      firstName: this.state.firstname,
+      lastName: this.state.lastname,
+      email: this.state.email,
+      info: this.state.info
+      };
+      console.log(date);
+      axios({
+        url: 'http://138.68.186.248:8080/usermodule/users/updateInfo',
+        method: 'put',
+         headers: {
+           'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+        'Content-Type': 'application/json'
+      },
+        data:date
+      }
+        ).then(this.handleProfileChangeSuccess).catch(this.handleProfileChangeError);
+    }
+  }
+  handleProfileChangeSuccess=(response)=>{
+    alert("Information successfully changed!");
+    this.getDetails();
+  }
+  handleProfileChangeError=(e)=>{
+    alert("Information change failed: " +e.data);
+  }
+
+  /*---------------------Validacije--------------------------*/
   fileChangedHandler = (event) => {
   this.setState({image: event.target.files[0]})
   var file=event.target.files[0];
@@ -98,23 +178,12 @@ class EditProfile extends Component{
     error.lastname= "valid";
 
   }
-  if (this.state.username.length===0)
-  {
-  validate=false;
-  error.username= "invalid";
-  errorMessage.username="Username cannot be empty!";
-   }
    if (this.state.email.length===0)
    {
      validate=false;
      error.email= "invalid";
      errorMessage.email="Email cannot be empty!";
     }
-    if(this.state.passwordOriginal.length ===0){
-      validate=false;
-      error.passwordOriginal= "invalid";
-      errorMessage.passwordOriginal="Password cannot be empty!";
-  }
       this.setState({error: error,errorMessage:errorMessage});
       return validate;
   }
@@ -143,36 +212,11 @@ class EditProfile extends Component{
      return validate;
 
   }
-  onProfileSubmit = (event) => {
-
-
-    event.preventDefault();
-    if (this.onValidate()){
-      //axios
-    }
-  }
-  handleSuccess = (response)  => {
-
-    }
-
-    handleError = (error) => {
-        alert("Registration failed")
-    }
 
   onChange=(e)=> {
   this.setState({[e.target.name]:e.target.value});
 
   switch(e.target.name){
-    case('username'):
-    if(e.target.value.length<3){
-    this.setState({error:{...this.state.error, username: "invalid"},
-                  errorMessage:{...this.state.errorMessage, username:"Username is too short!"}});
-  }
-    else {
-      this.setState({error:{...this.state.error, username: "valid"},
-                    errorMessage:{...this.state.errorMessage, username:""}});
-    }
-    break;
     case('email'):
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(!re.test(String(e.target.value).toLowerCase()) || e.target.value.length<3 ){
@@ -204,16 +248,6 @@ class EditProfile extends Component{
                     errorMessage:{...this.state.errorMessage, password2:""}});
     }
     break;
-    case('passwordOriginal'):
-    if(e.target.value.length ===0){
-    this.setState({error:{...this.state.error, passwordOriginal: "invalid"},
-                  errorMessage:{...this.state.errorMessage, passwordOriginal:"Password cannot be empty!"}});
-  }
-    else {
-      this.setState({error:{...this.state.error, passwordOriginal: "valid"},
-                    errorMessage:{...this.state.errorMessage, passwordOriginal:""}});
-    }
-    break;
     case('passwordChange'):
     if(e.target.value.length ===0){
     this.setState({error:{...this.state.error, passwordChange: "invalid"},
@@ -226,28 +260,28 @@ class EditProfile extends Component{
     break;
 
   }
-
-
 }
+  /*---------------------Validacije--------------------------*/
+
+
     render(){
         return(
             <div>
               <Row  style={{margin:"0"}}>
               <br/>
                 <Col s={6} style={{padding:"0"}} >
-                  <Input type="text" name="firstname"   placeholder={this.state.firstname} className={this.state.error.firstname}  onChange={this.onChange} label="First name"/>
+                  <Input type="text" name="firstname"   placeholder={this.state.data.firstName} className={this.state.error.firstname}  onChange={this.onChange} label="First name"/>
                   {this.state.error.firstname?<div className="error">{this.state.errorMessage.firstname}</div>:""}
                 </Col>
                 <Col s={6} style={{padding:"0"}}>
-                  <Input type="text"  name="lastname"  placeholder={this.state.lastname} className={this.state.error.lastname}  onChange={this.onChange} label="Last name"/>
+                  <Input type="text"  name="lastname"  placeholder={this.state.data.lastName} className={this.state.error.lastname}  onChange={this.onChange} label="Last name"/>
                   {this.state.error.lastname?<div className="error">{this.state.errorMessage.lastname}</div>:""}
                 </Col>
               </Row>
-              <Input type="text" className="white-text" name="username" placeholder={this.state.username} className={this.state.error.username} onChange={this.onChange} s={12} label="Username"  />
-              {this.state.error.username?<div className="error">{this.state.errorMessage.username}</div>:""}
-              <Input type="email" className="white-text"  placeholder={this.state.email}   className={this.state.error.email} name="email" onChange={this.onChange} label="Email" s={12}   />
+              <Input type="text" className="white-text" name="username" value={this.state.data.username} placeholder={this.state.data.username} className={this.state.error.username} s={12} label="Username"/>
+              <Input type="email" className="white-text"  placeholder={this.state.data.email}   className={this.state.error.email} name="email" onChange={this.onChange} label="Email" s={12}   />
               {this.state.error.email?<div className="error">{this.state.errorMessage.email}</div>:""}
-              <Input type="text"  className="white-text"  placeholder={this.state.info} name="info"  onChange={this.onChange} label="Info" s={12} />
+              <Input type="text"  className="white-text"  placeholder={this.state.data.info} name="info"  onChange={this.onChange} label="Info" s={12} />
               <div className="file-field input-field inline">
                   <div className="btn blue-grey">
                      <span>Browse</span>
@@ -258,8 +292,6 @@ class EditProfile extends Component{
                   </div>
                </div>
                {this.state.error.image?<div className="error">{this.state.errorMessage.image}</div>:""}
-               <Input type="password" name="password2"  id="modal-input" className={this.state.error.passwordOriginal}  onChange={this.onChange} label="Password" s={12} />
-               {this.state.error.passwordOriginal?<div className="error">{this.state.errorMessage.passwordOriginal}</div>:""}
                <Button small onClick={this.onProfileSubmit} className="blue-grey right " style={{width:"100%",margin:"10px 0"}}><Icon left>send</Icon>Submit</Button>
                <hr className="separator"/>
                <Modal name="Modal"

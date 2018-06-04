@@ -23,6 +23,8 @@ public class CommentVoteController {
 		this.commentVoteService = commentVoteService; 
 	}
 	
+	
+	// NE RADI KAKO TREBA KADA JE upVote == TRUE ----- updejtuje se 
 	@PreAuthorize("hasRole('ROLE_user')")
 	@RequestMapping(value="", method=RequestMethod.POST)
 	public ResponseEntity createCommentVote(OAuth2Authentication authentication, @RequestBody final CommentVoteInfo commentVoteInfo)	{

@@ -1,18 +1,18 @@
-import React, { Component } from 'react' ; 
-import {Row, Col} from 'react-materialize' ; 
-import axios from 'axios' ; 
+import React, { Component } from 'react' ;
+import {Row, Col} from 'react-materialize' ;
+import axios from 'axios' ;
 import Divider from 'react-materialize/lib/Divider';
-import '../../styles/notifications.css' ; 
-import './notifications.css' ; 
+import '../../styles/notifications.css' ;
+import './notifications.css' ;
 import {
     Button,
     Icon,
-    NavItem, 
+    NavItem,
     Dropdown,
     Chip,
     Collection,
     CollectionItem
-}   from 'react-materialize' ; 
+}   from 'react-materialize' ;
 import notifications from "./dummyNotifications";
 
 
@@ -21,7 +21,7 @@ function NotificationListItem ({notificationText}) {
     return  (
         <NavItem onClick={() => {}}className="blue-grey darken-2" >
         <div className='blue-grey-text text-lighten-5'>
-            {notificationText} 
+            {notificationText}
          </div>
          </NavItem>
     )
@@ -29,40 +29,46 @@ function NotificationListItem ({notificationText}) {
 
 
 class Notification extends Component   {
-    
+
     constructor(props)  {
         super(props) ;
-        
+
+        var token = sessionStorage.getItem("token") ;
+        var username = sessionStorage.getItem("username") ;
+
         this.state = {
-            notificationPageNumber: 0, 
+            notificationPageNumber: 0,
             notifications: [],
             intervalId:undefined,
-            isFetching:false, 
-            lastTimeChecked : 0, 
+            isFetching:false,
+            lastTimeChecked : 0,
             notificationCount : 0
-        }; 
+        };
     }
 
     componentDidMount(){
 
-        // fetch notifications 
+        // fetch notifications
 
-        this.getLastTimeChecked() ; 
+        this.getLastTimeChecked() ;
         setTimeout(() => {
-            this.initialNotifications() ; 
+            this.initialNotifications() ;
         }, 100);
-        //this.initialNotifications() ; 
-        const intervalId = setInterval(this.fetchAsync,5000);
+        //this.initialNotifications() ;
+        const intervalId = setInterval(this.fetchAsync,15000);
         this.setState(()=>({/*notifications, */intervalId}));
 
     }
 
     initialNotifications = () => {
-        const pageNumber = this.state.notificationPageNumber ; 
-        const lastTimeChecked = this.state.lastTimeChecked ;  
-        axios.get("http://localhost:8081/notifications/dakipej/" + pageNumber + "/" + lastTimeChecked)
+        console.log(sessionStorage.getItem("token")) ;
+        const pageNumber = this.state.notificationPageNumber ;
+        const lastTimeChecked = this.state.lastTimeChecked ;
+        const authorization = "Bearer " + sessionStorage.getItem("token") ;
+        axios.get("http://138.68.186.248:8080/interactionmodule/notifications/" + pageNumber + "/" + lastTimeChecked
+        , { headers: {Authorization : authorization }})
         .then(this.handleNewRequests)
-        .catch(this.catchNewRequests) ; 
+        .catch(this.catchNewRequests) ;
     }
 
     handleInitialNotifications = (response) => {
@@ -70,28 +76,33 @@ class Notification extends Component   {
     }
 
     catchInitialNotifications = (error) => {
-        
+
     }
 
     getLastTimeChecked = () => {
-        axios.get("http://localhost:8081/users/lastTimeChecked/dakipej")
+        console.log(sessionStorage.getItem("token")) ;
+        const authorization = "Bearer " + sessionStorage.getItem("token") ;
+        axios.get("http://138.68.186.248:8080/interactionmodule/notifications/lastTimeChecked/"
+        , { headers: {Authorization : authorization }})
         .then(this.handleGetLastTimeChecked.bind(this))
         .catch(function(err)    {
             console.log(err);
-            const isFetching = false ; 
-            this.setState( () => ({isFetching})) ;  
-        }) ; 
+            const isFetching = false ;
+  //          this.setState( () => ({isFetching})) ;  
+        }) ;
 
         const isFetching = true ;
-        this.setState( () => {isFetching}) ;  
+        this.setState( () => {isFetching}) ;
     }
 
     handleGetLastTimeChecked = (response) => {
-        const lastTimeChecked = response.data ; 
-        const isFetching = false ; 
 
-        this.setState(() => ({lastTimeChecked, isFetching})) ; 
-        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ; 
+        console.log(response.data) ;
+        const lastTimeChecked = response.data ;
+        const isFetching = false ;
+
+        this.setState(() => ({lastTimeChecked, isFetching})) ;
+        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
 
     componentWillUnmount(){
@@ -100,13 +111,16 @@ class Notification extends Component   {
     }
 
     fetchAsync = () => {
-        const pageNumber = this.state.notificationPageNumber ;  
-        const lastTimeChecked = this.state.lastTimeChecked ; 
+        console.log(sessionStorage.getItem("token")) ;
+        const pageNumber = this.state.notificationPageNumber ;
+        const lastTimeChecked = this.state.lastTimeChecked ;
+        const authorization = "Bearer " + sessionStorage.getItem("token");
 
         if(!this.state.isFetching)
-            axios.get('http://localhost:8081/notifications/dakipej/' + pageNumber + "/" + Date.now())
+            axios.get('http://138.68.186.248:8080/interactionmodule/notifications/' + pageNumber + "/" + Date.now()
+            , { headers: {Authorization : authorization }})
             .then(this.handleNewRequests.bind(this))
-            .catch(this.catchNewRequests.bind(this)) ; 
+            .catch(this.catchNewRequests.bind(this)) ;
         // if(!this.state.isFetching){
         //     this.setState({isFetching:true})
         //     setTimeout(()=>{
@@ -114,14 +128,14 @@ class Notification extends Component   {
         //         this.setState({isFetching:false})
         //     },2000)
         // }
-        
+
     }
 
     handleNewRequests = (response)  =>     {
-        const isFetching = false ; 
-        const notifications = response.data.notifications ; 
-        console.log("RESPONSE JE ----- " + response) ; 
-        const notificationCount = response.data.notificationCount; 
+        const isFetching = false ;
+        const notifications = response.data.notifications ;
+        console.log("RESPONSE JE ----- " + response) ;
+        const notificationCount = response.data.notificationCount;
 
         this.setState(
             (prevState) => (
@@ -130,12 +144,12 @@ class Notification extends Component   {
                         notificationCount: notificationCount + prevState.notificationCount
                     }
                 )
-            )  
-        console.log("NOVE NOTIFIKACIJE SU: " + notifications) ; 
+            )
+        console.log("NOVE NOTIFIKACIJE SU: " + notifications) ;
 
-        console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ; 
-        //console.log(response.data) ;        
-        //console.log('Proslo'); 
+        console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ;
+        //console.log(response.data) ;
+        //console.log('Proslo');
     }
 
     catchNewRequests = (error)  => {
@@ -143,30 +157,27 @@ class Notification extends Component   {
             () => ({isFetching:false})
         )
         //console.log("--------------GRESKA--------------") ;
-        console.log(error.data) ; 
+        console.log(error.data) ;
     }
 
     render() {
 
         const dropDownButton =  (
-            <div class='notificationDiv'>
-            <NavItem>
-                <a className="blue-grey waves-effect waves-light btn" onClick={() => {}}>
+                <a className="blue-grey waves-effect waves-light btn" style={{alignItems:"right"}} onClick={() => {}}>
                     <i class="material-icons left">notifications</i>
                     {this.state.notifications.length}
                 </a>
-            </NavItem>
-            </div>
         );
         const loadMoreButton = (
             <NavItem onClick={() => {}}className="blue-grey darken-2" >
                 <div className='blue-grey-text text-lighten-5'>
-                    <i className='material-icons center'>add</i> 
+                    <i className='material-icons center'>add</i>
                 </div>
              </NavItem>
         );
-        
+
         return (
+            <NavItem>
             <div className='dropDownDiv'>
                 <Dropdown trigger={dropDownButton} >
                         {
@@ -179,9 +190,10 @@ class Notification extends Component   {
                     {loadMoreButton}
                 </Dropdown>
             </div>
+            </NavItem>
             );
     }
 
 }
 
-export default Notification ; 
+export default Notification ;

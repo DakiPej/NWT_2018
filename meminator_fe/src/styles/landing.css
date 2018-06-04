@@ -20,7 +20,8 @@
 .register{
     width:100%;
     size: 15px;
-    color: #263238;
+    padding: 5px;
+    color: red;
     text-align: center;
     border-top: 1px solid;
 }
