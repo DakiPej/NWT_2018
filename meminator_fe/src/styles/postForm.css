@@ -1,0 +1,21 @@
+.modal {
+    background: rgba(38, 50, 56);
+    color: white;
+    border: 2px solid;
+    border-color: #00695c;
+}
+
+.modal h4{
+    color: #00695c ;
+    border-bottom: 2px solid;
+    padding-bottom: 5px;
+}
+
+.modal .modal-footer{
+    background: rgba(38, 50, 56);
+}
+
+.modal .modal-footer .modal-close{
+    background: #607d8b;
+    color: white;
+}

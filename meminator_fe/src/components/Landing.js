@@ -53,9 +53,9 @@ onChange = (e) => {
 
 render(){
     return (
-        <div style={{ marginTop: "20px", height: "80vh", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-            <Row>
-                <Col className="login" s={10} m={4} offset="s1 m4">
+        <div style={{marginTop: "20px", height: "80vh", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+            <Row style={{width:"80%"}}>
+                <Col className="login" s={10} m={4} l={4} offset="s1 m4 l4">
                     <div className="label" ><img src="https://orig00.deviantart.net/95a1/f/2012/151/5/1/meme_mother_of_god_png_by_agustifran-d51rx2a.png" className="responsive-image" /></div>
                     <Input icon="person" s={12} onChange={this.onChange} name="username" value={this.state.username} placeholder="username" />
                     <Input icon="lock" s={12} onChange={this.onChange} name="password" value={this.state.password} type="password" placeholder="password" />
