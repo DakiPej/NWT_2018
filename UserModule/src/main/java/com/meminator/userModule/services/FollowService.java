@@ -114,4 +114,18 @@ public class FollowService {
 		}
 	}
 
+	public Boolean areFriends(String username, String friendUsername) throws IllegalArgumentException{
+		try {
+			RegisteredUser friend = registeredUserRepository.getByUsername(friendUsername);
+			if(friend == null)
+				throw new IllegalArgumentException("User " + friendUsername + " doesn't exist.");
+			
+			return followRepository.frendshipExists(username, friendUsername);
+		} catch(IllegalArgumentException e){
+			throw e;
+		}
+		catch (Exception e) {
+			throw e;
+		}
+	}
 }

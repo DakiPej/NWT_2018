@@ -79,4 +79,21 @@ public class FollowController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error.");
 		}
 	}
+
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	@RequestMapping(value="/areFriends/{username}", method=RequestMethod.POST)
+	@ResponseBody
+	//public ResponseEntity myFollowers(OAuth2Authentication authentication) {
+	public ResponseEntity areFriends(OAuth2Authentication authentication, @PathVariable final String username) {
+		try {
+			//return ResponseEntity.status(HttpStatus.OK).body(followService.myFollowers(authentication.getName()));
+			return ResponseEntity.status(HttpStatus.OK).body(followService.areFriends(authentication.getName(), username));
+		} catch(IllegalArgumentException e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+		} 
+		 catch (Exception e) {
+			System.out.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unknown error.");
+		}
+	}
 }
