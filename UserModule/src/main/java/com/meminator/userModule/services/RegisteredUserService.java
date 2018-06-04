@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.meminator.userModule.models.RegisteredUser;
+import com.meminator.userModule.repositories.FollowRepository;
 import com.meminator.userModule.repositories.RegisteredUserRepository;
 import com.meminator.userModule.repositories.UserTypeRepository;
 
@@ -28,55 +29,62 @@ import forms.RegisteredUser.UpdateInfoForm;
 import viewmodels.UserViewModel;
 
 @Service(value = "userService")
-public class RegisteredUserService implements UserDetailsService{
+public class RegisteredUserService implements UserDetailsService {
 	@Autowired
 	RabbitTemplate rabbitTemplate;
-	
+
 	@Autowired
 	RegisteredUserRepository registeredUserRepository;
-	
+
 	@Autowired
 	UserTypeRepository userTypeRepository;
-	
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
-	public UserViewModel getUserByUsername(String username) throws Exception, IllegalArgumentException{
+	@Autowired
+	FollowRepository followRepository;
+
+	public UserViewModel getUserByUsername(String username) throws Exception, IllegalArgumentException {
 		try {
-			if(username == null || username.isEmpty()) 
+			if (username == null || username.isEmpty())
 				throw new IllegalArgumentException("Username cannot be empty.");
 
 			RegisteredUser ru = registeredUserRepository.getByUsername(username);
 
-			if (ru == null) 
+			if (ru == null)
 				throw new IllegalArgumentException("User does not exist.");
 
-			UserViewModel uvm = new UserViewModel(ru.getFirstName(), ru.getLastName(), ru.getUsername(), ru.getEmail(), ru.getInfo());
+			List<String> following = followRepository.getFriends(ru.getId());
+			List<String> followedBy = followRepository.getFollowers(ru.getId());
+			UserViewModel uvm = new UserViewModel(ru.getFirstName(), ru.getLastName(), ru.getUsername(), ru.getEmail(),
+					ru.getInfo(), following.size(), followedBy.size());
+
 			return uvm;
-		} catch(IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw e;
-		}catch (Exception e) {
-			throw e;	
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 
-	public List<String> searchUserByUsername(String username) throws Exception, IllegalArgumentException{
+	public List<String> searchUserByUsername(String username) throws Exception, IllegalArgumentException {
 		try {
-			if(username == null || username.isEmpty())
+			if (username == null || username.isEmpty())
 				throw new IllegalArgumentException("Cannot search user by empty username.");
 			List<String> ru = registeredUserRepository.searchByUsername(username);
 
 			return ru;
-		} catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw e;
 		} catch (Exception e) {
-			 throw e;
+			throw e;
 		}
 	}
 
-	public boolean createUser(CreateUserForm createUserForm) throws IllegalArgumentException{
+	public boolean createUser(CreateUserForm createUserForm) throws IllegalArgumentException {
 		try {
-			if(registeredUserRepository.getByUsername(createUserForm.getUsername()) != null)
+			if (registeredUserRepository.getByUsername(createUserForm.getUsername()) != null)
 				throw new IllegalArgumentException("User already exists.");
 
 			System.out.println(registeredUserRepository.getByUsername(createUserForm.getUsername()));
@@ -90,44 +98,43 @@ public class RegisteredUserService implements UserDetailsService{
 			ru.setUsername(createUserForm.getUsername());
 			ru.setUserTypeID(userTypeRepository.getType("user"));
 			ru = registeredUserRepository.save(ru);
-			
+
 			String username = createUserForm.getUsername();
 			rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", username);
 
 			return true;
-		} catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw e;
-		} catch (AmqpException e){
+		} catch (AmqpException e) {
 			return true;
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	public boolean resetPassword(String username, ResetPasswordForm resetPasswordForm) throws IllegalArgumentException{
+	public boolean resetPassword(String username, ResetPasswordForm resetPasswordForm) throws IllegalArgumentException {
 		try {
 			RegisteredUser ru = registeredUserRepository.getByUsername(username);
-			if(ru != null) {
+			if (ru != null) {
 
-				if(resetPasswordForm.getOldPassword() == null || resetPasswordForm.getOldPassword().isEmpty())
+				if (resetPasswordForm.getOldPassword() == null || resetPasswordForm.getOldPassword().isEmpty())
 					throw new IllegalArgumentException("Password property cannot be empty.");
-				else if(resetPasswordForm.getNewPassword() == null || resetPasswordForm.getNewPassword().isEmpty())
+				else if (resetPasswordForm.getNewPassword() == null || resetPasswordForm.getNewPassword().isEmpty())
 					throw new IllegalArgumentException("Password property cannot be empty.");
-				else if(resetPasswordForm.getNewPasswordR() == null || resetPasswordForm.getNewPasswordR().isEmpty())
+				else if (resetPasswordForm.getNewPasswordR() == null || resetPasswordForm.getNewPasswordR().isEmpty())
 					throw new IllegalArgumentException("Password property cannot be empty.");
-				else if(!resetPasswordForm.getNewPassword().equals(resetPasswordForm.getNewPasswordR()))
+				else if (!resetPasswordForm.getNewPassword().equals(resetPasswordForm.getNewPasswordR()))
 					throw new IllegalArgumentException("Passwords do not match.");
-				else if(!passwordEncoder.encode(resetPasswordForm.getOldPassword()).equals(ru.getPassword()))
+				else if (!passwordEncoder.encode(resetPasswordForm.getOldPassword()).equals(ru.getPassword()))
 					throw new IllegalArgumentException("Incorrect old password.");
-				
+
 				ru.setPassword(passwordEncoder.encode(resetPasswordForm.getNewPassword()));
 
 				ru = registeredUserRepository.save(ru);
 				return true;
-			}
-			else 
+			} else
 				throw new IllegalArgumentException("User doesn't exist.");
-		} catch(IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw e;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -138,7 +145,7 @@ public class RegisteredUserService implements UserDetailsService{
 	public boolean updateInfo(String username, UpdateInfoForm updateInfoForm) throws IllegalArgumentException {
 		try {
 			RegisteredUser ru = registeredUserRepository.getByUsername(username);
-			if(ru != null) {
+			if (ru != null) {
 				ru.setInfo(updateInfoForm.getInfo());
 				ru.setFirstName(updateInfoForm.getFirstName());
 				ru.setEmail(updateInfoForm.getEmail());
@@ -146,45 +153,46 @@ public class RegisteredUserService implements UserDetailsService{
 
 				ru = registeredUserRepository.save(ru);
 				return true;
-			}
-			else 
+			} else
 				throw new IllegalArgumentException("User doesn't exist.");
-		} catch(IllegalArgumentException e){
-			throw e;	
+		} catch (IllegalArgumentException e) {
+			throw e;
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	public boolean deleteUser(String username)  throws IllegalArgumentException{
+	public boolean deleteUser(String username) throws IllegalArgumentException {
 		try {
 			RegisteredUser ru = registeredUserRepository.getByUsername(username);
-			if(ru == null) 
+			if (ru == null)
 				throw new IllegalArgumentException("User does not exist.");
-			
+
 			registeredUserRepository.delete(ru);
 			rabbitTemplate.convertAndSend("user-queue-exchange", "user.delete", username);
-			
+
 			return true;
-		} catch(IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw e;
-		} catch (AmqpException e){
+		} catch (AmqpException e) {
 			return true;
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println(username+"<----------------------------------------------------------------------------------");
+		System.out.println(
+				username + "<----------------------------------------------------------------------------------");
 		RegisteredUser user = registeredUserRepository.getByUsername(username);
-		if(user == null){
+		if (user == null) {
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+				getAuthority(user));
 	}
+
 	private List<SimpleGrantedAuthority> getAuthority(RegisteredUser user) {
 		return Arrays.asList(new SimpleGrantedAuthority("ROLE_" + user.getUserTypeID().getTypeName()));
 	}
