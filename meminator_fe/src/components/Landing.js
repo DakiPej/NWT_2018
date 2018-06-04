@@ -34,6 +34,7 @@ class Landing extends Component {
 
 handleLogin = (response) => {
     console.log(response);
+    sessionStorage.setItem("token",response.data.access_token);
 }
 
 handleError = (error) => {
