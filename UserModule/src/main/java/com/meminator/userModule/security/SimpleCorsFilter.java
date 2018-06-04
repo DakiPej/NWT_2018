@@ -1,4 +1,4 @@
-package com.meminator.userModule.security;
+/*package com.meminator.userModule.security;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -39,4 +39,4 @@ public class SimpleCorsFilter implements Filter {
     @Override
     public void destroy() {
     }
-}
+}*/
