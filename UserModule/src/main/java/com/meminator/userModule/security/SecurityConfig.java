@@ -56,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
         .antMatchers("/oauth/token").permitAll()
+        .antMatchers("/user/register").permitAll()
         .antMatchers("/resources/**").permitAll()
         .anyRequest().hasRole("user")
         .and()
