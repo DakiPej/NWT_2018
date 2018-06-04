@@ -32,10 +32,15 @@ class Landing extends Component {
         .catch(this.handleError);
 }
 
+componentDidMount(){
+    if(sessionStorage.getItem("token") !== null) window.location = "/feed";
+}
+
 handleLogin = (response) => {
     console.log(response);
     sessionStorage.setItem("token",response.data.access_token);
     sessionStorage.setItem("username", this.state.username);
+    window.location = "/feed";
 }
 
 handleError = (error) => {
@@ -56,7 +61,7 @@ render(){
                     <Input icon="lock" s={12} onChange={this.onChange} name="password" value={this.state.password} type="password" placeholder="password" />
                     <Button small onClick={this.login} className="blue-grey" style={{ width: "100%", marginBottom: "10px" }}><Icon left>input</Icon>Login</Button>
                     <div className="register">Not registered?</div>
-                    <Button small className="blue-grey" style={{ width: "100%", margin: "10px 0" }}><Icon left>person_add</Icon>Register</Button>
+                    <Button onClick={()=>{window.location="/register"}}small className="blue-grey" style={{ width: "100%", margin: "10px 0" }}><Icon left>person_add</Icon>Register</Button>
                 </Col>
             </Row>
         </div>

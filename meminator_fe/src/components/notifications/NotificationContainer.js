@@ -149,14 +149,10 @@ class Notification extends Component   {
     render() {
 
         const dropDownButton =  (
-            <div class='notificationDiv'>
-            <NavItem>
-                <a className="blue-grey waves-effect waves-light btn" onClick={() => {}}>
+                <a className="blue-grey waves-effect waves-light btn" style={{alignItems:"right"}} onClick={() => {}}>
                     <i class="material-icons left">notifications</i>
                     {this.state.notifications.length}
                 </a>
-            </NavItem>
-            </div>
         );
         const loadMoreButton = (
             <NavItem onClick={() => {}}className="blue-grey darken-2" >
@@ -167,6 +163,7 @@ class Notification extends Component   {
         );
         
         return (
+            <NavItem>
             <div className='dropDownDiv'>
                 <Dropdown trigger={dropDownButton} >
                         {
@@ -179,6 +176,7 @@ class Notification extends Component   {
                     {loadMoreButton}
                 </Dropdown>
             </div>
+            </NavItem>
             );
     }
 

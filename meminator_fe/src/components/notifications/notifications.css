@@ -3,12 +3,12 @@
 }
 
 .dropDownDiv {
-    display: flex ; 
-    width: 400px ; 
+    display: flex ;
+    width:auto; 
 }
 
 .dropDownDiv span  {
-    width: 100% ; 
+    width: 100% ;
 }
 
 .notificationDiv {

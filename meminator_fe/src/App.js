@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {Route, Switch} from 'react-router-dom';
 
 import Header from './components/header/Header';
 import Landing from './components/Landing';
@@ -14,7 +15,12 @@ class App extends Component {
     return (
       <div>
       <Header />
-      <Landing />
+      <Switch>
+        <Route exact path="/" component={Landing}/>
+        <Route exact path="/login" component={Landing}/>
+        <Route exact path="/register" component={Register}/>
+        <Route exact path="/feed" component={Feed}/>
+      </Switch>
       </div>
     );
   }
