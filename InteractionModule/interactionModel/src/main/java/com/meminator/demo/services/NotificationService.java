@@ -1,5 +1,6 @@
 package com.meminator.demo.services;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -126,5 +127,27 @@ public class NotificationService {
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
 				pageRequest); 
+	}
+	public List<Notification> getNewNotificationsByUsername(String username, long lastCheckedMillisec, int pageNumber) {
+		try {
+			Timestamp lastChecked = new Timestamp(lastCheckedMillisec) ;
+			Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment") ; 
+			
+			return this.notificationDao.getNewNotificationsByUsername(
+					this.registeredUseDao.getRegisteredUserByUsername(username) 
+					, lastChecked
+					, pageRequest) ;
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
+	
+	public int getNewNotificationCount(String username, Timestamp lastChecked)	{
+		try {
+			RegisteredUser userId = this.registeredUseDao.getRegisteredUserByUsername(username) ; 
+			return this.notificationDao.getNewNotificationCount(userId, lastChecked) ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
 	}
 }

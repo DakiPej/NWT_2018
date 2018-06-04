@@ -25,6 +25,14 @@ public class RegisteredUserDAO extends BaseDAO<RegisteredUser, RegisteredUserRep
 		return true;
 	}
 	
+	public boolean updateRegisteredUser (RegisteredUser user)	{
+		try {
+			this.repo.save(user) ; 
+			return true ; 
+		} catch (Exception e) {
+			throw e ;
+		}
+	}
 	public boolean deleteUser(String username)	{
 		try {
 			this.repo.deleteByUsername(username);

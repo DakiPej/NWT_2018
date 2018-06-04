@@ -1,6 +1,7 @@
 package com.meminator.demo.dao;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +29,22 @@ public class NotificationDAO extends BaseDAO<Notification, NotificationRepositor
 		notifications = this.repo.findByUserId(userId, pageRequest);
 		return notifications; 
 		
+	}
+	
+	public List<Notification> getNewNotificationsByUsername(RegisteredUser userId, Timestamp lastChecked, Pageable pageRequest)	{
+		List<Notification> notifications ; 
+		try {
+			notifications = this.getNewNotificationsByUsername(userId, lastChecked, pageRequest) ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
+		return notifications ; 
+	}
+	public int getNewNotificationCount(RegisteredUser userId, Timestamp lastChecked)	{
+		try {
+			return this.repo.countByUserIdAndCreationMomentGreaterThan(userId, lastChecked) ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
 	}
 }

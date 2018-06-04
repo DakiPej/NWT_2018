@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import forms.RegisteredUser.ResetPasswordForm;
 import forms.RegisteredUser.UpdateInfoForm;
 import io.swagger.annotations.Api;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping(value="/users")
 @Api(value="registered user")

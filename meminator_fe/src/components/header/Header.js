@@ -4,6 +4,7 @@ import {
     NavItem,
     Icon
 } from 'react-materialize';
+import Notification from '../notifications/NotificationContainer' 
 
 class Header extends Component{
     render(){
