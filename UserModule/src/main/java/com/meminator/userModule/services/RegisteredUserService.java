@@ -175,10 +175,10 @@ public class RegisteredUserService implements UserDetailsService{
 		}
 	}
 
-	/**
-	 * Za OAuth2
-	 */
+	
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		System.out.println(username+"<----------------------------------------------------------------------------------");
 		RegisteredUser user = registeredUserRepository.getByUsername(username);
 		if(user == null){
 			throw new UsernameNotFoundException("Invalid username or password.");
