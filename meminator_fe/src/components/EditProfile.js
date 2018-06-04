@@ -14,8 +14,8 @@ class EditProfile extends Component{
       image: '',
       username: this.props.data.username,
       email: this.props.data.email,
-      firstname: this.props.data.firstname,
-      lastname: this.props.data.lastname,
+      firstname: this.props.data.firstName,
+      lastname: this.props.data.lastName,
       info: this.props.data.info,
       error: {
         username: '',

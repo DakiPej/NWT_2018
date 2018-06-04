@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <div>
       <Header />
-      <Register />
+      <ProfileDetails />
       </div>
     );
   }

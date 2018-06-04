@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button } from 'react-materialize';
 import '../styles/register.css';
-
+import axios from 'axios';
 
 
 class Register extends Component{
@@ -88,15 +88,25 @@ class Register extends Component{
 
     event.preventDefault();
     if (this.onValidate()){
-      //axios
+      axios.post("http://138.68.186.248:8080/usermodule/users/register",
+    {
+      firstName: this.state.firstname,
+      lastName: this.state.lastname,
+      username: this.state.username,
+      email: this.state.email,
+      password: this.state.password
+
+    }).then(this.handleSuccess)
+    .catch(this.handleError);
     }
   }
   handleSuccess=(response)=> {
-
+    alert("Registration successful");
+    window.location="/";
     }
 
     handleError=(error)=> {
-        alert("Registration failed")
+        alert("Registration failed: "+error.data);
     }
 
   onChange=(e)=> {

@@ -6,17 +6,20 @@ import '../styles/profiledetails.css';
 class InfoProfile extends Component{
 
   state = {
-      data: this.props.data
+      data: this.props.data,
+      image: this.props.image,
+      placeholder: 'http://i0.kym-cdn.com/entries/icons/original/000/003/619/ForeverAlone.jpg'
     }
 
     render(){
-
+      console.log(this.state.data);
+      console.log(this.state.image)
         return(
           <div>
                 <br/>
-                <div className="label" ><img src={this.state.data.image}className="responsive-image"/></div>
+                <div className="label" ><img src={this.state.image?this.state.image:this.state.placeholder} className="responsive-image"/></div>
                 <div classNam="detail">
-                <h4>{this.state.data.firstname} {this.state.data.lastname}</h4>
+                <h4>{this.state.data.firstName} {this.state.data.lastName}</h4>
                 </div>
                 <hr className="separator"/>
                 <div className="detail">
