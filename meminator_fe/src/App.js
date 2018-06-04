@@ -10,6 +10,7 @@ import Register from './components/Register';
 import ProfileDetails from './components/ProfileDetails';
 import Feed from './components/post/Feed';
 import SinglePostDetails from './containers/SinglePostDetails';
+import PostForm from './components/post/PostForm';
 
 class App extends Component {
   render() {
@@ -20,10 +21,12 @@ class App extends Component {
         <Route exact path="/" component={Landing}/>
         <Route exact path="/login" component={Landing}/>
         <Route exact path="/register" component={Register}/>
-        <Route exact path="/feed" component={Feed}/>
-        <Route exact path="/post/:id" component={SinglePostDetails}/>
-        <Route exact path="/profile/:username" component={ProfileDetails}/>
+        <Route exact path="/feed" component={Feed} />
+        <Route path="/post/:id" component={SinglePostDetails} />
+        <Route exact path="/profile" component={ProfileDetails} />
+        <Route path="/profile/:username" component={ProfileDetails} />
       </Switch>
+      {sessionStorage.getItem("username") && <PostForm />}
       </div>
     );
   }
