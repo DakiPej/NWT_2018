@@ -25,7 +25,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 			.anonymous().disable()
 			.authorizeRequests()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-			.antMatchers("/users/register").anonymous()
+			.antMatchers("/users/register").permitAll()
 			.antMatchers("/oauth/token").permitAll()
 			//.anyRequest().access("hasRole('user')")
 			//.anyRequest().anonymous()

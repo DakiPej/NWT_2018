@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +21,6 @@ import forms.RegisteredUser.ResetPasswordForm;
 import forms.RegisteredUser.UpdateInfoForm;
 import io.swagger.annotations.Api;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RequestMapping(value="/users")
 @Api(value="registered user")
@@ -30,7 +28,6 @@ public class RegisteredUserController {
 	@Autowired
 	RegisteredUserService registeredUserService;
 	
-	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
 	@RequestMapping(value = "/{username}", method=RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity getUserByUsername(@PathVariable final String username) {
@@ -41,7 +38,6 @@ public class RegisteredUserController {
 		}
 	}
 	
-	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
 	@RequestMapping(value = "/search/{username}", method=RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity searchUserByUsername(@PathVariable final String username) {
@@ -52,8 +48,7 @@ public class RegisteredUserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error ocurred.");
 		}
 	}
-	
-	@PreAuthorize("isAnonymous()")
+
 	@RequestMapping(value = "/register", method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> createUser(@RequestBody @Valid final CreateUserForm createUserForm) {
