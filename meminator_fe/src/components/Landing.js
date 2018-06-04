@@ -11,7 +11,7 @@ class Landing extends Component {
     }
 
     login = () => {
-        var session_url = 'http://localhost:8083/oauth/token';
+        var session_url = 'http://138.68.186.248:8080/usermodule/oauth/token';
         var username_b = 'devglan-client';
         var password_b = 'devglan-secret';
         var credentials = btoa(username_b + ':' + password_b);
