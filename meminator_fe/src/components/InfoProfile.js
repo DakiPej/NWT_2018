@@ -23,6 +23,7 @@ class InfoProfile extends Component{
     getDetails = () => {
       axios.get("http://138.68.186.248:8080/usermodule/users/"+this.props.username).then(this.handleSuccess)
     .catch(this.handleError);
+
     }
 
     handleSuccess=(response)=> {
@@ -33,9 +34,10 @@ class InfoProfile extends Component{
       {
         axios.get("http://138.68.186.248:8080/usermodule/areFriends/"+this.props.username, {
               headers: {Authorization: "Bearer " + sessionStorage.getItem("token")}
-          }).then((response)=>{this.setState({following:response.data})})
+          }).then((response)=>{this.setState({follow:response.data})})
       .catch((error)=>{console.log(error.data)});
       }
+
       }
 
       handleError=(error)=> {
@@ -53,7 +55,7 @@ class InfoProfile extends Component{
            'Authorization': 'Bearer ' + sessionStorage.getItem("token")
       }
       })
-      .then((response)=>{this.getDetails();})
+      .then((response)=>{this.getDetails();this.getFollowers();})
   .catch((response)=>{alert("Follow failed!");});
     }
 
@@ -68,7 +70,7 @@ class InfoProfile extends Component{
              'Authorization': 'Bearer ' + sessionStorage.getItem("token")
         }
         })
-        .then((response)=>{this.getDetails();})
+        .then((response)=>{this.getDetails();this.getFollowers();})
     .catch((response)=>{alert("Unfollow failed!");});
       }
 
@@ -97,6 +99,7 @@ class InfoProfile extends Component{
     addDefaultSrc=(ev)=>{
       ev.target.src = this.state.placeholder;
     }
+
     render(){
       var following=this.state.following;
       var followers=this.state.followers;
@@ -130,13 +133,14 @@ class InfoProfile extends Component{
 
 
       var follow=<div></div>
+      if (sessionStorage.getItem("username")){
       if (!this.props.userProfile)
-      follow = <div>{this.state.following?<div>  <Button small onClick={this.unfollowAction} className="blue-grey right" style={{width:"100%", margin:"10px 0"}}>
+      follow = <div>{this.state.follow?<div>  <Button small onClick={this.unfollowAction} className="blue-grey right" style={{width:"100%", margin:"10px 0"}}>
       <Icon left>visibility_off</Icon>Unfollow</Button>
         <hr className="separator"/></div>:
       <div> <Button small className="blue-grey right"  onClick={this.followAction} style={{width:"100%", margin:"10px 0"}}><Icon left>visibility</Icon>Follow</Button>
       <hr className="separator"/></div>}</div>
-      ;
+      ;}
 
         return(
           <div>

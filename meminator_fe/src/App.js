@@ -11,6 +11,7 @@ import ProfileDetails from './components/ProfileDetails';
 import Feed from './components/post/Feed';
 import SinglePostDetails from './containers/SinglePostDetails';
 import PostForm from './components/post/PostForm';
+import Comments from './components/post/Comments';
 
 class App extends Component {
   render() {
@@ -25,6 +26,8 @@ class App extends Component {
         <Route path="/post/:id" component={SinglePostDetails} />
         <Route exact path="/profile" component={ProfileDetails} />
         <Route path="/profile/:username" component={ProfileDetails} />
+        <Route exact path="/comments" component={Comments} />
+
       </Switch>
       {sessionStorage.getItem("username") && <PostForm />}
       </div>
