@@ -147,7 +147,7 @@ class SinglePost extends Component {
 
         var tags = <div />
         if (this.props.post.tags)
-            tags = this.props.post.tags.map((tag) => <Chip ><a href={"/feed/" + tag.name}>tag.name</a></Chip>);
+            tags = this.props.post.tags.map((tag) => <Chip ><a href={"/feed/" + tag.id}>{tag.name}</a></Chip>);
 
         return (
             <div className="post" style={this.props.single === "T" ? { width: "100%", margin: "0" } : null}>

@@ -89,7 +89,7 @@ class Comments extends Component {
 
 
 
-            <div style={{marginTop:"1vh",height:"100%", width:"100%", justifyContent:"center", flexDirection:"column",alignItems:"center"}}>
+            <div style={{height:"100%", width:"100%", justifyContent:"center", flexDirection:"column",alignItems:"center"}}>
                       <Row style= {{width:"100%"}}>
                       <Col  className="comments" >
                       <Collection>

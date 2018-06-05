@@ -37,7 +37,6 @@ public class TagController {
 
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getTags(){
         try{
@@ -47,7 +46,6 @@ public class TagController {
         }
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getTag(@PathVariable Long id){
 
@@ -61,7 +59,6 @@ public class TagController {
 
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, params = "name")
     public ResponseEntity getTagByName(@RequestParam String name){
 

@@ -38,7 +38,7 @@ public class PostController {
         }
 
     }
-	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getPosts(){
         try{
@@ -48,7 +48,6 @@ public class PostController {
         }
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getPost(@PathVariable Long id){
         try{
@@ -60,7 +59,6 @@ public class PostController {
         }
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(value = "/tags", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity getPostsByTag(@RequestBody Tag[] tags){
         try {
@@ -70,7 +68,6 @@ public class PostController {
         }
     }
 
-    @PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.GET, value = "/users/{username}")
     public ResponseEntity getPostsByUser(@PathVariable String username){
         try{
