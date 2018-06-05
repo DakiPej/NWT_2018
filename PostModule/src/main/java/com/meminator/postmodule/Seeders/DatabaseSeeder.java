@@ -106,7 +106,6 @@ public class DatabaseSeeder {
                 for(Tag t: tags) {
                     p.addTag(t);
                 }
-                asyncSender.sendPost(new PostVMS(p));
             }
             tagRepositroy.saveAll(tags);
             postRepositroy.saveAll(posts);

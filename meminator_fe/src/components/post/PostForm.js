@@ -114,7 +114,7 @@ class PostForm extends Component {
                 "imageURL": api.default.url + "/imagemodule/images/" + this.state.imgID,
                 "info": this.state.info,
                 "poster": "string",
-                "repostID": 0,
+                "repostID": 1,
                 "tags": this.state.tags
             },
             headers:{

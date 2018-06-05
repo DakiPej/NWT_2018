@@ -9,7 +9,7 @@ public class PostVMS {
     private Long id;
     private Long imageID;
     private String poster;
-    private PostVMS repost;
+    private PostVMS repost = null;
 
     public PostVMS() {
     }
@@ -24,7 +24,7 @@ public class PostVMS {
         this.id = post.getId();
         this.poster = post.getUser().getUsername();
         this.imageID = post.getImageID();
-        this.repost = new PostVMS(post.getRepost());
+        this.repost = (post.getRepost()!=null?new PostVMS(post.getRepost()):null);
     }
 
     public Long getId() {
