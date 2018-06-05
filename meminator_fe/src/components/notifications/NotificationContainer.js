@@ -49,29 +49,33 @@ class Notification extends Component {
                     notificationText:"The user aco started following you.", 
                     notificationType:"Followed", 
                     referencedObjectId:"-13" 
-    
+                    
                 }],
-            intervalId: undefined,
-            isFetching: false,
-            lastTimeChecked: 0,
-            notificationCount: 0
-        };
-    }
-
-    componentDidMount() {
-
-        // fetch notifications
-
-        this.getLastTimeChecked();
-        setTimeout(() => {
-            this.initialNotifications();
-        }, 100);
-        //this.initialNotifications() ;
-        const intervalId = setInterval(this.fetchAsync, 60000);
-        this.setState(() => ({/*notifications, */intervalId }));
-
-    }
-
+                intervalId: undefined,
+                isFetching: false,
+                lastTimeChecked: 0,
+                notificationCount: 0
+            };
+        }
+        
+        componentDidMount() {
+            
+            // fetch notifications
+            
+            this.getLastTimeChecked();
+            setTimeout(() => {
+                this.initialNotifications();
+            }, 100);
+            //this.initialNotifications() ;
+            const intervalId = setInterval(this.fetchAsync, 60000);
+            this.setState(() => ({/*notifications, */intervalId }));
+            
+        }
+        componentWillUnmount() {
+            clearInterval(this.state.intervalId);
+            this.setState({ intervalId: undefined })
+        }
+        
     reRoute = (notificationText, objectId, notificationType) => {
         const authorization = "Bearer " + sessionStorage.getItem("token") ;
         if(notificationType == "Commented")  {
@@ -160,10 +164,27 @@ class Notification extends Component {
         this.setState(() => ({ lastTimeChecked, isFetching }));
         //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
+    
+    updateLastTimeChecked = () => {
+        const authorization = 'Bearer ' + sessionStorage.getItem("token") ;
+        const lastTimeCheckedValue = Date.now() ; 
+        const body = {lastTimeChecked: lastTimeCheckedValue} ;
+        
+        axios({
+            method: 'put', 
+            headers: {
+                Authorization: authorization, 
+                'Content-Type': 'application/json'
+            }, 
+            data: body
+            }).then(this.handleUpdateLastTimeChecked).catch(this.handleErrorUpdateLastTimeChecked) ; 
+    }
+    handleUpdateLastTimeChecked = (response) => {
+        console.log(response.data) ; 
+    }
 
-    componentWillUnmount() {
-        clearInterval(this.state.intervalId);
-        this.setState({ intervalId: undefined })
+    handleErrorUpdateLastTimeChecked = (error) => {
+        console.log(error) ; 
     }
 
     fetchAsync = () => {
@@ -177,13 +198,6 @@ class Notification extends Component {
                 , { headers: { Authorization: authorization } })
                 .then(this.handleNewRequests.bind(this))
                 .catch(this.catchNewRequests.bind(this));
-        // if(!this.state.isFetching){
-        //     this.setState({isFetching:true})
-        //     setTimeout(()=>{
-        //         console.log('fetchali smo');
-        //         this.setState({isFetching:false})
-        //     },2000)
-        // }
 
     }
 

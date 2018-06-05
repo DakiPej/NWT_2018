@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +28,11 @@ public class RegisteredUserController {
 	}
 	
 	
-	@RequestMapping(value="/lastTimeChecked/{username}", method=RequestMethod.GET)	
-	public ResponseEntity getLastTimeChecked(@PathVariable("username") String username)	{
+	@PreAuthorize("hasRole('ROLE_user'") 
+	@RequestMapping(value="/lastTimeChecked", method=RequestMethod.GET)	
+	public ResponseEntity getLastTimeChecked(OAuth2Authentication authentication)	{
 		try {
-			Timestamp lastTimeChecked = this.registeredUserService.getLastTimeChecked(username) ; 
+			Timestamp lastTimeChecked = this.registeredUserService.getLastTimeChecked(authentication.getName()) ; 
 
 			return ResponseEntity.status(HttpStatus.OK).body(lastTimeChecked.getTime()) ; 
 			
@@ -37,20 +40,22 @@ public class RegisteredUserController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
 		}
 	}
-	@RequestMapping(value="", method=RequestMethod.PUT)
-	public void updateLastTimeChecked(@RequestBody final UpdatedRegisteredUser update)	{
+	@PreAuthorize("hasRole('ROLE_user'") 
+	@RequestMapping(value="/lastTimeChecked", method=RequestMethod.PUT)
+	public ResponseEntity updateLastTimeChecked(OAuth2Authentication authentication
+										,@RequestBody final UpdatedRegisteredUser update)	{
 		try {
 			Timestamp lastTimeCheckedMillisec = new Timestamp(update.lastTimeChecked) ; 
 			Date lastTimeChecked = new Date(lastTimeCheckedMillisec.getTime()) ;
 			
-			this.registeredUserService.setLastTimeChecked(update.username, lastTimeChecked);
+			this.registeredUserService.setLastTimeChecked(authentication.getName(), lastTimeChecked);
+			return ResponseEntity.status(HttpStatus.OK).body("Updated") ;
 		} catch (Exception e) {
-			// TODO: handle exception
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
 		}
 	}
 	
 	public static class UpdatedRegisteredUser	{
-		public String username ; 
 		public long lastTimeChecked ; 
 	}
 }
