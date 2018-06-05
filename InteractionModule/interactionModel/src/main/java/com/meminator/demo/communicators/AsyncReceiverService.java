@@ -75,7 +75,7 @@ public class AsyncReceiverService {
 		public String username; 
 	}
 	private static class PostInformation	{
-		public long postId;
+		public long id;
 		public long imageID;
 		public String username;
 		public PostInformation repost;
