@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardTitle, Row, Col, Icon, Chip } from 'react-materialize';
 import '../../styles/singlepost.css';
+import Comments from './Comments';
 
 class SinglePost extends Component {
 
@@ -40,12 +41,12 @@ class SinglePost extends Component {
 
     render() {
 
-        var tags = <div/>
-        if(this.props.post.tags)
-            tags = this.props.post.tags.map((tag) => <Chip ><a href={"/feed/"+tag.name}>tag.name</a></Chip>);
+        var tags = <div />
+        if (this.props.post.tags)
+            tags = this.props.post.tags.map((tag) => <Chip ><a href={"/feed/" + tag.name}>tag.name</a></Chip>);
 
         return (
-            <div className="post">
+            <div className="post" style={this.props.single === "T" ? { width: "100%", margin: "0" } : null}>
                 <div className="post-header">
                     <div className="username"><Icon>person_outline</Icon>{this.props.post.user.username}</div>
                     <div className="date">{this.parseDate(this.props.post.timeStamp)}</div>
@@ -67,6 +68,7 @@ class SinglePost extends Component {
                     {tags}
                 </div>
             </div>
+
         );
     }
 
