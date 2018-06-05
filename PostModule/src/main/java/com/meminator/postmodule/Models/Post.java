@@ -36,7 +36,7 @@ public class Post {
     private Integer downVote = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @Nullable
-    private Post repost;
+    private Post repost = null;
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;

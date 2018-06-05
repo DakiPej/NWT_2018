@@ -14,13 +14,14 @@ class SinglePostDetails extends Component{
         this.getPost();
     }
 
-    getPost = () => {
-        axios.get(api.default.url+'postmodule/posts/'+this.props.match.params.id)
+    getPost = () => {     
+        axios.get(api.default.url+'/postmodule/posts/'+this.props.match.params.id)
         .then(this.handlePost)
         .catch((err) => {console.log(err);});
     }
 
     handlePost = (res) =>{
+        console.log(res);
         this.setState({post : res.data});
         this.setState({component : <SinglePost post={this.state.post} />});
     }

@@ -55,11 +55,43 @@ public class PostService {
 
     public Post createPost(PostVM postVM, String username){
 
+        Optional<RegisteredUser> user = registeredUserDAO.getUser(username);
+        
+        if(postVM.getRepostID() != 0){
+            Optional<Post> repost = postDAO.getPost(postVM.getRepostID());
+            if(repost.isPresent()){
+
+                Post tmp = repost.get();
+                Post post = new Post();
+                post.setUser(user.get());
+                post.setInfo(postVM.getInfo());
+                post.setImageID(tmp.getImageID());
+                post.setImageURL(tmp.getImageURL());
+                post.setRepost(tmp);
+                List<Tag> tags = tagDAO.getAllInList(postVM.getTags());
+                for(Tag i: tags){
+                    if(postVM.getTags().contains(i.getName())) postVM.getTags().remove(i.getName());
+                }
+                for(String i: postVM.getTags()){
+                    tags.add(tagDAO.createTag(new Tag(i)));
+                }
+                post.setTags(tags);
+                Post newPost =  postDAO.savePost(post);
+                if(newPost != null){
+                    asyncSender.sendPost(new PostVMS(post));
+                }
+                return newPost;
+
+            }else{
+                throw new IllegalArgumentException("Post doesn't exist");
+            }
+        }
+
+
         if(postVM.getImageURL().equals("")){
             throw new IllegalArgumentException("Url of an image isn't specified!");
         }
 
-        Optional<RegisteredUser> user = registeredUserDAO.getUser(username);
         if(user.isPresent()){
             Post post = new Post();
             post.setUser(user.get());

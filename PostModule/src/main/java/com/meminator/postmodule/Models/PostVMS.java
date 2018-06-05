@@ -24,7 +24,7 @@ public class PostVMS {
         this.id = post.getId();
         this.poster = post.getUser().getUsername();
         this.imageID = post.getImageID();
-        this.repost = (post.getRepost()==null?null:new PostVMS(post.getRepost()));
+        this.repost = (post.getRepost()!=null?new PostVMS(post.getRepost()):null);
     }
 
     public Long getId() {
