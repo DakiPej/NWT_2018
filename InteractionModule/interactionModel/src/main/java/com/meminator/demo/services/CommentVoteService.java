@@ -43,6 +43,18 @@ public class CommentVoteService {
 		this.commentService = commentService; 
 	}
 	
+	public long getPostByCommentVoteId(long commentVoteId)	{
+		try {
+			if(!this.commentVoteDao.existsById(commentVoteId))
+				throw new IllegalArgumentException("You have not voted for the comment.") ; 
+			CommentVote cv = this.commentVoteDao.one(commentVoteId) ; 
+			
+			return cv.getComment().getPostId().getId() ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
+	
 	public String createCommentVote(long commentId, String voterUsername, boolean upVote)	{
 		try {
 

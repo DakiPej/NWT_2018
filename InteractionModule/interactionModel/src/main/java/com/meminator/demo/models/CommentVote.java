@@ -25,7 +25,7 @@ public class CommentVote implements iNotify{
 	Boolean upVote;
 	
 	public String getType()	{
-		return "Post vote";
+		return "Comment vote";
 	}
 	
 	public String getPayload()	{

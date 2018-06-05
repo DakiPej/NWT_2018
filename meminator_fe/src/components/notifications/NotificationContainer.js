@@ -1,74 +1,125 @@
-import React, { Component } from 'react' ; 
-import {Row, Col} from 'react-materialize' ; 
-import axios from 'axios' ; 
+import React, { Component } from 'react';
+import { Row, Col } from 'react-materialize';
+import axios from 'axios';
 import Divider from 'react-materialize/lib/Divider';
-import '../../styles/notifications.css' ; 
-import './notifications.css' ; 
+import '../../styles/notifications.css';
+import './notifications.css';
 import {
     Button,
     Icon,
-    NavItem, 
+    NavItem,
     Dropdown,
     Chip,
     Collection,
     CollectionItem
-}   from 'react-materialize' ; 
+} from 'react-materialize';
 import notifications from "./dummyNotifications";
 
 
 
-function NotificationListItem ({notificationText}) {
-    return  (
-        <NavItem onClick={() => {}}className="blue-grey darken-2" >
-        <div className='blue-grey-text text-lighten-5'>
-            {notificationText} 
-         </div>
-         </NavItem>
+function NotificationListItem({ notificationText, referencedObjectId, reRoute }) {
+    return (
+        // <NavItem onClick={(notificationText, referencedObjectId) => {
+        //     console.log("Tekst je --------- " + notificationText)
+        // }}className="blue-grey darken-2" >
+        <div className='notification'>
+            <div className='blue-grey darken-2 blue-grey-text text-lighten-5' onClick={() => reRoute(notificationText, referencedObjectId)}>
+                {notificationText}
+            </div>
+        </div>
+        //</NavItem>
+
     )
 }
 
 
-class Notification extends Component   {
-    
-    constructor(props)  {
-        super(props) ;
-        
-        var token = sessionStorage.getItem("token") ; 
-        var username = sessionStorage.getItem("username") ; 
+class Notification extends Component {
+
+    constructor(props) {
+        super(props);
+
+        var token = sessionStorage.getItem("token");
+        var username = sessionStorage.getItem("username");
 
         this.state = {
-            notificationPageNumber: 0, 
+            notificationPageNumber: 0,
             notifications: [],
-            intervalId:undefined,
-            isFetching:false, 
-            lastTimeChecked : 0, 
-            notificationCount : 0
-        }; 
+            intervalId: undefined,
+            isFetching: false,
+            lastTimeChecked: 0,
+            notificationCount: 0
+        };
     }
 
-    componentDidMount(){
+    componentDidMount() {
 
-        // fetch notifications 
+        // fetch notifications
 
-        this.getLastTimeChecked() ; 
+        this.getLastTimeChecked();
         setTimeout(() => {
-            this.initialNotifications() ; 
+            this.initialNotifications();
         }, 100);
-        //this.initialNotifications() ; 
-        const intervalId = setInterval(this.fetchAsync,15000);
-        this.setState(()=>({/*notifications, */intervalId}));
+        //this.initialNotifications() ;
+        const intervalId = setInterval(this.fetchAsync, 15000);
+        this.setState(() => ({/*notifications, */intervalId }));
 
     }
+
+    reRoute = (notificationText, objectId) => {
+        const authorization = "Bearer " + sessionStorage.getItem("token") ;
+
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ;
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ;
+         if(notificationText.includes("commented on your post"))  {
+            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId,
+            {
+                headers: {Authorization: authorization}
+            })
+            .then(this.handleGetPostId)
+            .catch(this.handleErrorGetPostId) ;
+
+         }
+         else if(notificationText.includes("voted for your post"))   {
+             axios.get("http://138.68.184.248:8080/interactionmodule/postVotes/postId/" + objectId,
+            {
+                headers: {Authorization: authorization}
+            })
+            .then(this.handleGetPostId)
+            .catch(this.handleErrorGetPostId) ;
+        }
+        else if(notificationText.includes("voted for your comment"))    {
+            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId,
+        {
+            headers: {Authorization: authorization}
+        })
+        .then(this.handleGetPostId)
+        .catch(this.handleErrorGetPostId) ;
+        }
+        else if(notificationText.includes("started following you"))    {
+            //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
+        }
+        else if(notificationText.includes("reposted your post"))   {
+            //PREUSMJERITI NA TAJ POST ILI REPOST ?????
+        }
+    }
+    handleGetPostId = (response) => {
+        console.log(response.data) ;
+    }
+    handleErrorGetPostId = (error) => {
+        console.log(error.data) ;
+    }
+
+
 
     initialNotifications = () => {
-        console.log(sessionStorage.getItem("token")) ; 
-        const pageNumber = this.state.notificationPageNumber ; 
-        const lastTimeChecked = this.state.lastTimeChecked ;  
-        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
+        //console.log(sessionStorage.getItem("token")) ;
+        const pageNumber = this.state.notificationPageNumber;
+        const lastTimeChecked = this.state.lastTimeChecked;
+        const authorization = "Bearer " + sessionStorage.getItem("token");
         axios.get("http://138.68.186.248:8080/interactionmodule/notifications/" + pageNumber + "/" + lastTimeChecked
-        , { headers: {Authorization : authorization }})
-        .then(this.handleNewRequests)
-        .catch(this.catchNewRequests) ; 
+            , { headers: { Authorization: authorization } })
+            .then(this.handleNewRequests)
+            .catch(this.catchNewRequests);
     }
 
     handleInitialNotifications = (response) => {
@@ -76,51 +127,51 @@ class Notification extends Component   {
     }
 
     catchInitialNotifications = (error) => {
-        
+
     }
 
     getLastTimeChecked = () => {
-        console.log(sessionStorage.getItem("token")) ;
-        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
+        //console.log(sessionStorage.getItem("token")) ;
+        const authorization = "Bearer " + sessionStorage.getItem("token");
         axios.get("http://138.68.186.248:8080/interactionmodule/notifications/lastTimeChecked/"
-        , { headers: {Authorization : authorization }})
-        .then(this.handleGetLastTimeChecked.bind(this))
-        .catch(function(err)    {
-            console.log(err);
-            const isFetching = false ; 
-            this.setState( () => ({isFetching})) ;  
-        }) ; 
+            , { headers: { Authorization: authorization } })
+            .then(this.handleGetLastTimeChecked.bind(this))
+            .catch(function (err) {
+                console.log(err);
+                const isFetching = false;
+//                this.setState(() => ({ isFetching }));
+            });
 
-        const isFetching = true ;
-        this.setState( () => {isFetching}) ;  
+        const isFetching = true;
+        this.setState(() => { isFetching });
     }
 
     handleGetLastTimeChecked = (response) => {
-        
-        console.log(response.data) ; 
-        const lastTimeChecked = response.data ; 
-        const isFetching = false ; 
 
-        this.setState(() => ({lastTimeChecked, isFetching})) ; 
-        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ; 
+        //console.log(response.data) ;
+        const lastTimeChecked = response.data;
+        const isFetching = false;
+
+        this.setState(() => ({ lastTimeChecked, isFetching }));
+        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.state.intervalId);
-        this.setState({intervalId:undefined})
+        this.setState({ intervalId: undefined })
     }
 
     fetchAsync = () => {
-        console.log(sessionStorage.getItem("token")) ;
-        const pageNumber = this.state.notificationPageNumber ;  
-        const lastTimeChecked = this.state.lastTimeChecked ; 
+        //console.log(sessionStorage.getItem("token")) ;
+        const pageNumber = this.state.notificationPageNumber;
+        const lastTimeChecked = this.state.lastTimeChecked;
         const authorization = "Bearer " + sessionStorage.getItem("token");
 
-        if(!this.state.isFetching)
+        if (!this.state.isFetching)
             axios.get('http://138.68.186.248:8080/interactionmodule/notifications/' + pageNumber + "/" + Date.now()
-            , { headers: {Authorization : authorization }})
-            .then(this.handleNewRequests.bind(this))
-            .catch(this.catchNewRequests.bind(this)) ; 
+                , { headers: { Authorization: authorization } })
+                .then(this.handleNewRequests.bind(this))
+                .catch(this.catchNewRequests.bind(this));
         // if(!this.state.isFetching){
         //     this.setState({isFetching:true})
         //     setTimeout(()=>{
@@ -128,72 +179,73 @@ class Notification extends Component   {
         //         this.setState({isFetching:false})
         //     },2000)
         // }
-        
+
     }
 
-    handleNewRequests = (response)  =>     {
-        const isFetching = false ; 
-        const notifications = response.data.notifications ; 
-        console.log("RESPONSE JE ----- " + response) ; 
-        const notificationCount = response.data.notificationCount; 
+    handleNewRequests = (response) => {
+        const isFetching = false;
+        const notifications = response.data.notifications;
+        console.log(response);
+        const notificationCount = response.data.notificationCount;
 
         this.setState(
             (prevState) => (
-                    {
-                        notifications: [...notifications, ...prevState.notifications],
-                        notificationCount: notificationCount + prevState.notificationCount
-                    }
-                )
-            )  
-        console.log("NOVE NOTIFIKACIJE SU: " + notifications) ; 
+                {
+                    notifications: [...notifications, ...prevState.notifications],
+                    notificationCount: notificationCount + prevState.notificationCount
+                }
+            )
+        )
+        // console.log("NOVE NOTIFIKACIJE SU: " + notifications) ;
 
-        console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ; 
-        //console.log(response.data) ;        
-        //console.log('Proslo'); 
+        // console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ;
+        // console.log(response.data) ;
+        // console.log('Proslo');
     }
 
-    catchNewRequests = (error)  => {
+    catchNewRequests = (error) => {
         this.setState(
-            () => ({isFetching:false})
+            () => ({ isFetching: false })
         )
-        //console.log("--------------GRESKA--------------") ;
-        console.log(error.data) ; 
+        console.log(error.data);
     }
 
     render() {
 
-        const dropDownButton =  (
-                <a className="blue-grey waves-effect waves-light btn" style={{alignItems:"right"}} onClick={() => {}}>
+        const dropDownButton = (
+            <div className='dropDownButt'>
+                <a className="blue-grey waves-effect waves-light btn right" onClick={() => { }}>
                     <i class="material-icons left">notifications</i>
                     {this.state.notifications.length}
                 </a>
+            </div>
         );
         const loadMoreButton = (
-            <NavItem onClick={() => {}}className="blue-grey darken-2" >
+            <NavItem onClick={() => { }} className="blue-grey darken-2" >
                 <div className='blue-grey-text text-lighten-5'>
-                    <i className='material-icons center'>add</i> 
+                    <i className='material-icons center'>add</i>
                 </div>
-             </NavItem>
-        );
-        
-        return (
-            <NavItem>
-            <div className='dropDownDiv'>
-                <Dropdown trigger={dropDownButton} >
-                        {
-                        this.state.notificationCount &&
-
-                        this.state.notifications.map((notif,index)=>(
-                            <NotificationListItem {...notif} />
-                        ))
-                    }
-                    {loadMoreButton}
-                </Dropdown>
-            </div>
             </NavItem>
-            );
+        );
+
+        return (
+            <NavItem onClick={() => { }}>
+                <div className='dropDownDiv'>
+                    <Dropdown trigger={dropDownButton} >
+                        {
+                            this.state.notificationCount &&
+
+                            this.state.notifications.map((notif, index) => (
+                                <NotificationListItem {...notif} reRoute={this.reRoute} />
+                            ))
+                        }
+                        {loadMoreButton}
+                    </Dropdown>
+                </div>
+            </NavItem>
+        );
     }
 
 }
 
-export default Notification ; 
+export default Notification;

@@ -44,6 +44,19 @@ public class CommentService {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService; 
 	}
+	
+	public long getPostByCommentId(long commentId)	{
+		try {
+			if(!this.commentDao.existsById(commentId)) 
+				throw new IllegalArgumentException("The comment does not exist.") ; 
+			long postId = this.commentDao.one(commentId).getPostId().getId() ; 
+			
+			return postId ; 
+		} catch (Exception e) {
+			throw e ;
+		}
+	}
+	
 	public String createComment(long postId, String commenterUsername, String commentText)	{
 		
 		if(!this.registeredUserDao.userExists(commenterUsername))

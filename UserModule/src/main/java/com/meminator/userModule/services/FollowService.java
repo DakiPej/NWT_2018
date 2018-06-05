@@ -72,8 +72,8 @@ public class FollowService {
 				throw new IllegalArgumentException("Friend does not exist.");
 			else if(user == friend)
 				throw new IllegalArgumentException("User and friend are same.");
-			else if(followRepository.frendshipExists(username, friendUsername))
-				throw new IllegalArgumentException("Friendship already exists.");
+			else if(!followRepository.frendshipExists(username, friendUsername))
+				throw new IllegalArgumentException("Friendship doesn't exists.");
 			
 			Follow follow = followRepository.getFriendship(username, friendUsername);
 			followRepository.delete(follow);
@@ -114,4 +114,18 @@ public class FollowService {
 		}
 	}
 
+	public Boolean areFriends(String username, String friendUsername) throws IllegalArgumentException{
+		try {
+			RegisteredUser friend = registeredUserRepository.getByUsername(friendUsername);
+			if(friend == null)
+				throw new IllegalArgumentException("User " + friendUsername + " doesn't exist.");
+			
+			return followRepository.frendshipExists(username, friendUsername);
+		} catch(IllegalArgumentException e){
+			throw e;
+		}
+		catch (Exception e) {
+			throw e;
+		}
+	}
 }

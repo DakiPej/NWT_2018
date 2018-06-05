@@ -49,6 +49,18 @@ public class PostVoteService {
 	public void setPostService(PostService postService)	{
 		this.postService = postService;
 	}
+	
+	public long getPostByPostVoteId(long postVoteId)	{
+		try {
+			if(!this.postVoteDao.existsById(postVoteId))
+				throw new IllegalArgumentException("You have not voted for the post.") ; 
+			PostVote pv = this.postVoteDao.one(postVoteId) ;
+			
+			return pv.getPost().getId() ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
 	public String createPostVote (long postId, String voterUsername, boolean upVote)	{
 		
 		try {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button } from 'react-materialize';
 import '../styles/register.css';
 
-
+import axios from 'axios';
 
 class Register extends Component{
   state = {
@@ -29,6 +29,35 @@ class Register extends Component{
         email:''
       }
     }
+
+    onRegister=(event)=>{
+
+
+      event.preventDefault();
+      if (this.onValidate()){
+        axios.post("http://138.68.186.248:8080/usermodule/users/register",
+      {
+        username: this.state.username,
+        firstName: this.state.firstname,
+        lastName: this.state.lastname,
+        email: this.state.email,
+        password: this.state.password
+
+      }).then(this.handleSuccess)
+    .catch(this.handleError);
+      }
+    }
+    handleSuccess=(response)=> {
+      alert("Registration success");
+      window.location='/';
+      }
+
+      handleError=(error)=> {
+          alert("Registration failed: " + error.data);
+      }
+
+
+
 
   onValidate=() =>{
     var validate=true;
@@ -83,21 +112,6 @@ class Register extends Component{
       return validate;
   }
 
-  onRegister=(event)=>{
-
-
-    event.preventDefault();
-    if (this.onValidate()){
-      //axios
-    }
-  }
-  handleSuccess=(response)=> {
-
-    }
-
-    handleError=(error)=> {
-        alert("Registration failed")
-    }
 
   onChange=(e)=> {
   this.setState({[e.target.name]:e.target.value});

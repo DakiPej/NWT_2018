@@ -160,7 +160,7 @@ public class DatabaseSeeder {
 	}
 	void seedPostTable()	{
 		if(((List<Post>) this.postRepo.findAll()).isEmpty())	{
-			for(int i = 1 ; i <= 7 ; i ++ )	{
+			for(int i = 1 ; i <= 6 ; i ++ )	{
 				Post post = new Post(new RegisteredUser(i));
 				post.setId((long)i);
 				this.postRepo.save(post); 
@@ -196,7 +196,6 @@ public class DatabaseSeeder {
 		if(((List<CommentVote>) this.commentVoteRepo.findAll()).isEmpty())	{
 			//CommentVote commentVote = new CommentVote(new Comment(1), new RegisteredUser(1));
 			//this.commentVoteRepo.save(commentVote); 
-			
 			this.commentVoteService.createCommentVote((long)1, "dakipej", true) ;
 			this.commentVoteService.createCommentVote((long)2, "sbecirovic", true) ;
 			this.commentVoteService.createCommentVote((long)3, "tdzirlo", true) ;

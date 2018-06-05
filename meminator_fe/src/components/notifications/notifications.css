@@ -3,16 +3,14 @@
 }
 
 .dropDownDiv {
+    margin-top: 10px ; 
     display: flex ;
-    width: 400px; 
+    width: 350px; 
 }
 
-.dropDownDiv span  {
-    width: 100% ;
-}
-
-.notificationDiv {
-    width: 100% ; 
+.dropDownButt {
+    padding-top: 5px ; 
+    width: 350px ; 
 }
 
 

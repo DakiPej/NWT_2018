@@ -29,6 +29,20 @@ public class CommentController {
 		this.commentService = commentService;
 	}
 
+	@PreAuthorize("hasrole('ROLE_user')")
+	@RequestMapping(value="/postId/{commentId}", method=RequestMethod.GET)
+	public ResponseEntity getPostId(OAuth2Authentication authentication
+			, @PathVariable("commentId") long commentId)	{
+		try {
+			long postId ; 
+			postId = this.commentService.getPostByCommentId(commentId) ; 
+			
+			return ResponseEntity.status(HttpStatus.OK).body(postId) ;
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
+		}
+	}
+	
 	@PreAuthorize("hasRole('ROLE_user')")
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity createComment(OAuth2Authentication authentication,
