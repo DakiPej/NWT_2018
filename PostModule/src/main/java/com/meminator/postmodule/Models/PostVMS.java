@@ -2,11 +2,14 @@ package com.meminator.postmodule.Models;
 
 import java.util.List;
 
+import org.aspectj.weaver.patterns.PerThisOrTargetPointcutVisitor;
+
 public class PostVMS {
 
     private Long id;
     private Long imageID;
     private String poster;
+    private PostVMS repost;
 
     public PostVMS() {
     }
@@ -21,6 +24,7 @@ public class PostVMS {
         this.id = post.getId();
         this.poster = post.getUser().getUsername();
         this.imageID = post.getImageID();
+        this.repost = new PostVMS(post.getRepost());
     }
 
     public Long getId() {
@@ -45,5 +49,13 @@ public class PostVMS {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public void setRepost(PostVMS repost) {
+        this.repost = repost;
+    }
+    
+    public PostVMS getRepost() {
+        return repost;
     }
 }
