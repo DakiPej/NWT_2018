@@ -71,7 +71,9 @@ class Notification extends Component {
         // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ;
         // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ;
          if(notificationText.includes("commented on your post"))  {
-            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId,
+             console.log("COMMENTED ! ") ; 
+            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId, 
+
             {
                 headers: {Authorization: authorization}
             })
@@ -80,6 +82,7 @@ class Notification extends Component {
 
          }
          else if(notificationText.includes("voted for your post"))   {
+             console.log("POST VOTE ! ") ;
              axios.get("http://138.68.184.248:8080/interactionmodule/postVotes/postId/" + objectId,
             {
                 headers: {Authorization: authorization}
@@ -88,7 +91,8 @@ class Notification extends Component {
             .catch(this.handleErrorGetPostId) ;
         }
         else if(notificationText.includes("voted for your comment"))    {
-            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId,
+            console.log("COMMENT VOTE !") ; 
+            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId, 
         {
             headers: {Authorization: authorization}
         })
@@ -97,16 +101,20 @@ class Notification extends Component {
         }
         else if(notificationText.includes("started following you"))    {
             //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
+            console.log("FOLLOW ! ") ; 
         }
         else if(notificationText.includes("reposted your post"))   {
+            console.log("REPOST ! ") ;  
             //PREUSMJERITI NA TAJ POST ILI REPOST ?????
         }
     }
     handleGetPostId = (response) => {
-        console.log(response.data) ;
+        console.log("EVO GA RESPONSE !!!!!!!!!!!!!!!!!!!!!!!") ; 
+        console.log(response) ; 
     }
     handleErrorGetPostId = (error) => {
-        console.log(error.data) ;
+        console.log("EVO GA ERROR !!!!!!!!!!!!!!!!!!!!!!!!!!") ; 
+        console.log(error) ; 
     }
 
 

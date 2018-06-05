@@ -46,7 +46,12 @@ public class AsyncReceiverService {
 	
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_POSTS_TO_BE_ADDED)
 	public void receiveNewPost(final PostInformation post)	{
-		this.postService.createPost(post.postId, post.username);
+		if(post.repost == null)
+			this.postService.createPost(post.postId, post.username);
+		else	{
+			this.postService.createPost(post.repost.postId, post.repost.username) ;
+			this.notificationService.createRepostNotification(post.username, post.repost.username, post.postId) ;
+		}
 	}
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
 	public void receivePostToBeDeleted(final PostInformation postInformation)	{

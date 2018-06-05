@@ -110,6 +110,23 @@ public class NotificationService {
 		this.notificationDao.createNotification(notif) ; 
 			
 	}
+	
+	public void createRepostNotification(String poster, String reposter, long postId)	{
+		Notification notification = new Notification() ; 
+		
+		RegisteredUser notifier = this.registeredUseDao.getRegisteredUserByUsername(reposter) ; 
+		RegisteredUser notified = this.registeredUseDao.getRegisteredUserByUsername(poster) ; 
+		NotificationType nt = this.notificationTypeDao.getNotificationTypeByTypeName("Post repost") ;
+		
+		notification.setNotifierUsername(notifier.getUsername()); 
+		notification.setContet(Long.toString(notifier.getId()));
+		notification.setCreationMoment(new Date());
+		notification.setNotificationTypeId(nt);
+		notification.setUserId(notified);
+		notification.setChecked(false);
+		
+		this.notificationDao.createNotification(notification) ; 
+	}
 	/*public String createNotification(String notifierUsername, String username, String notificationType)	{
 		Notification notification = new Notification(); 
 		

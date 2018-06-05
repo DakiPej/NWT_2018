@@ -43,6 +43,24 @@ public class CommentVoteService {
 		this.commentService = commentService; 
 	}
 	
+	public boolean hasLiked(String username, long commentId)	{
+		try {
+			if(!this.registeredUserDao.userExists(username))
+				throw new IllegalArgumentException("The user does not exist") ;
+			if(!this.commentDao.existsById(commentId))
+				throw new IllegalArgumentException("The comment does not exist") ; 
+			
+			RegisteredUser voter = this.registeredUserDao.getRegisteredUserByUsername(username) ; 
+			Comment comment = this.commentDao.one(commentId) ; 
+			
+			CommentVote cv = this.commentVoteDao.findByCommentAndVote(comment, voter) ; 
+			if(cv == null) return false ; 
+			return true ; 
+			
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
 	public long getPostByCommentVoteId(long commentVoteId)	{
 		try {
 			if(!this.commentVoteDao.existsById(commentVoteId))

@@ -50,6 +50,23 @@ public class PostVoteService {
 		this.postService = postService;
 	}
 	
+	public boolean hasLiked(String voter, long postId)	{
+		try {
+			if(!this.regUserDao.userExists(voter)) 
+				throw new IllegalArgumentException("The user does not exist.") ; 
+			if(!this.postDao.existsById(postId))
+				throw new IllegalArgumentException("The post does not exist.") ; 
+			
+			RegisteredUser user = this.regUserDao.getRegisteredUserByUsername(voter) ; 
+			Post post = this.postDao.one(postId) ; 
+			
+			PostVote pv = this.postVoteDao.findByPostAndVoter(post, user) ; 
+			if(pv == null) return false ; 
+			return true ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
 	public long getPostByPostVoteId(long postVoteId)	{
 		try {
 			if(!this.postVoteDao.existsById(postVoteId))
