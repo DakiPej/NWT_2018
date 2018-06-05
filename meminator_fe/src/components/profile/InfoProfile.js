@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button, Modal, Collection,CollectionItem } from 'react-materialize';
-import '../styles/profiledetails.css';
+import '../../styles/profiledetails.css';
 import axios from 'axios';
 
 class InfoProfile extends Component{

@@ -15,7 +15,7 @@ class SinglePostDetails extends Component{
         this.getPost();
     }
 
-    getPost = () => {     
+    getPost = () => {
         axios.get(api.default.url+'/postmodule/posts/'+this.props.match.params.id)
         .then(this.handlePost)
         .catch((err) => {console.log(err);});
