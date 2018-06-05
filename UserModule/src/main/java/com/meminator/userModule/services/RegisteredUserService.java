@@ -40,7 +40,7 @@ public class RegisteredUserService implements UserDetailsService {
 	UserTypeRepository userTypeRepository;
 
 	@Autowired
-	PasswordEncoder passwordEncoder;
+	BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
 	FollowRepository followRepository;
@@ -125,7 +125,7 @@ public class RegisteredUserService implements UserDetailsService {
 					throw new IllegalArgumentException("Password property cannot be empty.");
 				else if (!resetPasswordForm.getNewPassword().equals(resetPasswordForm.getNewPasswordR()))
 					throw new IllegalArgumentException("Passwords do not match.");
-				else if (!passwordEncoder.encode(resetPasswordForm.getOldPassword()).equals(ru.getPassword()))
+				else if (!passwordEncoder.matches(resetPasswordForm.getOldPassword(), ru.getPassword()))
 					throw new IllegalArgumentException("Incorrect old password.");
 
 				ru.setPassword(passwordEncoder.encode(resetPasswordForm.getNewPassword()));

@@ -72,8 +72,8 @@ public class FollowService {
 				throw new IllegalArgumentException("Friend does not exist.");
 			else if(user == friend)
 				throw new IllegalArgumentException("User and friend are same.");
-			else if(followRepository.frendshipExists(username, friendUsername))
-				throw new IllegalArgumentException("Friendship already exists.");
+			else if(!followRepository.frendshipExists(username, friendUsername))
+				throw new IllegalArgumentException("Friendship doesn't exists.");
 			
 			Follow follow = followRepository.getFriendship(username, friendUsername);
 			followRepository.delete(follow);
