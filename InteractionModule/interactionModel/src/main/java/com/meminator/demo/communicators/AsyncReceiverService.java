@@ -33,7 +33,7 @@ public class AsyncReceiverService {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService ;
 	}
-	
+
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
 	public void receiveUserToBeDeleted(final String username)	{
 		this.registeredUserService.deleteUser(username); 
@@ -46,11 +46,16 @@ public class AsyncReceiverService {
 	
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_POSTS_TO_BE_ADDED)
 	public void receiveNewPost(final PostInformation post)	{
-		this.postService.createPost(post.postId, post.username);
+		if(post.repost == null)
+			this.postService.createPost(post.id, post.poster);
+		else	{
+			this.postService.createPost(post.repost.id, post.repost.poster) ;
+			this.notificationService.createRepostNotification(post.poster, post.repost.poster, post.id) ;
+		}
 	}
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
 	public void receivePostToBeDeleted(final PostInformation postInformation)	{
-		this.postService.deletePost(postInformation.postId); 
+		this.postService.deletePost(postInformation.id); 
 	}
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_FOLLOW_NOTIFICATIONS)
 	public void receiverFollowNotifications(final FollowObject followObject)	{
@@ -70,8 +75,10 @@ public class AsyncReceiverService {
 		public String username; 
 	}
 	private static class PostInformation	{
-		public long postId; 
-		public String username; 
+		public long id;
+		public long imageID;
+		public String poster;
+		public PostInformation repost;
 	}
 	private static class PostVoteVM	{
 		public long postId; 

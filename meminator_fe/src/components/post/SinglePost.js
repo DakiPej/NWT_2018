@@ -34,12 +34,17 @@ class SinglePost extends Component {
         });
     }
 
+    parseDate = (timeStamp) =>{
+        let date = new Date(timeStamp);
+        return(date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear());
+    }
+
     render() {
         return (
                     <div className="post" style={this.props.single==="T"?{width:"100%", margin:"0"}:null}>
                         <div className="post-header">
                             <div className="username"><Icon>person_outline</Icon>{this.props.post.user.username}</div>
-                            <div className="date">11/11/11</div>
+                            <div className="date">{this.parseDate(this.props.post.timeStamp)}</div>
                         </div>
                         <img className="post-image" src={this.props.post.imageURL} />
                         <div className="post-footer">

@@ -5,14 +5,17 @@ public class PostVM {
     private Long id;
     private Long imageID;
     private String poster;
+    private PostVM repost;
 
     public PostVM() {
     }
 
-    public PostVM(Long id, Long imageID, String poster) {
+    public PostVM(Long id, Long imageID, String poster, PostVM repost) {
         this.id = id;
         this.imageID = imageID;
         this.poster = poster;
+        this.repost = repost;
+        
     }
 
     public PostVM(Post post){
@@ -20,6 +23,15 @@ public class PostVM {
         this.poster = post.getUser().getUsername();
         this.imageID = post.getId();
     }
+
+    public PostVM getRepost() {
+        return repost;
+    }
+
+    public void setRepost(PostVM repost) {
+        this.repost = repost;
+    }
+    
 
     public Long getId() {
         return id;

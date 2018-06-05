@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Input, Icon, Col, Button,Modal,Collection,CollectionItem } from 'react-materialize';
+import { Row, Input, Icon, Col, Button, Modal, Collection,CollectionItem } from 'react-materialize';
 import '../styles/profiledetails.css';
 import axios from 'axios';
 
@@ -74,26 +74,25 @@ class InfoProfile extends Component{
     .catch((response)=>{alert("Unfollow failed!");});
       }
 
-/*-------------Follow/Unfollow list--------------*/
+    /*-------------Follow/Unfollow list--------------*/
 
-  getFollowing=(event)=>{
-    console.log("ovje");
-    var content=this.props.username;
-    axios.post("http://138.68.186.248:8080/usermodule/myFriends",content,{
-  headers: { 'Content-Type': 'text/plain' }
-}).then((response)=>{this.setState({following:response.data});console.log(response.data)})
-  .catch((error)=>{alert("Error accured during retrieval.")});
-  }
+    getFollowing=(event)=>{
+      console.log("ovje");
+      var content=this.props.username;
+      axios.post("http://138.68.186.248:8080/usermodule/myFriends",content,{
+    headers: { 'Content-Type': 'text/plain' }
+    }).then((response)=>{this.setState({following:response.data});console.log(response.data)})
+    .catch((error)=>{alert("Error accured during retrieval.")});
+    }
 
-  getFollowers=(event)=>{
-    var content=this.props.username;
-    axios.post("http://138.68.186.248:8080/usermodule/followedBy",content,{
-  headers: { 'Content-Type': 'text/plain' }
-}
-  ).then((response)=>{this.setState({followers:response.data});console.log(response.data)})
-  .catch((error)=>{alert("Error accured during retrieval.")});
-  }
-
+    getFollowers=(event)=>{
+      var content=this.props.username;
+      axios.post("http://138.68.186.248:8080/usermodule/followedBy",content,{
+    headers: { 'Content-Type': 'text/plain' }
+    }
+    ).then((response)=>{this.setState({followers:response.data});console.log(response.data)})
+    .catch((error)=>{alert("Error accured during retrieval.")});
+    }
 
 
 /*---------------Default slika-----------*/
@@ -102,7 +101,6 @@ class InfoProfile extends Component{
     }
 
     render(){
-
       var following=this.state.following;
       var followers=this.state.followers;
       var followingList = <div></div>;
@@ -133,6 +131,7 @@ class InfoProfile extends Component{
              </Modal>
             </div>;
 
+
       var follow=<div></div>
       if (sessionStorage.getItem("username")){
       if (!this.props.userProfile)
@@ -154,7 +153,7 @@ class InfoProfile extends Component{
                 <div className="detail">
                 <Col s={6}>
                   <label>Following:</label>
-                {modalFollowing}
+                  {modalFollowing}
                 </Col>
                 <Col s={6}>
                   <label>Followers:</label>
@@ -183,8 +182,5 @@ class InfoProfile extends Component{
             );
       }
 }
-
-
-
 
 export default InfoProfile;

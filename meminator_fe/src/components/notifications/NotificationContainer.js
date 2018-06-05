@@ -17,13 +17,13 @@ import notifications from "./dummyNotifications";
 
 
 
-function NotificationListItem({ notificationText, referencedObjectId, reRoute }) {
+function NotificationListItem({ notificationText, referencedObjectId, notificationType, reRoute }) {
     return (
         // <NavItem onClick={(notificationText, referencedObjectId) => {
         //     console.log("Tekst je --------- " + notificationText)
         // }}className="blue-grey darken-2" >
         <div className='notification'>
-            <div className='blue-grey darken-2 blue-grey-text text-lighten-5' onClick={() => reRoute(notificationText, referencedObjectId)}>
+            <div className='blue-grey darken-2 blue-grey-text text-lighten-5' onClick={() => reRoute(notificationText, referencedObjectId, notificationType)}>
                 {notificationText}
             </div>
         </div>
@@ -43,7 +43,20 @@ class Notification extends Component {
 
         this.state = {
             notificationPageNumber: 0,
-            notifications: [],
+            notifications: [{
+                notificationId:"-1", 
+                notificationText:"The user neko started following you.", 
+                notificationType:"Followed", 
+                referencedObjectId:"-1" 
+
+            }, 
+            {
+                notificationId:"-12", 
+                notificationText:"The user neko reposted your post.", 
+                notificationType:"Post repost", 
+                referencedObjectId:"-13" 
+
+            }],
             intervalId: undefined,
             isFetching: false,
             lastTimeChecked: 0,
@@ -60,53 +73,61 @@ class Notification extends Component {
             this.initialNotifications();
         }, 100);
         //this.initialNotifications() ;
-        const intervalId = setInterval(this.fetchAsync, 15000);
+        const intervalId = setInterval(this.fetchAsync, 60000);
         this.setState(() => ({/*notifications, */intervalId }));
 
     }
 
-    reRoute = (notificationText, objectId) => {
+    reRoute = (notificationText, objectId, notificationType) => {
         const authorization = "Bearer " + sessionStorage.getItem("token") ;
-
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!           OBJECT ID JE : " + objectId) ; 
         // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ;
         // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ;
-         if(notificationText.includes("commented on your post"))  {
-            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId,
+        if(notificationType == "Commented")  {
+             console.log("COMMENTED ! ") ; 
+            axios.get("http://138.68.186.248:8080/interactionmodule/comments/postId/" + objectId, 
             {
                 headers: {Authorization: authorization}
             })
-            .then(this.handleGetPostId)
+            .then(this.handleGetPostId) 
             .catch(this.handleErrorGetPostId) ;
-
          }
-         else if(notificationText.includes("voted for your post"))   {
-             axios.get("http://138.68.184.248:8080/interactionmodule/postVotes/postId/" + objectId,
+        else if(notificationType == "Post vote")   {
+             console.log("POST VOTE ! ") ;
+             axios.get("http://138.68.186.248:8080/interactionmodule/postVotes/postId/" + objectId,
             {
                 headers: {Authorization: authorization}
             })
             .then(this.handleGetPostId)
             .catch(this.handleErrorGetPostId) ;
         }
-        else if(notificationText.includes("voted for your comment"))    {
-            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId,
+        else if(notificationType == "Comment vote")    {
+            console.log("COMMENT VOTE !") ; 
+            axios.get("http://138.68.186.248:8080/interactionmodule/commentVotes/postId/" + objectId, 
         {
             headers: {Authorization: authorization}
         })
         .then(this.handleGetPostId)
         .catch(this.handleErrorGetPostId) ;
         }
-        else if(notificationText.includes("started following you"))    {
+        else if(notificationType == "Followed")    {
+            const username = notificationText.replace("The user ", "").replace(" started following you.", "") ; 
+            console.log("USERNAME JE : " + username) ; 
             //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
+            console.log("FOLLOW ! ") ; 
         }
-        else if(notificationText.includes("reposted your post"))   {
+        else if(notificationType == "Post repost")   {
+            console.log("REPOST ! ") ;  
             //PREUSMJERITI NA TAJ POST ILI REPOST ?????
         }
     }
     handleGetPostId = (response) => {
-        console.log(response.data) ;
+        console.log("EVO GA RESPONSE !!!!!!!!!!!!!!!!!!!!!!!") ; 
+        console.log("DATA JE : " + response.data) ; 
     }
     handleErrorGetPostId = (error) => {
-        console.log(error.data) ;
+        console.log("EVO GA ERROR !!!!!!!!!!!!!!!!!!!!!!!!!!") ; 
+        console.log(error) ; 
     }
 
 
@@ -189,7 +210,7 @@ class Notification extends Component {
         const notificationCount = response.data.notificationCount;
 
         this.setState(
-            (prevState) => (
+            (prevState) => (    
                 {
                     notifications: [...notifications, ...prevState.notifications],
                     notificationCount: notificationCount + prevState.notificationCount
