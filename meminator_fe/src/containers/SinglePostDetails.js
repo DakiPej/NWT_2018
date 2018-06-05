@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import SinglePost from '../components/post/SinglePost';
 import * as api from '../globals';
-
+import Comments from '../components/post/Comments';
+import {Row,Col} from 'react-materialize';
 class SinglePostDetails extends Component{
 
     state = {
@@ -23,14 +24,19 @@ class SinglePostDetails extends Component{
 
     handlePost = (res) =>{
         this.setState({post : res.data});
-        this.setState({component : <SinglePost post={this.state.post} />});
+        this.setState({component : <SinglePost post={this.state.post} single={"T"}/>});
     }
 
     render(){
         return(
-            <div>
-            {this.state.component}
-            </div>
+            <Row style={{width:"80%", height:"80vh", marginTop:"20px"}}>
+              <Col s={6} m={6} l={6}>
+                {this.state.component}
+              </Col>
+              <Col s={6} m={6} l={6}>
+                <Comments/>
+              </Col>
+            </Row>
         );
     }
 

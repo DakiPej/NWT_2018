@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardTitle, Row, Col, Icon } from 'react-materialize';
 import '../../styles/singlepost.css';
+import Comments from './Comments';
 
 class SinglePost extends Component {
 
@@ -35,7 +36,7 @@ class SinglePost extends Component {
 
     render() {
         return (
-                    <div className="post">
+                    <div className="post" style={this.props.single==="T"?{width:"100%", margin:"0"}:null}>
                         <div className="post-header">
                             <div className="username"><Icon>person_outline</Icon>{this.props.post.user.username}</div>
                             <div className="date">11/11/11</div>
