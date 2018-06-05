@@ -17,8 +17,8 @@ class Feed extends Component{
 
     getPosts = () => {
         if(sessionStorage.getItem("username")){
-            axios.get("http://138.68.186.248:8080/postmodule/posts",
-            {headers:{Authorization : "Beared " + sessionStorage.getItem("token")}}
+            axios.get("http://138.68.186.248:8080/postmodule/posts/followfeed",
+            {headers:{Authorization : "Bearer " + sessionStorage.getItem("token")}}
         )
         .then(this.handlePosts)
         .catch(this.handleError);

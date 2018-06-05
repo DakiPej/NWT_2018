@@ -175,7 +175,6 @@ public class PostService {
                 username,
                 List.class
                 );
-            System.out.println(response.get(1));
             List<RegisteredUser> users = registeredUserDAO.findAllByUsernames(response);
             return postDAO.getPostByFollowers(users);
     }

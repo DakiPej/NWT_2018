@@ -11,7 +11,6 @@ class SinglePostDetails extends Component{
     }
 
     componentWillMount(){
-        console.log("--------------------------------------------------tu------------------------------");
         this.getPost();
     }
 
