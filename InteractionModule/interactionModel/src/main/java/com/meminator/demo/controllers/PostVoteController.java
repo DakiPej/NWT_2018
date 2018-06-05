@@ -24,6 +24,19 @@ public class PostVoteController {
 		this.postVoteService = postVoteService; 
 	}
 	
+	@PreAuthorize("hasRole('Role_user')")
+	@RequestMapping(value="/hasLIked/{postId}", method = RequestMethod.GET)
+	public ResponseEntity getHasLiked(OAuth2Authentication authentication
+										, @PathVariable("postId") long postId)	{
+		try {
+			boolean hasLiked = this.postVoteService.hasLiked(authentication.getName(), postId) ; 
+			
+			return ResponseEntity.status(HttpStatus.OK).body(hasLiked) ; 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
+		}
+	}
+	
 	@PreAuthorize("hasRole('ROLE_user')")
 	@RequestMapping(value="/postId/{postVoteId}", method=RequestMethod.GET)
 	public ResponseEntity getPostId(OAuth2Authentication authentication
