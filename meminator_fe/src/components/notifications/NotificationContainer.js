@@ -53,30 +53,30 @@ class Notification extends Component {
 
     componentDidMount() {
 
-        // fetch notifications 
+        // fetch notifications
 
         this.getLastTimeChecked();
         setTimeout(() => {
             this.initialNotifications();
         }, 100);
-        //this.initialNotifications() ; 
+        //this.initialNotifications() ;
         const intervalId = setInterval(this.fetchAsync, 15000);
         this.setState(() => ({/*notifications, */intervalId }));
 
     }
 
     reRoute = (notificationText, objectId) => {
-        const authorization = "Bearer " + sessionStorage.getItem("token") ; 
-        
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ; 
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ; 
+        const authorization = "Bearer " + sessionStorage.getItem("token") ;
+
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ;
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ;
          if(notificationText.includes("commented on your post"))  {
-            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId, 
+            axios.get("http://138.68.184.248:8080/interactionmodule/comments/postId/" + objectId,
             {
                 headers: {Authorization: authorization}
             })
             .then(this.handleGetPostId)
-            .catch(this.handleErrorGetPostId) ; 
+            .catch(this.handleErrorGetPostId) ;
 
          }
          else if(notificationText.includes("voted for your post"))   {
@@ -85,34 +85,34 @@ class Notification extends Component {
                 headers: {Authorization: authorization}
             })
             .then(this.handleGetPostId)
-            .catch(this.handleErrorGetPostId) ;             
-        } 
+            .catch(this.handleErrorGetPostId) ;
+        }
         else if(notificationText.includes("voted for your comment"))    {
-            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId, 
+            axios.get("http://138.68.184.248:8080/interactionmodule/commentVotes/postId/" + objectId,
         {
             headers: {Authorization: authorization}
         })
         .then(this.handleGetPostId)
-        .catch(this.handleErrorGetPostId) ; 
+        .catch(this.handleErrorGetPostId) ;
         }
         else if(notificationText.includes("started following you"))    {
             //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
         }
         else if(notificationText.includes("reposted your post"))   {
             //PREUSMJERITI NA TAJ POST ILI REPOST ?????
-        } 
+        }
     }
     handleGetPostId = (response) => {
-        console.log(response.data) ; 
+        console.log(response.data) ;
     }
     handleErrorGetPostId = (error) => {
-        console.log(error.data) ; 
+        console.log(error.data) ;
     }
 
 
 
     initialNotifications = () => {
-        //console.log(sessionStorage.getItem("token")) ; 
+        //console.log(sessionStorage.getItem("token")) ;
         const pageNumber = this.state.notificationPageNumber;
         const lastTimeChecked = this.state.lastTimeChecked;
         const authorization = "Bearer " + sessionStorage.getItem("token");
@@ -139,7 +139,7 @@ class Notification extends Component {
             .catch(function (err) {
                 console.log(err);
                 const isFetching = false;
-                this.setState(() => ({ isFetching }));
+//                this.setState(() => ({ isFetching }));
             });
 
         const isFetching = true;
@@ -148,12 +148,12 @@ class Notification extends Component {
 
     handleGetLastTimeChecked = (response) => {
 
-        //console.log(response.data) ; 
+        //console.log(response.data) ;
         const lastTimeChecked = response.data;
         const isFetching = false;
 
         this.setState(() => ({ lastTimeChecked, isFetching }));
-        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ; 
+        //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
 
     componentWillUnmount() {
@@ -196,11 +196,11 @@ class Notification extends Component {
                 }
             )
         )
-        // console.log("NOVE NOTIFIKACIJE SU: " + notifications) ; 
+        // console.log("NOVE NOTIFIKACIJE SU: " + notifications) ;
 
-        // console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ; 
-        // console.log(response.data) ;        
-        // console.log('Proslo'); 
+        // console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ;
+        // console.log(response.data) ;
+        // console.log('Proslo');
     }
 
     catchNewRequests = (error) => {
@@ -248,4 +248,4 @@ class Notification extends Component {
 
 }
 
-export default Notification; 
+export default Notification;
