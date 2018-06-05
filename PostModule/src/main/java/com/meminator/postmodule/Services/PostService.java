@@ -98,7 +98,7 @@ public class PostService {
             post.setInfo(postVM.getInfo());
             post.setImageURL(postVM.getImageURL());
             Optional<Post> repost = postDAO.getPost(postVM.getRepostID());
-            post.setRepost(repost.isPresent()?repost.get():null);
+            post.setRepost(null);
             List<Tag> tags = tagDAO.getAllInList(postVM.getTags());
             for(Tag i: tags){
                 if(postVM.getTags().contains(i.getName())) postVM.getTags().remove(i.getName());
