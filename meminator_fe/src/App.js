@@ -25,6 +25,7 @@ class App extends Component {
         <Route exact path="/feed" component={Feed} />
         <Route path="/post/:id" component={SinglePostDetails} />
         <Route path="/profile/:username" component={Profile} />
+        <Route path="/feed/:tag" component={Feed} />
 
       </Switch>
       {sessionStorage.getItem("username") && <PostForm />}

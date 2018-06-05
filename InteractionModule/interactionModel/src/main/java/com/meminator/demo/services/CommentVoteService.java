@@ -54,8 +54,9 @@ public class CommentVoteService {
 			Comment comment = this.commentDao.one(commentId) ; 
 			
 			CommentVote cv = this.commentVoteDao.findByCommentAndVote(comment, voter) ; 
-			if(cv == null) return false ; 
-			return true ; 
+			if(cv == null) throw new IllegalArgumentException("the user did not vote for this comment") ; 
+			 
+			return cv.getUpVote() ; 
 			
 		} catch (Exception e) {
 			throw e ; 

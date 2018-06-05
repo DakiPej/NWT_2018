@@ -61,8 +61,8 @@ public class PostVoteService {
 			Post post = this.postDao.one(postId) ; 
 			
 			PostVote pv = this.postVoteDao.findByPostAndVoter(post, user) ; 
-			if(pv == null) return false ; 
-			return true ; 
+			if(pv == null) throw new IllegalArgumentException("The user did not vote for the post.") ;
+			return pv.getUpVote() ; 
 		} catch (Exception e) {
 			throw e ; 
 		}

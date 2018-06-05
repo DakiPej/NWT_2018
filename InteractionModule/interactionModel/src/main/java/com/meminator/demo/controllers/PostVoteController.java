@@ -29,9 +29,9 @@ public class PostVoteController {
 	public ResponseEntity getHasLiked(OAuth2Authentication authentication
 										, @PathVariable("postId") long postId)	{
 		try {
-			boolean hasLiked = this.postVoteService.hasLiked(authentication.getName(), postId) ; 
+			boolean upVote = this.postVoteService.hasLiked(authentication.getName(), postId) ; 
 			
-			return ResponseEntity.status(HttpStatus.OK).body(hasLiked) ; 
+			return ResponseEntity.status(HttpStatus.OK).body(upVote) ; 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
 		}
