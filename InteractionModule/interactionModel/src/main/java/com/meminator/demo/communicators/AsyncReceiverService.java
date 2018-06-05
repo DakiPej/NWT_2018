@@ -33,7 +33,7 @@ public class AsyncReceiverService {
 	public void setNotificationService(NotificationService notificationService)	{
 		this.notificationService = notificationService ;
 	}
-	
+
 	@RabbitListener(queues = AsyncConfiguration.QUEUE_USERS_TO_BE_DELETED)
 	public void receiveUserToBeDeleted(final String username)	{
 		this.registeredUserService.deleteUser(username); 
@@ -70,8 +70,10 @@ public class AsyncReceiverService {
 		public String username; 
 	}
 	private static class PostInformation	{
-		public long postId; 
-		public String username; 
+		public long postId;
+		public long imageID;
+		public String username;
+		public PostInformation repost;
 	}
 	private static class PostVoteVM	{
 		public long postId; 
