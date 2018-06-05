@@ -10,10 +10,12 @@ public class PostVM {
     public PostVM() {
     }
 
-    public PostVM(Long id, Long imageID, String poster) {
+    public PostVM(Long id, Long imageID, String poster, PostVM repost) {
         this.id = id;
         this.imageID = imageID;
         this.poster = poster;
+        this.repost = repost;
+        
     }
 
     public PostVM(Post post){
