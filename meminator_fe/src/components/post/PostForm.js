@@ -15,7 +15,8 @@ class PostForm extends Component {
         newTag: "",
         tagElem: <div></div>,
         image: '',
-        file: null
+        file: null,
+        name: ""
     }
 
     /* ------------------------------> Component producer functions <----------------------------*/
@@ -138,7 +139,7 @@ class PostForm extends Component {
     }
 
     onChange = (e) => {
-        this.setState({ file: e.target.files[0] })
+        this.setState({ file: e.target.files[0]})
     }
 
 
@@ -156,7 +157,7 @@ class PostForm extends Component {
         var up = <div className="file-field input-field" style={{ width: "100%" }}>
             <div className="btn blue-grey">
                 <span>Browse</span>
-                <input type="file" id="file" onChange={this.onChange} />
+                <input type="file" id="file" onChange={this.onChange}  />
             </div>
             <div className="file-path-wrapper">
                 <input type="text" placeholder="Upload post picture" />
@@ -170,7 +171,7 @@ class PostForm extends Component {
             {this.state.tagElem}
 
             <Row>
-                <Input placeholder="Tag" s={9} m={9} l={9} name="newTag" onChange={this.handleChange} value={this.state.newTag} />
+                <Input placeholder="Tag" s={9} m={9} l={9} name="newTag" onChange={this.handleChange} value={this.state.newTag} style={{color:"white"}} />
                 <Col s={3} m={3} l={3}><Button className="blue-grey" style={{ width: "100%" }} inline onClick={this.addTag}>Add</Button></Col>
             </Row>
 
