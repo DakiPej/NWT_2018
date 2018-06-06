@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button } from 'react-materialize';
-import '../styles/profiledetails.css';
+import '../../styles/profiledetails.css';
 
 import InfoProfile from './InfoProfile';
 import EditProfile from './EditProfile';
@@ -9,7 +9,7 @@ import EditProfile from './EditProfile';
 class ProfileDetails extends Component{
 
     state = {
-      username: this.props.match.params.username,
+      username: this.props.username,
       details: true,
       userProfile: true
 
@@ -17,7 +17,7 @@ class ProfileDetails extends Component{
 
 
     componentDidMount(){
-      if (this.props.match.params.username!=sessionStorage.getItem("username"))
+      if (this.props.username!=sessionStorage.getItem("username"))
           this.setState({userProfile: false});
       else
           this.setState({userProfile: true});
@@ -43,9 +43,9 @@ class ProfileDetails extends Component{
         }
 
         return(
-            <div style={{marginTop:"1vh",height:"60vh", width:"50%", justifyContent:"center", flexDirection:"column",alignItems:"center", paddingBottom:"1vh"}}>
-              <Row className="forma">
-                <Col  className="main" s={12} m={8} offset="s1 m8">
+            <div style={{marginTop:"1vh",height:"100vh", width:"100%", justifyContent:"center", flexDirection:"column",alignItems:"center", paddingBottom:"1vh"}}>
+              <Row className="forma" style= {{width:"100%"}}>
+                <Col  className="main"  style= {{width:"100%"}} >
                   {profil}
                   <br/>
                   <div>

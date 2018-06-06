@@ -36,7 +36,7 @@ class SinglePostDetails extends Component {
                         {this.state.component}
                     </Col>
                     <Col s={6} m={6} l={6}>
-                        <Comments />
+                        <Comments postId={this.props.match.params.id}/>
                     </Col>
                 </Row>
             </div>

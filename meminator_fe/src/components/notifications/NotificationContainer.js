@@ -43,48 +43,42 @@ class Notification extends Component {
 
         this.state = {
             notificationPageNumber: 0,
-            notifications: [{
-                notificationId:"-1", 
-                notificationText:"The user neko started following you.", 
-                notificationType:"Followed", 
-                referencedObjectId:"-1" 
-
-            }, 
-            {
-                notificationId:"-12", 
-                notificationText:"The user neko reposted your post.", 
-                notificationType:"Post repost", 
-                referencedObjectId:"-13" 
-
-            }],
-            intervalId: undefined,
-            isFetching: false,
-            lastTimeChecked: 0,
-            notificationCount: 0
-        };
-    }
-
-    componentDidMount() {
-
-        // fetch notifications
-
-        this.getLastTimeChecked();
-        setTimeout(() => {
-            this.initialNotifications();
-        }, 100);
-        //this.initialNotifications() ;
-        const intervalId = setInterval(this.fetchAsync, 60000);
-        this.setState(() => ({/*notifications, */intervalId }));
-
-    }
-
+            notifications: [
+                {
+                    notificationId:"-12", 
+                    notificationText:"The user aco started following you.", 
+                    notificationType:"Followed", 
+                    referencedObjectId:"-13" 
+                    
+                }],
+                intervalId: undefined,
+                isFetching: false,
+                lastTimeChecked: 0,
+                notificationCount: 0
+            };
+        }
+        
+        componentDidMount() {
+            
+            // fetch notifications
+            
+            this.getLastTimeChecked();
+            setTimeout(() => {
+                this.initialNotifications();
+            }, 100);
+            //this.initialNotifications() ;
+            const intervalId = setInterval(this.fetchAsync, 60000);
+            this.setState(() => ({/*notifications, */intervalId }));
+            
+        }
+        componentWillUnmount() {
+            clearInterval(this.state.intervalId);
+            this.setState({ intervalId: undefined })
+        }
+        
     reRoute = (notificationText, objectId, notificationType) => {
         const authorization = "Bearer " + sessionStorage.getItem("token") ;
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!           OBJECT ID JE : " + objectId) ; 
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!         TEKST JE : " + notificationText + "         !!!!!!!!!!!") ;
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!         OBJECT ID JE : " + objectId + "       !!!!!!!!!!!!!!!!!") ;
         if(notificationType == "Commented")  {
-             console.log("COMMENTED ! ") ; 
             axios.get("http://138.68.186.248:8080/interactionmodule/comments/postId/" + objectId, 
             {
                 headers: {Authorization: authorization}
@@ -93,7 +87,6 @@ class Notification extends Component {
             .catch(this.handleErrorGetPostId) ;
          }
         else if(notificationType == "Post vote")   {
-             console.log("POST VOTE ! ") ;
              axios.get("http://138.68.186.248:8080/interactionmodule/postVotes/postId/" + objectId,
             {
                 headers: {Authorization: authorization}
@@ -101,8 +94,7 @@ class Notification extends Component {
             .then(this.handleGetPostId)
             .catch(this.handleErrorGetPostId) ;
         }
-        else if(notificationType == "Comment vote")    {
-            console.log("COMMENT VOTE !") ; 
+        else if(notificationType == "Comment vote")    { 
             axios.get("http://138.68.186.248:8080/interactionmodule/commentVotes/postId/" + objectId, 
         {
             headers: {Authorization: authorization}
@@ -112,18 +104,14 @@ class Notification extends Component {
         }
         else if(notificationType == "Followed")    {
             const username = notificationText.replace("The user ", "").replace(" started following you.", "") ; 
-            console.log("USERNAME JE : " + username) ; 
-            //PREUSMJERITI NA PROFIL ONOGA KO JE ZAPRATIO
-            console.log("FOLLOW ! ") ; 
+            window.location='/profile/' + username ; 
         }
         else if(notificationType == "Post repost")   {
-            console.log("REPOST ! ") ;  
-            //PREUSMJERITI NA TAJ POST ILI REPOST ?????
+            
         }
     }
     handleGetPostId = (response) => {
-        console.log("EVO GA RESPONSE !!!!!!!!!!!!!!!!!!!!!!!") ; 
-        console.log("DATA JE : " + response.data) ; 
+        window.location='/post/' + response.data
     }
     handleErrorGetPostId = (error) => {
         console.log("EVO GA ERROR !!!!!!!!!!!!!!!!!!!!!!!!!!") ; 
@@ -176,10 +164,27 @@ class Notification extends Component {
         this.setState(() => ({ lastTimeChecked, isFetching }));
         //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
+    
+    updateLastTimeChecked = () => {
+        const authorization = 'Bearer ' + sessionStorage.getItem("token") ;
+        const lastTimeCheckedValue = Date.now() ; 
+        const body = {lastTimeChecked: lastTimeCheckedValue} ;
+        
+        axios({
+            method: 'put', 
+            headers: {
+                Authorization: authorization, 
+                'Content-Type': 'application/json'
+            }, 
+            data: body
+            }).then(this.handleUpdateLastTimeChecked).catch(this.handleErrorUpdateLastTimeChecked) ; 
+    }
+    handleUpdateLastTimeChecked = (response) => {
+        console.log(response.data) ; 
+    }
 
-    componentWillUnmount() {
-        clearInterval(this.state.intervalId);
-        this.setState({ intervalId: undefined })
+    handleErrorUpdateLastTimeChecked = (error) => {
+        console.log(error) ; 
     }
 
     fetchAsync = () => {
@@ -193,13 +198,6 @@ class Notification extends Component {
                 , { headers: { Authorization: authorization } })
                 .then(this.handleNewRequests.bind(this))
                 .catch(this.catchNewRequests.bind(this));
-        // if(!this.state.isFetching){
-        //     this.setState({isFetching:true})
-        //     setTimeout(()=>{
-        //         console.log('fetchali smo');
-        //         this.setState({isFetching:false})
-        //     },2000)
-        // }
 
     }
 
