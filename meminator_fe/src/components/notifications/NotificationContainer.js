@@ -43,14 +43,7 @@ class Notification extends Component {
 
         this.state = {
             notificationPageNumber: 0,
-            notifications: [
-                {
-                    notificationId:"-12", 
-                    notificationText:"The user aco started following you.", 
-                    notificationType:"Followed", 
-                    referencedObjectId:"-13" 
-                    
-                }],
+            notifications: [],
                 intervalId: undefined,
                 isFetching: false,
                 lastTimeChecked: 0,
@@ -72,8 +65,9 @@ class Notification extends Component {
             
         }
         componentWillUnmount() {
+            this.updateLastTimeChecked() ; 
             clearInterval(this.state.intervalId);
-            this.setState({ intervalId: undefined })
+            this.setState({ intervalId: undefined }) ; 
         }
         
     reRoute = (notificationText, objectId, notificationType) => {
@@ -165,6 +159,13 @@ class Notification extends Component {
         //console.log("ZADNJI PUT -----    " + lastTimeChecked) ;
     }
     
+    updateNotificationCount = () => {
+        console.log("UPDATE SE DESAVA...") ; 
+        var notificationCount  = 0 ; 
+        const lastTimeChecked = Date.now() ; 
+        this.setState({notificationCount:0, lastTimeChecked: Date.now()}) ;
+    }
+
     updateLastTimeChecked = () => {
         const authorization = 'Bearer ' + sessionStorage.getItem("token") ;
         const lastTimeCheckedValue = Date.now() ; 
@@ -213,7 +214,7 @@ class Notification extends Component {
         const notifications = response.data.notifications;
         console.log(response);
         const notificationCount = response.data.notificationCount;
-
+        
         this.setState(
             (prevState) => (    
                 {
@@ -222,32 +223,48 @@ class Notification extends Component {
                 }
             )
         )
-        // console.log("NOVE NOTIFIKACIJE SU: " + notifications) ;
-
-        // console.log("NOTIFIKACIJE U STATEU SU : " + this.state.notifications[0].notificationText) ;
-        // console.log(response.data) ;
-        // console.log('Proslo');
     }
-
     catchNewRequests = (error) => {
         this.setState(
             () => ({ isFetching: false })
         )
         console.log(error.data);
     }
-
+    
+    loadMoreNotifications = () => {
+        const notificationPageNumber = this.state.notificationPageNumber + 1 ;
+        const lastTimeChecked = this.state.lastTimeChecked ;
+        const authorization = 'Bearer ' + sessionStorage.getItem("token") ; 
+        axios.get("http://138.68.186.248:8080/interactionmodule/notifications/" + notificationPageNumber + "/" + lastTimeChecked
+        , {headers : {Authorization: authorization}})
+        .then(this.handleMoreRequests)
+        .catch(this.catchMoreRequests) ;
+        this.setState(()=>{notificationPageNumber}) ;  
+    }
+    handleMoreRequests = (response) => {
+        console.log("DOBAVIO SAM TI JOS JEBEM TI SVE ") ; 
+        const notifications = response.data.notifications ; 
+        this.setState(
+            (prevState) => ({notifications: [...prevState.notifications, ...notifications]}) 
+        ) ; 
+    }
+    catchMoreRequests = (error) => {
+        console.log("NE RADI !!!!!!!!!!!!!!!!!!!!") ; 
+        console.log(error) ; 
+    }
+    
     render() {
-
+        
         const dropDownButton = (
             <div className='dropDownButt'>
-                <a className="blue-grey waves-effect waves-light btn right" onClick={this.updateLastTimeChecked}>
+                <a className="blue-grey waves-effect waves-light btn right" onClick={this.updateNotificationCount}>
                     <i class="material-icons left">notifications</i>
-                    {this.state.notifications.length}
+                    {this.state.notificationCount}
                 </a>
             </div>
         );
         const loadMoreButton = (
-            <NavItem onClick={() => { }} className="blue-grey darken-2" >
+            <NavItem onClick={this.loadMoreNotifications} className="blue-grey darken-2" >
                 <div className='blue-grey-text text-lighten-5'>
                     <i className='material-icons center'>add</i>
                 </div>
@@ -259,7 +276,7 @@ class Notification extends Component {
                 <div className='dropDownDiv'>
                     <Dropdown trigger={dropDownButton} >
                         {
-                            this.state.notificationCount &&
+                            this.state.notifications.length &&
 
                             this.state.notifications.map((notif, index) => (
                                 <NotificationListItem {...notif} reRoute={this.reRoute} />
