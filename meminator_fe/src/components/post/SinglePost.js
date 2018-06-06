@@ -23,8 +23,12 @@ class SinglePost extends Component {
     handleOnVoteUp = () => {
         var i = 1;
         var downVote = this.state.downVote;
-        if (this.state.vote.up === true) { i = -1; var downVote = this.state.downVote - i; }
-        var upVote = this.state.upVote + i;
+        var upVote = this.state.upVote;
+        if (this.state.vote.up === true) { upVote = this.state.upVote -1; }
+        else{
+            if(this.state.downVote) downVote = this.state.downVote -1;
+            upVote = this.state.upVote +1;
+        }
         const vote = {
             up: !this.state.vote.up,
             down: false
@@ -130,8 +134,12 @@ class SinglePost extends Component {
     handelOnVoteDown = () => {
         var i = 1;
         var downVote = this.state.downVote;
-        if (this.state.vote.down === true) { i = -1;  downVote = this.state.downVote + i; }
-        var upVote = this.state.upVote - i;
+        var upVote = this.state.upVote
+        if (this.state.vote.down === true) { downVote = this.state.downVote - 1; }
+        else{
+            downVote = this.state.downVote + 1;
+            if(this.state.upVote) upVote = this.state.upVote -1;
+        }
         const vote = {
             up: false,
             down: !this.state.vote.down

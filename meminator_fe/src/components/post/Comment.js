@@ -1,4 +1,4 @@
-import React ,{Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import * as api from "../../globals";
 import { Card, CardTitle, Row, Col, Icon, Button, Input, Collection, CollectionItem } from 'react-materialize';
@@ -22,10 +22,13 @@ class Comment extends Component {
 
     handleOnVoteUp = () => {
         var i = 1;
+        var downVote = this.state.downVote;
         var upVote = this.state.upVote;
-        if (this.state.vote.up === true) {i = -1;var upVote = this.state.upVote + i;}   
-        
-        var downVote = this.state.downVote - i;
+        if (this.state.vote.up === true) { upVote = this.state.upVote - 1; }
+        else {
+            if (this.state.downVote) downVote = this.state.downVote - 1;
+            upVote = this.state.upVote + 1;
+        }
         const vote = {
             up: !this.state.vote.up,
             down: false
@@ -130,10 +133,13 @@ class Comment extends Component {
 
     handelOnVoteDown = () => {
         var i = 1;
-        var upVote = this.state.upVote;
-        if (this.state.vote.down === true) {i = -1; var upVote = this.state.upVote - i;}
-        var downVote = this.state.downVote + i;
-        
+        var downVote = this.state.downVote;
+        var upVote = this.state.upVote
+        if (this.state.vote.down === true) { downVote = this.state.downVote - 1; }
+        else {
+            downVote = this.state.downVote + 1;
+            if (this.state.upVote) upVote = this.state.upVote - 1;
+        }
         const vote = {
             up: false,
             down: !this.state.vote.down
@@ -150,32 +156,32 @@ class Comment extends Component {
         this.setState({ [e.target.name]: e.target.value });
         console.log(e.target.name + " " + e.target.value);
         switch (e.target.name) {
-          case ('nComment'):
-            if (e.target.value.length === 0) {
-              this.setState({
-                error: { ...this.state.error, nComment: "invalid" },
-                errorMessage: { ...this.state.errorMessage, nComment: "Comment cannot be empty!" }
-              });
-            }
-            else this.setState({
-              error: { ...this.state.error, nComment: "valid" },
-              errorMessage: { ...this.state.errorMessage, nComment: "" }
-            })
-            break;
-          case ('oldComment'):
-            if (e.target.value.length === 0) {
-              this.setState({
-                error: { ...this.state.error, oldComment: "invalid" },
-                errorMessage: { ...this.state.errorMessage, oldComment: "Comment cannot be empty!" }
-              });
-            }
-            else this.setState({
-              error: { ...this.state.error, oldComment: "valid" },
-              errorMessage: { ...this.state.errorMessage, oldComment: "" }
-            })
-            break;
+            case ('nComment'):
+                if (e.target.value.length === 0) {
+                    this.setState({
+                        error: { ...this.state.error, nComment: "invalid" },
+                        errorMessage: { ...this.state.errorMessage, nComment: "Comment cannot be empty!" }
+                    });
+                }
+                else this.setState({
+                    error: { ...this.state.error, nComment: "valid" },
+                    errorMessage: { ...this.state.errorMessage, nComment: "" }
+                })
+                break;
+            case ('oldComment'):
+                if (e.target.value.length === 0) {
+                    this.setState({
+                        error: { ...this.state.error, oldComment: "invalid" },
+                        errorMessage: { ...this.state.errorMessage, oldComment: "Comment cannot be empty!" }
+                    });
+                }
+                else this.setState({
+                    error: { ...this.state.error, oldComment: "valid" },
+                    errorMessage: { ...this.state.errorMessage, oldComment: "" }
+                })
+                break;
         }
-      }
+    }
 
     render() {
         return (

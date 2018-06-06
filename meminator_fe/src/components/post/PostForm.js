@@ -15,7 +15,7 @@ class PostForm extends Component {
         newTag: "",
         tagElem: <div></div>,
         image: '',
-        file:null
+        file: null
     }
 
     /* ------------------------------> Component producer functions <----------------------------*/
@@ -76,22 +76,22 @@ class PostForm extends Component {
 
     uploadImg = () => {
 
-          var formData = new FormData();
-          formData.append('request', this.state.file, this.state.file.name)
-          var config = {
+        var formData = new FormData();
+        formData.append('request', this.state.file, this.state.file.name)
+        var config = {
             headers: {
                 'content-type': 'multipart/form-data'
             }
-          };
+        };
 
         axios(
             {
-                url:api.default.url + "/imagemodule/images/upload/meme",
-                method:"post",
+                url: api.default.url + "/imagemodule/images/upload/meme",
+                method: "post",
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
-               },
-                data:formData
+                },
+                data: formData
             })
             .then(this.handelUploadImg)
             .catch((error) => { console.log(error); alert("Img upload failed!") });
@@ -106,9 +106,9 @@ class PostForm extends Component {
 
     handlePost = () => {
         axios({
-            url:api.default.url + "/postmodule/posts",
-            method:"post",
-            data:{
+            url: api.default.url + "/postmodule/posts",
+            method: "post",
+            data: {
                 "id": 0,
                 "imageID": this.state.imgID,
                 "imageURL": api.default.url + "/imagemodule/images/" + this.state.imgID,
@@ -117,9 +117,10 @@ class PostForm extends Component {
                 "repostID": 0,
                 "tags": this.state.tags
             },
-            headers:{
+            headers: {
                 "Authorization": "Bearer " + sessionStorage.getItem("token")
-            }}
+            }
+        }
         ).then(this.handelPost)
             .catch(this.handleError);
     }
@@ -137,9 +138,9 @@ class PostForm extends Component {
     }
 
     onChange = (e) => {
-        this.setState({file:e.target.files[0]})
-      }
-    
+        this.setState({ file: e.target.files[0] })
+    }
+
 
     render() {
 
@@ -147,7 +148,7 @@ class PostForm extends Component {
             document.getElementById('new').modal('open')
         }}
             floating right large className='blue-grey darken-4' waves='light' icon='add'
-            style={{ bottom: "50vh", right: "45px", float: "right", width: "100px", height: "100px", fontSize: "40px", overflow:"hidden" }}
+            style={{ bottom: "50vh", right: "45px", float: "right", width: "100px", height: "100px", fontSize: "40px", overflow: "hidden" }}
         />;
 
         console.log(this.state.form);
