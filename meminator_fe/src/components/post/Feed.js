@@ -25,7 +25,7 @@ class Feed extends Component {
                 axios(
                     {
                         url: "http://138.68.186.248:8080/postmodule/posts/tags",
-                        method: "put",
+                        method: "post",
                         data: tags
                     }
                 )

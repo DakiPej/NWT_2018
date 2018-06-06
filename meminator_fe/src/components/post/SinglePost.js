@@ -16,6 +16,10 @@ class SinglePost extends Component {
         downVote: this.props.post.downVote
     };
 
+    componentDidMount(){
+        this.setVotes();
+    }
+
     handleOnVoteUp = () => {
         var i = 1;
         if(this.state.vote.up === true) i = -1;
@@ -33,37 +37,39 @@ class SinglePost extends Component {
         });
     }
 
-    /*componentDidMount() {
+    setVotes = () => {
         axios({
             url: api.default.url + "/interactionmodule/postVotes/hasLIked/" + this.props.post.id,
             method: "get",
             headers: {
                 "Authorization": "Bearer " + sessionStorage.getItem("token")
             }
-        }
-        ).then(
-            (resp) => {
-                if (resp.data === true) { 
-                    this.setState({
-                        vote: {
-                            up: true,
-                            down: false
-                        }
-                    });
-                } else {
-                    this.setState({
-                        vote: {
-                            up: false,
-                            down: true
-                        }
-                    });
-                }
+        })
+        .then(this.handleSetVotes)
+        .catch((e) => {console.log(e)});
+    } 
+
+    handleSetVotes = (resp) => {
+        console.log(resp);
+            if (resp.data === true) { 
+                this.setState({
+                    vote: {
+                        up: true,
+                        down: false
+                    }
+                });
+            } else {
+                this.setState({
+                    vote: {
+                        up: false,
+                        down: true
+                    }
+                });
             }
-            );
-    }*/
+    }
 
     onVoteDown = () => {
-        if (!this.state.vote.down) {
+        if (this.state.vote.down === false) {
             axios({
                 url: api.default.url + "/interactionmodule/postVotes",
                 method: "post",
@@ -93,7 +99,7 @@ class SinglePost extends Component {
     }
 
     onVoteUp = () => {
-        if (!this.state.vote.up) {
+        if (this.state.vote.up === false) {
             axios({
                 url: api.default.url + "/interactionmodule/postVotes",
                 method: "post",
@@ -105,7 +111,7 @@ class SinglePost extends Component {
                     "Authorization": "Bearer " + sessionStorage.getItem("token")
                 }
             }
-            ).then(this.handelOnVoteUp);
+            ).then(this.handleOnVoteUp);
         } else {
             axios({
                 url: api.default.url + "/interactionmodule/postVotes",
@@ -117,7 +123,7 @@ class SinglePost extends Component {
                     "Authorization": "Bearer " + sessionStorage.getItem("token")
                 }
             }
-            ).then(this.handelOnVoteUp);
+            ).then(this.handleOnVoteUp);
         }
     }
 
@@ -152,7 +158,7 @@ class SinglePost extends Component {
         return (
             <div className="post" style={this.props.single === "T" ? { width: "100%", margin: "0" } : null}>
                 <div className="post-header">
-                    <div className="username"><Icon>person_outline</Icon>{this.props.post.user.username}</div>
+                    <div className="username" onClick={() => (window.location = "/profile/" + this.props.post.user.username) }><Icon>person_outline</Icon>{this.props.post.user.username}</div>
                     <div className="date">{this.parseDate(this.props.post.timeStamp)}</div>
                 </div>
                 <img className="post-image" src={this.props.post.imageURL} />
