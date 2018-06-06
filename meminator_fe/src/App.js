@@ -12,6 +12,7 @@ import PostGrid from './components/profile/PostGrid';
 import Feed from './components/post/Feed';
 import SinglePostDetails from './containers/SinglePostDetails';
 import PostForm from './components/post/PostForm';
+import Search from './components/Search';
 
 class App extends Component {
   render() {
@@ -26,7 +27,7 @@ class App extends Component {
         <Route path="/post/:id" component={SinglePostDetails} />
         <Route path="/profile/:username" component={Profile} />
         <Route path="/feed/:tag" component={Feed} />
-
+        <Route path="/search/:input" component={Search} />
       </Switch>
       {sessionStorage.getItem("username") && <PostForm />}
       </div>
