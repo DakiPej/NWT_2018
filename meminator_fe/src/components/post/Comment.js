@@ -22,6 +22,7 @@ class Comment extends Component {
 
     handleOnVoteUp = () => {
         var i = 1;
+        var upVote = this.state.upVote;
         if (this.state.vote.up === true) {i = -1;var upVote = this.state.upVote + i;}   
         
         var downVote = this.state.downVote - i;
@@ -129,6 +130,7 @@ class Comment extends Component {
 
     handelOnVoteDown = () => {
         var i = 1;
+        var upVote = this.state.upVote;
         if (this.state.vote.down === true) {i = -1; var upVote = this.state.upVote - i;}
         var downVote = this.state.downVote + i;
         

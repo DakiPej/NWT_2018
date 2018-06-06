@@ -146,8 +146,8 @@ class PostForm extends Component {
         var trigger = <Button onClick={() => {
             document.getElementById('new').modal('open')
         }}
-            floating right large className='blue' waves='light' icon='add'
-            style={{ bottom: "45px", right: "45px", float: "right", width: "75px", height: "75px", fontSize: "30px" }}
+            floating right large className='blue-grey darken-4' waves='light' icon='add'
+            style={{ bottom: "50vh", right: "45px", float: "right", width: "100px", height: "100px", fontSize: "40px", overflow:"hidden" }}
         />;
 
         console.log(this.state.form);

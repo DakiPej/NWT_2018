@@ -12,19 +12,19 @@ class SinglePost extends Component {
             up: false,
             down: false
         },
-        upVote:this.props.post.upVote,
+        upVote: this.props.post.upVote,
         downVote: this.props.post.downVote
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.setVotes();
     }
 
     handleOnVoteUp = () => {
         var i = 1;
-        if(this.state.vote.up === true) i = -1;
+        var downVote = this.state.downVote;
+        if (this.state.vote.up === true) { i = -1; var downVote = this.state.downVote - i; }
         var upVote = this.state.upVote + i;
-        var downVote = this.state.downVote-i;
         const vote = {
             up: !this.state.vote.up,
             down: false
@@ -45,27 +45,27 @@ class SinglePost extends Component {
                 "Authorization": "Bearer " + sessionStorage.getItem("token")
             }
         })
-        .then(this.handleSetVotes)
-        .catch((e) => {console.log(e)});
-    } 
+            .then(this.handleSetVotes)
+            .catch((e) => { console.log(e) });
+    }
 
     handleSetVotes = (resp) => {
         console.log(resp);
-            if (resp.data === true) { 
-                this.setState({
-                    vote: {
-                        up: true,
-                        down: false
-                    }
-                });
-            } else {
-                this.setState({
-                    vote: {
-                        up: false,
-                        down: true
-                    }
-                });
-            }
+        if (resp.data === true) {
+            this.setState({
+                vote: {
+                    up: true,
+                    down: false
+                }
+            });
+        } else {
+            this.setState({
+                vote: {
+                    up: false,
+                    down: true
+                }
+            });
+        }
     }
 
     onVoteDown = () => {
@@ -82,7 +82,7 @@ class SinglePost extends Component {
                 }
             }
             ).then(this.handelOnVoteDown);
-        }else{
+        } else {
             axios({
                 url: api.default.url + "/interactionmodule/postVotes",
                 method: "delete",
@@ -129,8 +129,8 @@ class SinglePost extends Component {
 
     handelOnVoteDown = () => {
         var i = 1;
-        if(this.state.vote.down === true) i = -1;
-        var downVote = this.state.downVote + i;
+        var downVote = this.state.downVote;
+        if (this.state.vote.down === true) { i = -1;  downVote = this.state.downVote + i; }
         var upVote = this.state.upVote - i;
         const vote = {
             up: false,
@@ -158,7 +158,7 @@ class SinglePost extends Component {
         return (
             <div className="post" style={this.props.single === "T" ? { width: "100%", margin: "0" } : null}>
                 <div className="post-header">
-                    <div className="username" onClick={() => (window.location = "/profile/" + this.props.post.user.username) }><Icon>person_outline</Icon>{this.props.post.user.username}</div>
+                    <div className="username" onClick={() => (window.location = "/profile/" + this.props.post.user.username)}><Icon>person_outline</Icon>{this.props.post.user.username}</div>
                     <div className="date">{this.parseDate(this.props.post.timeStamp)}</div>
                 </div>
                 <img className="post-image" src={this.props.post.imageURL} />

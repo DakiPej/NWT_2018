@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Collection, CollectionItem } from 'react-materialize';
 import axios from 'axios';
+import Row from 'react-materialize/lib/Row';
+import Col from 'react-materialize/lib/Col';
+import '../styles/search.css';
 
 class Search extends Component {
 
@@ -15,23 +18,28 @@ class Search extends Component {
     searchUser = () => {
         axios.get('http://138.68.186.248:8080/usermodule/users/search/' + this.props.match.params.input)
             .then(this.handleSearch)
-            .catch((response) => { alert("User not found"); window.location="/feed"; });
+            .catch((response) => { alert("User not found"); window.location = "/feed"; });
     }
 
     handleSearch = (resp) => {
         this.setState({
-            users:resp.data
+            users: resp.data
         });
     }
 
 
     render() {
 
-    var items = this.state.users.map((user) =>  <CollectionItem><a href={"/profile/"+user}>{user}</a></CollectionItem>);
+        var items = this.state.users.map((user) => <CollectionItem><a href={"/profile/" + user}>{user}</a></CollectionItem>);
         return (
-            <Collection style={{width:"80%", marginLeft:"20%", background:"rgba(38, 50, 56,0.8)", color:"white"}}>
-                {items}
-            </Collection>
+            <Row style={{marginTop:"20px"}}>
+                <Col s={4} m={4} l={4}/>
+                <Col s={4} m={4} l={4}>
+                    <Collection className="blue-grey darken">
+                        {items}
+                    </Collection>
+                </Col>
+            </Row>
         );
     }
 

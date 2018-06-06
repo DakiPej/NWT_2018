@@ -100,7 +100,7 @@ class Feed extends Component {
         var posts = this.state.posts.map((post) => (<SinglePost key={post.id} post={post} />));
 
         return (
-            <Row>
+            <Row style={{marginTop:"20px"}}>
                 <Col m={2} l={2} />
                 <Col m={8} l={8}>
                     <div className="feed-container">

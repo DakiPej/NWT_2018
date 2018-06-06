@@ -203,7 +203,7 @@ class Notification extends Component {
         const authorization = "Bearer " + sessionStorage.getItem("token");
 
         if (!this.state.isFetching)
-            axios.get('http://138.68.186.248:8080/interactionmodule/notifications/' + pageNumber + "/" + Date.now()
+            axios.get('http://138.68.186.248:8080/interactionmodule/notifications/' + pageNumber + "/" + 1
                 , { headers: { Authorization: authorization } })
                 .then(this.handleNewRequests.bind(this))
                 .catch(this.catchNewRequests.bind(this));
