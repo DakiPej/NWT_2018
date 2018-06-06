@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Input, Icon, Col, Button,Modal } from 'react-materialize';
-import '../styles/profiledetails.css';
+import '../../styles/profiledetails.css';
 import axios from 'axios';
 
 
