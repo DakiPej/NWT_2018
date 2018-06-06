@@ -28,7 +28,7 @@ public class RegisteredUserController {
 	}
 	
 	
-	@PreAuthorize("hasRole('ROLE_user'") 
+	@PreAuthorize("hasRole('ROLE_user')") 
 	@RequestMapping(value="/lastTimeChecked", method=RequestMethod.GET)	
 	public ResponseEntity getLastTimeChecked(OAuth2Authentication authentication)	{
 		try {
@@ -40,7 +40,7 @@ public class RegisteredUserController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()) ; 
 		}
 	}
-	@PreAuthorize("hasRole('ROLE_user'") 
+	@PreAuthorize("hasRole('ROLE_user')") 
 	@RequestMapping(value="/lastTimeChecked", method=RequestMethod.PUT)
 	public ResponseEntity updateLastTimeChecked(OAuth2Authentication authentication
 										,@RequestBody final UpdatedRegisteredUser update)	{

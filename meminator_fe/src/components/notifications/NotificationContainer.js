@@ -168,9 +168,13 @@ class Notification extends Component {
     updateLastTimeChecked = () => {
         const authorization = 'Bearer ' + sessionStorage.getItem("token") ;
         const lastTimeCheckedValue = Date.now() ; 
-        const body = {lastTimeChecked: lastTimeCheckedValue} ;
+        const body = {lastTimeChecked: Date.now()} ;
+        const notificationCount = 0 ; 
+        console.log(body) ; 
+        console.log(notificationCount) ; 
         
         axios({
+            url: 'http://138.68.186.248:8080/interactionmodule/users/lastTimeChecked',
             method: 'put', 
             headers: {
                 Authorization: authorization, 
@@ -178,12 +182,15 @@ class Notification extends Component {
             }, 
             data: body
             }).then(this.handleUpdateLastTimeChecked).catch(this.handleErrorUpdateLastTimeChecked) ; 
+            this.setState(() => {notificationCount})
     }
     handleUpdateLastTimeChecked = (response) => {
+        console.log("USPJEH !") ; 
         console.log(response.data) ; 
     }
 
     handleErrorUpdateLastTimeChecked = (error) => {
+        console.log("NEUSPJEH") ; 
         console.log(error) ; 
     }
 
@@ -233,7 +240,7 @@ class Notification extends Component {
 
         const dropDownButton = (
             <div className='dropDownButt'>
-                <a className="blue-grey waves-effect waves-light btn right" onClick={() => { }}>
+                <a className="blue-grey waves-effect waves-light btn right" onClick={this.updateLastTimeChecked}>
                     <i class="material-icons left">notifications</i>
                     {this.state.notifications.length}
                 </a>
