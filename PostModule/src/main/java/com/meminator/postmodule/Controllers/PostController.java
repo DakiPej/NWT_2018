@@ -59,7 +59,7 @@ public class PostController {
         }
     }
 
-    @RequestMapping(value = "/tags", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/tags", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity getPostsByTag(@RequestBody Tag[] tags){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByTags(Arrays.asList(tags)));
