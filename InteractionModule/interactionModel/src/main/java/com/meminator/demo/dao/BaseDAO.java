@@ -12,19 +12,21 @@ public abstract class BaseDAO <M, R extends PagingAndSortingRepository<M, Long>>
 		repo = repository;
 	}
 	
-	protected M create (M model)	{
+	public M create (M model)	{
 		return repo.save(model); 
 	}
 	
-	protected void delete (long id)	{
+	public void delete (long id)	{
 		repo.deleteById(id);
 	}
 	
-	protected M one(long id)	{
+	public M one(long id)	{
 		return repo.findById(id).get();
 	}
 	
 	public boolean existsById(long id)	{
-		return repo.existsById(id);
+		//return repo.existsById(id);
+		System.out.println("Dobio id: " + id);
+		return true ; 
 	}
 }

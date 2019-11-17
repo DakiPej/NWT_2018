@@ -1,88 +1,74 @@
 package com.meminator.userModule.controllers;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 import javax.validation.Valid;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.meminator.userModule.rabbitMQ.FollowMessage;
 import com.meminator.userModule.services.RegisteredUserService;
 
 import forms.RegisteredUser.CreateUserForm;
 import forms.RegisteredUser.ResetPasswordForm;
-import forms.RegisteredUser.UpdateBirthdateForm;
 import forms.RegisteredUser.UpdateInfoForm;
 import io.swagger.annotations.Api;
 
 @Controller
-@RequestMapping(value="/user")
+@RequestMapping(value="/users")
 @Api(value="registered user")
 public class RegisteredUserController {
 	@Autowired
 	RegisteredUserService registeredUserService;
 	
-	@RequestMapping(value = "/getAll", method=RequestMethod.GET)
+	@RequestMapping(value = "/{username}", method=RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity getAllUsers() {
+	public ResponseEntity getUserByUsername(@PathVariable final String username) {
 		try {
-			return ResponseEntity.ok(registeredUserService.getAllUsers());
+			return ResponseEntity.status(HttpStatus.OK).body(registeredUserService.getUserByUsername(username));
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body("An error ocurred.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error ocurred.");
 		}
 	}
 	
-	@RequestMapping(value = "/getByUsername", method=RequestMethod.POST)
+	@RequestMapping(value = "/search/{username}", method=RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity getUserByUsername(@RequestBody final String username) {
+	public ResponseEntity searchUserByUsername(@PathVariable final String username) {
 		try {
-			return ResponseEntity.ok(registeredUserService.getUserByUsername(username));
+			return ResponseEntity.status(HttpStatus.OK).body(registeredUserService.searchUserByUsername(username));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body("An error ocurred.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error ocurred.");
 		}
 	}
-	
-	@RequestMapping(value = "/searchByUsername", method=RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity searchUserByUsername(@RequestBody final String username) {
-		try {
-			return ResponseEntity.ok(registeredUserService.searchUserByUsername(username));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body("An error ocurred.");
-		}
-	}
-	
+
 	@RequestMapping(value = "/register", method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> createUser(@RequestBody @Valid final CreateUserForm createUserForm) {
 		try {
 			if (registeredUserService.createUser(createUserForm)) 
-				return ResponseEntity.ok(true);
+				return ResponseEntity.status(HttpStatus.OK).body(true);
 			else 
-				return ResponseEntity.ok(false);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body(false);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
 		}
 	}
 	
-	@RequestMapping(value = "/resetPassword", method=RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_user')")
+	@RequestMapping(value = "/resetPassword", method=RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<Boolean> resetPasword(@RequestBody @Valid final ResetPasswordForm resetPasswordForm){
+	public ResponseEntity<Boolean> resetPasword(OAuth2Authentication authentication, @RequestBody @Valid final ResetPasswordForm resetPasswordForm){
 		try {
-			if(registeredUserService.resetPassword(resetPasswordForm))
+			if(registeredUserService.resetPassword(authentication.getName(), resetPasswordForm))
 				return ResponseEntity.ok(true);
 			else 
 				return ResponseEntity.badRequest().body(false);
@@ -92,11 +78,12 @@ public class RegisteredUserController {
 		}
 	}
 	
-	@RequestMapping(value = "/updateInfo", method=RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_user')")
+	@RequestMapping(value = "/updateInfo", method=RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<Boolean> updateInfo(@RequestBody @Valid final UpdateInfoForm updateInfoForm){
+	public ResponseEntity<Boolean> updateInfo(OAuth2Authentication authentication, @RequestBody @Valid final UpdateInfoForm updateInfoForm){
 		try {
-			if(registeredUserService.updateInfo(updateInfoForm))
+			if(registeredUserService.updateInfo(authentication.getName(), updateInfoForm))
 				return ResponseEntity.ok(true);
 			else 
 				return ResponseEntity.badRequest().body(false);
@@ -105,31 +92,47 @@ public class RegisteredUserController {
 			return ResponseEntity.badRequest().body(false);
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_user')")
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity deleteUser(OAuth2Authentication authentication, @RequestBody final String password){
+		try {
+			if(registeredUserService.deleteUser(authentication.getName()))
+				return ResponseEntity.status(HttpStatus.OK).body(true);
+			else 
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	/*
 	@RequestMapping(value="/updateBirthdate", method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Boolean> updateBirthdate(@RequestBody final UpdateBirthdateForm updateBirthdateForm){
 		System.out.println(updateBirthdateForm.getDate());
 		return null;
 	}
-	
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
+
+	@PreAuthorize("isAnonymous() or hasRole('ROLE_user')")
+	@PostMapping("/testt")
 	@ResponseBody
-	public ResponseEntity<Boolean> deleteUser(@RequestBody String username){
-		try {
-			if(registeredUserService.deleteUser(username))
-				return ResponseEntity.ok(true);
-			else 
-				return ResponseEntity.badRequest().body(false);
-			
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return ResponseEntity.badRequest().body(false);
-		}
+	public void testt(){
+		System.out.println("TEST");
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_user')")
+	@PostMapping("/test")
+	@ResponseBody
+	public void test(OAuth2Authentication authentication){
+		System.out.println(authentication.getName());
+	}
+
 	@Autowired
 	RabbitTemplate rabbitTemplate;
+
 	@RequestMapping("/rabbit")
 	public void rabbit(){
 		System.err.println("Rabbit");
@@ -137,4 +140,5 @@ public class RegisteredUserController {
 		//rabbitTemplate.convertAndSend("user-queue-exchange", "user.follow", followMessage);
 		rabbitTemplate.convertAndSend("user-queue-exchange", "user.create", "Irfan");
 	}
+	*/
 }

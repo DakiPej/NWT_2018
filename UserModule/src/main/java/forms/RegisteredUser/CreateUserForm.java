@@ -16,8 +16,6 @@ public class CreateUserForm {
 	@Size(max = 20)
 	private String lastName;
 	
-	@Temporal(TemporalType.DATE)
-	private Date birthdate;
 	
 	@Size(min = 3, max = 15)
 	@NotNull
@@ -46,14 +44,6 @@ public class CreateUserForm {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public Date getBirthdate() {
-		return birthdate;
-	}
-
-	public void setBirthdate(Date birthdate) {
-		this.birthdate = birthdate;
 	}
 
 	public String getUsername() {

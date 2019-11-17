@@ -49,6 +49,7 @@ public class PostService {
 		return "An user with the provided username does not exist"; 
 	}
 	
+	
 	public boolean deletePost(long postId)	{
 		return this.postDao.deletePost(postId); 
 	}

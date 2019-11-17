@@ -1,6 +1,7 @@
 package com.meminator.userModule.security;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -20,11 +21,16 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-        http.
-                anonymous().disable()
-                .authorizeRequests()
-                .antMatchers("/**").access("hasRole('user')")
-                .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+        http
+			.anonymous().disable()
+			.authorizeRequests()
+			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+			.antMatchers("/users/register").permitAll()
+			.antMatchers("/oauth/token").permitAll()
+			//.anyRequest().access("hasRole('user')")
+			//.anyRequest().anonymous()
+			.and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+
 	}
 
 }

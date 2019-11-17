@@ -1,5 +1,6 @@
 package com.meminator.demo.services;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +90,43 @@ public class NotificationService {
 		notification.setChecked(false);
 		return this.notificationDao.createNotification(notification);
 	}
+	
+	public void createFollowNotification(String user, String followedUser)	{
+		Notification notif = new Notification() ; 
+		
+		RegisteredUser notifier = this.registeredUseDao.getRegisteredUserByUsername(user) ;
+		RegisteredUser notified = this.registeredUseDao.getRegisteredUserByUsername(followedUser) ; 
+		
+		NotificationType nt = this.notificationTypeDao.getNotificationTypeByTypeName("Followed") ; 
+		
+		notif.setNotifierUsername(user);
+		notif.setContet(
+				Long.toString(notifier.getId())
+				);
+		notif.setCreationMoment(new Date());
+		notif.setNotificationTypeId(nt);
+		notif.setUserId(notified);
+		notif.setChecked(false);
+		this.notificationDao.createNotification(notif) ; 
+			
+	}
+	
+	public void createRepostNotification(String poster, String reposter, long postId)	{
+		Notification notification = new Notification() ; 
+		
+		RegisteredUser notifier = this.registeredUseDao.getRegisteredUserByUsername(reposter) ; 
+		RegisteredUser notified = this.registeredUseDao.getRegisteredUserByUsername(poster) ; 
+		NotificationType nt = this.notificationTypeDao.getNotificationTypeByTypeName("Post repost") ;
+		
+		notification.setNotifierUsername(notifier.getUsername()); 
+		notification.setContet(Long.toString(notifier.getId()));
+		notification.setCreationMoment(new Date());
+		notification.setNotificationTypeId(nt);
+		notification.setUserId(notified);
+		notification.setChecked(false);
+		
+		this.notificationDao.createNotification(notification) ; 
+	}
 	/*public String createNotification(String notifierUsername, String username, String notificationType)	{
 		Notification notification = new Notification(); 
 		
@@ -126,5 +164,27 @@ public class NotificationService {
 		return this.notificationDao.getAllNotificationsByUsername(
 				this.registeredUseDao.getRegisteredUserByUsername(username), 
 				pageRequest); 
+	}
+	public List<Notification> getNewNotificationsByUsername(String username, long lastCheckedMillisec, int pageNumber) {
+		try {
+			Timestamp lastChecked = new Timestamp(lastCheckedMillisec) ;
+			Pageable pageRequest = new PageRequest(pageNumber, 10, Sort.Direction.DESC, "creationMoment") ; 
+			
+			return this.notificationDao.getNewNotificationsByUsername(
+					this.registeredUseDao.getRegisteredUserByUsername(username) 
+					, lastChecked
+					, pageRequest) ;
+		} catch (Exception e) {
+			throw e ; 
+		}
+	}
+	
+	public int getNewNotificationCount(String username, Timestamp lastChecked)	{
+		try {
+			RegisteredUser userId = this.registeredUseDao.getRegisteredUserByUsername(username) ; 
+			return this.notificationDao.getNewNotificationCount(userId, lastChecked) ; 
+		} catch (Exception e) {
+			throw e ; 
+		}
 	}
 }

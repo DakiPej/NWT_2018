@@ -1,12 +1,15 @@
 package com.meminator.postmodule.Controllers;
 
 import com.meminator.postmodule.Models.Post;
+import com.meminator.postmodule.Models.PostVM;
 import com.meminator.postmodule.Models.Tag;
 import com.meminator.postmodule.Services.PostService;
 import com.meminator.postmodule.Services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,17 +27,18 @@ public class PostController {
         this.postService = postService;
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity createPost( @PathVariable String username, @RequestBody Post post){
+    @PreAuthorize("hasRole('ROLE_user')")
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity createPost(OAuth2Authentication authentication, @RequestBody PostVM post){
 
         try{
-            return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post, username));
+            return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post, authentication.getName()));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
 
     }
-
+	
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getPosts(){
         try{
@@ -55,7 +59,7 @@ public class PostController {
         }
     }
 
-    @RequestMapping(value = "/tags", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/tags", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity getPostsByTag(@RequestBody Tag[] tags){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(postService.getPostsByTags(Arrays.asList(tags)));
@@ -75,6 +79,7 @@ public class PostController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}", consumes = "application/json")
     public ResponseEntity addTags(@PathVariable Long id, @RequestBody List<Tag> tags){
         try{
@@ -86,19 +91,21 @@ public class PostController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_user')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public ResponseEntity deletePost(@PathVariable Long id){
+    public ResponseEntity deletePost(OAuth2Authentication authentication, @PathVariable Long id){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id));
+            return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(id, authentication.getName()));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/followfeed/{username}")
-    public ResponseEntity getPostsByFollow(@PathVariable String username){
+    @PreAuthorize("hasRole('ROLE_user')")
+    @RequestMapping(method = RequestMethod.GET, value = "/followfeed")
+    public ResponseEntity getPostsByFollow(OAuth2Authentication authentication){
         try{
-            return  ResponseEntity.status(HttpStatus.OK).body(postService.getByFollow(username));
+            return  ResponseEntity.status(HttpStatus.OK).body(postService.getByFollow(authentication.getName()));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
         }

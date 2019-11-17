@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ITagRepositroy extends PagingAndSortingRepository<Tag,Long> {
 
     Optional<Tag> getByName(String name);
+    List<Tag> getAllByNameIn(List<String> names);
 
 }

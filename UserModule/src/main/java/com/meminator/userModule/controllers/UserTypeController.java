@@ -2,7 +2,6 @@ package com.meminator.userModule.controllers;
 
 import javax.servlet.ServletException;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ import com.meminator.userModule.services.UserTypeService;
 public class UserTypeController {
 	@Autowired
 	UserTypeService userTypeService;
-	
+	/*
 	@RequestMapping(value="/hello")
 	@ResponseBody
 	public ResponseEntity hello() throws ServletException{
@@ -43,5 +42,5 @@ public class UserTypeController {
 			return ResponseEntity.badRequest().body("Unespected error ocurred.");
 		}
 		//return ResponseEntity.ok("");
-	}
+	}*/
 }
